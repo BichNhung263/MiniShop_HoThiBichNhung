@@ -1,7 +1,7 @@
-<?php include "header.php"; ?>
+<?php include __DIR__ . "/header.php"; ?>
 <div class="container-fluid">
     <div class="row">
-        <?php include "sidebar.php"; ?>
+        <?php include __DIR__ . "/sidebar.php"; ?>
         <div class="col p-4">
             <!-- Thanh tiêu đề & Xin chào Admin ở góc trên bên phải -->
             <div class="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom">
@@ -15,4 +15,4 @@
         </div>
     </div>
 </div>
-<?php include "footer.php"; ?>
+<?php include __DIR__ . "/footer.php"; ?>

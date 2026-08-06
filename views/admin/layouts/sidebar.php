@@ -5,37 +5,37 @@
     
     <ul class="nav nav-pills flex-column mb-auto gap-1">
         <li class="nav-item">
-            <a href="dashboard.php" class="nav-link active bg-primary text-white rounded-3 py-2 px-3">
+            <a href="../dashboard.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-house-door-fill me-3"></i> Dashboard
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white-50 py-2 px-3">
+            <a href="../admin/categories/index.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-folder2-open me-3"></i> Danh mục
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white-50 py-2 px-3">
+            <a href="../admin/brands/index.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-star me-3"></i> Thương hiệu
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white-50 py-2 px-3">
+            <a href="../admin/products/index.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-bag me-3"></i> Sản phẩm
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white-50 py-2 px-3">
+            <a href="../admin/customers/index.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-people me-3"></i> Khách hàng
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white-50 py-2 px-3">
+            <a href="../admin/users/index.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-person me-3"></i> Người dùng
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white-50 py-2 px-3">
+            <a href="../admin/orders/index.php" class="nav-link text-white-50 py-2 px-3">
                 <i class="bi bi-clipboard-data me-3"></i> Đơn hàng
             </a>
         </li>
