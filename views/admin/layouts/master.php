@@ -1,17 +1,18 @@
-<?php
-include "header.php";
-?>
-<!-- Wrapper: sidebar + content -->
-<div style="display:flex; min-height: calc(100vh - 56px);">
+<?php include "header.php"; ?>
+<div class="container-fluid">
+    <div class="row">
+        <?php include "sidebar.php"; ?>
+        <div class="col p-4">
+            <!-- Thanh tiêu đề & Xin chào Admin ở góc trên bên phải -->
+            <div class="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom">
+                <h4 class="mb-0 fw-bold"><?= $pageTitle ?? 'Dashboard' ?></h4>
+                <div class="text-secondary">
+                    <i class="bi bi-person-circle fs-5 me-1"></i> Xin chào, <strong>Admin</strong>
+                </div>
+            </div>
 
-    <!-- Sidebar bên trái -->
-    <?php include "sidebar.php"; ?>
-
-    <!-- Nội dung trang chính -->
-    <div style="flex:1; padding: 25px; background: #f4f6f9;">
-        <?= $content ?>
+            <?= $content ?>
+        </div>
     </div>
-
 </div>
-
 <?php include "footer.php"; ?>
