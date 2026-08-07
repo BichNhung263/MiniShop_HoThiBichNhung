@@ -16,6 +16,10 @@ class Product
     public string $createdAt;
     public string $updatedAt;
 
+    // Dữ liệu lấy từ JOIN (không lưu trong bảng products)
+    public ?string $cateName = null;
+    public ?string $brandName = null;
+
     public function __construct(
         ?int $categoryId = null,
         ?int $brandId = null,

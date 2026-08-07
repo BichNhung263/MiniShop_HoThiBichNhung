@@ -25,15 +25,15 @@ ob_start();
                 </tr>
                 <tr>
                     <th>Tên danh mục</th>
-                    <td><?= htmlspecialchars($category->catename) ?></td>
+                    <td><?= $category->catename ?></td>
                 </tr>
                 <tr>
                     <th>Slug</th>
-                    <td><?= htmlspecialchars($category->slug) ?></td>
+                    <td><?= $category->slug ?></td>
                 </tr>
                 <tr>
                     <th>Mô tả</th>
-                    <td><?= htmlspecialchars($category->description ?? '') ?></td>
+                    <td><?= $category->description ?></td>
                 </tr>
                 <tr>
                     <th>Trạng thái</th>

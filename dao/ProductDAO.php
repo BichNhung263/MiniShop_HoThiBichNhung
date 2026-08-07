@@ -10,29 +10,65 @@ class ProductDAO extends BaseDAO
         parent::__construct();
     }
 
-    // Lấy tất cả sản phẩm
-    public function getAll(): array
+    // Lấy tất cả sản phẩm (JOIN categories & brands + hỗ trợ tìm kiếm)
+    public function getAll($keyword = ""): array
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM products ORDER BY id DESC";
-            $result = $this->executeQuery($sql);
+            $sql = "SELECT 
+                        p.id, 
+                        p.category_id, 
+                        p.brand_id, 
+                        p.proname, 
+                        p.slug, 
+                        p.price, 
+                        p.discount_price, 
+                        p.quantity, 
+                        p.image, 
+                        p.description, 
+                        p.status, 
+                        p.created_at, 
+                        p.updated_at, 
+                        c.catename AS cateName, 
+                        b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id";
+
+            if (!empty($keyword)) {
+                $sql .= " WHERE p.proname LIKE ? OR c.catename LIKE ? OR b.brandname LIKE ?";
+            }
+
+            $sql .= " ORDER BY p.proname";
+
+            if (!empty($keyword)) {
+                $stmt = $this->prepare($sql);
+                $like = "%" . $keyword . "%";
+                $stmt->bind_param("sss", $like, $like, $like);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            } else {
+                $result = $this->executeQuery($sql);
+            }
+
             while ($row = $result->fetch_assoc()) {
                 $product = new Product(
-                    $row["category_id"] ? (int)$row["category_id"] : null,
-                    $row["brand_id"] ? (int)$row["brand_id"] : null,
+                    $row["category_id"],
+                    $row["brand_id"],
                     $row["proname"],
                     $row["slug"],
-                    (float)$row["price"],
-                    (float)$row["discount_price"],
-                    (int)$row["quantity"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
                     $row["image"],
                     $row["description"],
-                    (int)$row["status"]
+                    $row["status"]
                 );
                 $product->id = $row["id"];
                 $product->createdAt = $row["created_at"];
                 $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
                 $list[] = $product;
             }
         } catch (Exception $e) {
@@ -61,31 +97,45 @@ class ProductDAO extends BaseDAO
     {
         $list = [];
         try {
-            $sql = "SELECT p.*, c.catename, b.brandname 
+            $sql = "SELECT 
+                        p.id, 
+                        p.category_id, 
+                        p.brand_id, 
+                        p.proname, 
+                        p.slug, 
+                        p.price, 
+                        p.discount_price, 
+                        p.quantity, 
+                        p.image, 
+                        p.description, 
+                        p.status, 
+                        p.created_at, 
+                        p.updated_at, 
+                        c.catename AS cateName, 
+                        b.brandname AS brandName 
                     FROM products p 
-                    LEFT JOIN categories c ON p.category_id = c.id 
-                    LEFT JOIN brands b ON p.brand_id = b.id 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
                     ORDER BY p.id DESC LIMIT 5";
             $result = $this->executeQuery($sql);
             while ($row = $result->fetch_assoc()) {
                 $product = new Product(
-                    $row["category_id"] ? (int)$row["category_id"] : null,
-                    $row["brand_id"] ? (int)$row["brand_id"] : null,
+                    $row["category_id"],
+                    $row["brand_id"],
                     $row["proname"],
                     $row["slug"],
-                    (float)$row["price"],
-                    (float)$row["discount_price"],
-                    (int)$row["quantity"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
                     $row["image"],
                     $row["description"],
-                    (int)$row["status"]
+                    $row["status"]
                 );
                 $product->id = $row["id"];
                 $product->createdAt = $row["created_at"];
                 $product->updatedAt = $row["updated_at"];
-                // Lưu tên danh mục & thương hiệu dưới dạng thuộc tính động
-                $product->catename = $row["catename"] ?? "Chưa phân loại";
-                $product->brandname = $row["brandname"] ?? "Chưa có thương hiệu";
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
                 $list[] = $product;
             }
         } catch (Exception $e) {
@@ -94,31 +144,52 @@ class ProductDAO extends BaseDAO
         return $list;
     }
 
-    // Tìm theo ID
+    // Tìm theo ID (JOIN categories & brands)
     public function findById(int $id): ?Product
     {
         try {
-            $sql = "SELECT * FROM products WHERE id=?";
+            $sql = "SELECT 
+                        p.id, 
+                        p.category_id, 
+                        p.brand_id, 
+                        p.proname, 
+                        p.slug, 
+                        p.price, 
+                        p.discount_price, 
+                        p.quantity, 
+                        p.image, 
+                        p.description, 
+                        p.status, 
+                        p.created_at, 
+                        p.updated_at, 
+                        c.catename AS cateName, 
+                        b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    WHERE p.id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($row = $result->fetch_assoc()) {
                 $product = new Product(
-                    $row["category_id"] ? (int)$row["category_id"] : null,
-                    $row["brand_id"] ? (int)$row["brand_id"] : null,
+                    $row["category_id"],
+                    $row["brand_id"],
                     $row["proname"],
                     $row["slug"],
-                    (float)$row["price"],
-                    (float)$row["discount_price"],
-                    (int)$row["quantity"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
                     $row["image"],
                     $row["description"],
-                    (int)$row["status"]
+                    $row["status"]
                 );
                 $product->id = $row["id"];
                 $product->createdAt = $row["created_at"];
                 $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
                 return $product;
             }
         } catch (Exception $e) {
@@ -131,7 +202,16 @@ class ProductDAO extends BaseDAO
     public function insert(Product $product): bool
     {
         try {
-            $sql = "INSERT INTO products(category_id, brand_id, proname, slug, price, discount_price, quantity, image, description, status) 
+            $sql = "INSERT INTO 
+            products(category_id, brand_id, 
+            proname, 
+            slug, 
+            price, 
+            discount_price, 
+            quantity, 
+            image, 
+            description, 
+            status) 
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
@@ -157,7 +237,17 @@ class ProductDAO extends BaseDAO
     public function update(Product $product): bool
     {
         try {
-            $sql = "UPDATE products SET category_id=?, brand_id=?, proname=?, slug=?, price=?, discount_price=?, quantity=?, image=?, description=?, status=? WHERE id=?";
+            $sql = "UPDATE products SET 
+            category_id=?,
+            brand_id=?,
+            proname=?,
+            slug=?,
+            price=?,
+            discount_price=?,
+            quantity=?,
+            image=?,
+            description=?,
+            status=? WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
                 "iisdddissii",
@@ -199,7 +289,7 @@ class ProductDAO extends BaseDAO
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM product_images WHERE product_id=? ORDER BY sort_order ASC";
+            $sql = "SELECT id, product_id, image, sort_order, created_at FROM product_images WHERE product_id=? ORDER BY sort_order ASC";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $productId);
             $stmt->execute();

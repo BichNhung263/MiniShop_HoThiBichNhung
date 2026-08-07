@@ -9,12 +9,12 @@ class CategoryDAO extends BaseDAO
         parent::__construct();
     }
 
-    // Lấy tất cả danh mục (có hỗ trợ tìm kiếm)
+    // Lấy tất cả danh mục
     public function getAll($keyword = "")
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM categories";
+            $sql = "SELECT id, catename, slug, image, description, status, created_at, updated_at FROM categories";
 
             if (!empty($keyword)) {
                 $sql .= " WHERE catename LIKE ? OR slug LIKE ?";
@@ -36,8 +36,8 @@ class CategoryDAO extends BaseDAO
                 $category = new Category(
                     $row["catename"],
                     $row["slug"],
-                    $row["image"],
                     $row["description"],
+                    $row["image"],
                     $row["status"]
                 );
                 $category->id = $row["id"];
@@ -70,7 +70,7 @@ class CategoryDAO extends BaseDAO
     public function findById(int $id): ?Category
     {
         try {
-            $sql = "SELECT * FROM categories WHERE id=?";
+            $sql = "SELECT id, catename, slug, image, description, status, created_at, updated_at FROM categories WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();

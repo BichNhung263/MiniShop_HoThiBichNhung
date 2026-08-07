@@ -1,6 +1,6 @@
 <?php
-class Brand{
-    
+class Brand
+{
     public int $id;
     public string $brandname;
     public string $slug;
@@ -12,11 +12,11 @@ class Brand{
     public string $updatedAt;
 
     public function __construct(
-        string $brandname="",
-        string $slug="",
-        ?string $description=null,
-        ?string $image=null,
-        int $status=1
+        string $brandname = "",
+        string $slug = "",
+        ?string $description = null,
+        ?string $image = null,
+        int $status = 1
     ) {
         $this->brandname = $brandname;
         $this->slug = $slug;

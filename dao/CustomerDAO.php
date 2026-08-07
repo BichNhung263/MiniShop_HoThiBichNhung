@@ -9,13 +9,27 @@ class CustomerDAO extends BaseDAO
         parent::__construct();
     }
 
-    // Lấy tất cả khách hàng
-    public function getAll(): array
+    // Lấy tất cả khách hàng (có hỗ trợ tìm kiếm)
+    public function getAll($keyword = ""): array
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM customers ORDER BY fullname";
-            $result = $this->executeQuery($sql);
+            $sql = "SELECT id, fullname, phone, email, address, note, status, created_at, updated_at FROM customers";
+            if (!empty($keyword)) {
+                $sql .= " WHERE fullname LIKE ? OR email LIKE ? OR phone LIKE ?";
+            }
+            $sql .= " ORDER BY fullname";
+
+            if (!empty($keyword)) {
+                $stmt = $this->prepare($sql);
+                $like = "%" . $keyword . "%";
+                $stmt->bind_param("sss", $like, $like, $like);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            } else {
+                $result = $this->executeQuery($sql);
+            }
+
             while ($row = $result->fetch_assoc()) {
                 $customer = new Customer(
                     $row["fullname"],
@@ -55,7 +69,7 @@ class CustomerDAO extends BaseDAO
     public function findById(int $id): ?Customer
     {
         try {
-            $sql = "SELECT * FROM customers WHERE id=?";
+            $sql = "SELECT id, fullname, phone, email, address, note, status, created_at, updated_at FROM customers WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();

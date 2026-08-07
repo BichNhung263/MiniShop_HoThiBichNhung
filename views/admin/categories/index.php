@@ -2,13 +2,9 @@
 $pageTitle = "Danh sách danh mục";
 require_once __DIR__ . "/../../../dao/CategoryDAO.php";
 
-$categoryDAO = new CategoryDAO();
 $keyword = trim($_GET["keyword"] ?? "");
-$categories = [];
-try {
-    $categories = $categoryDAO->getAll($keyword);
-} catch (Exception $e) {
-}
+$dao = new CategoryDAO();
+$categories = $dao->getAll($keyword);
 ob_start();
 ?>
 <main class="container my-4">
@@ -19,17 +15,13 @@ ob_start();
                 Thêm danh mục
             </a>
         </div>
-
-        <?php if (!empty($_GET['error'])): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($_GET['error']) ?></div>
-        <?php endif; ?>
-
-        <form class="row mb-3" method="GET">
+        <form class="row mb-3">
             <div class="col-md-4">
-                <input type="text" name="keyword" class="form-control" placeholder="Nhập từ khóa..." value="<?= htmlspecialchars($keyword) ?>">
+                <input type="text" name="keyword" class="form-control"
+                    placeholder="Nhập từ khóa..." value="<?= $_GET['keyword'] ?? '' ?>">
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <button type="submit" class="btn btn-primary">Tìm kiếm </button>
             </div>
         </form>
 
@@ -54,9 +46,9 @@ ob_start();
                 <?php else: ?>
                     <?php foreach ($categories as $key => $category): ?>
                         <tr>
-                            <td><?= ($key + 1); ?></td>
-                            <td class="fw-semibold"><?= htmlspecialchars($category->catename); ?></td>
-                            <td><code><?= htmlspecialchars($category->slug); ?></code></td>
+                            <td><?= $key + 1 ?></td>
+                            <td class="fw-semibold"><?= $category->catename ?></td>
+                            <td><?= $category->slug ?></td>
                             <td>
                                 <?php if ($category->status == 1): ?>
                                     <span class="badge bg-success">Hiển thị</span>

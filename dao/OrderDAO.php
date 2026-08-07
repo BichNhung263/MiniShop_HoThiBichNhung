@@ -9,22 +9,21 @@ class OrderDAO extends BaseDAO
     {
         parent::__construct();
     }
-
     // Lấy tất cả đơn hàng
     public function getAll(): array
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM orders ORDER BY id DESC";
+            $sql = "SELECT id, customer_id, user_id, order_code, total_amount, note, status, created_at, updated_at FROM orders ORDER BY id DESC";
             $result = $this->executeQuery($sql);
             while ($row = $result->fetch_assoc()) {
                 $order = new Order(
-                    (int)$row["customer_id"],
-                    $row["user_id"] ? (int)$row["user_id"] : null,
+                    $row["customer_id"],
+                    $row["user_id"] ? $row["user_id"] : null,
                     $row["order_code"],
-                    (float)$row["total_amount"],
+                    $row["total_amount"],
                     $row["note"],
-                    (int)$row["status"]
+                    $row["status"]
                 );
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
@@ -36,7 +35,6 @@ class OrderDAO extends BaseDAO
         }
         return $list;
     }
-
     // Đếm tổng số đơn hàng
     public function countAll(): int
     {
@@ -51,25 +49,24 @@ class OrderDAO extends BaseDAO
         }
         return 0;
     }
-
-    // Lấy 5 đơn hàng mới nhất (JOIN với bảng customers)
+    // Lấy 5 đơn hàng mới nhất
     public function getTop5Latest(): array
     {
         $list = [];
         try {
-            $sql = "SELECT o.*, c.fullname, c.phone 
+            $sql = "SELECT o.id, o.customer_id, o.user_id, o.order_code, o.total_amount, o.note, o.status, o.created_at, o.updated_at, c.fullname, c.phone 
                     FROM orders o 
                     LEFT JOIN customers c ON o.customer_id = c.id 
                     ORDER BY o.id DESC LIMIT 5";
             $result = $this->executeQuery($sql);
             while ($row = $result->fetch_assoc()) {
                 $order = new Order(
-                    (int)$row["customer_id"],
-                    $row["user_id"] ? (int)$row["user_id"] : null,
+                    $row["customer_id"],
+                    $row["user_id"],
                     $row["order_code"],
-                    (float)$row["total_amount"],
+                    $row["total_amount"],
                     $row["note"],
-                    (int)$row["status"]
+                    $row["status"]
                 );
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
@@ -83,24 +80,23 @@ class OrderDAO extends BaseDAO
         }
         return $list;
     }
-
     // Tìm theo ID
     public function findById(int $id): ?Order
     {
         try {
-            $sql = "SELECT * FROM orders WHERE id=?";
+            $sql = "SELECT id, customer_id, user_id, order_code, total_amount, note, status, created_at, updated_at FROM orders WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($row = $result->fetch_assoc()) {
                 $order = new Order(
-                    (int)$row["customer_id"],
-                    $row["user_id"] ? (int)$row["user_id"] : null,
+                    $row["customer_id"],
+                    $row["user_id"],
                     $row["order_code"],
-                    (float)$row["total_amount"],
+                    $row["total_amount"],
                     $row["note"],
-                    (int)$row["status"]
+                    $row["status"]
                 );
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
@@ -112,7 +108,6 @@ class OrderDAO extends BaseDAO
         }
         return null;
     }
-
     // Thêm đơn hàng
     public function insert(Order $order): bool
     {
@@ -138,7 +133,6 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Cập nhật đơn hàng
     public function update(Order $order): bool
     {
@@ -160,22 +154,18 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
-
-    // Xóa đơn hàng (và các chi tiết đơn hàng tương ứng)
+    // Xóa đơn hàng
     public function delete(int $id): bool
     {
         try {
             $this->beginTransaction();
-
             // Xóa các chi tiết đơn hàng trước
             $this->deleteDetailsByOrderId($id);
-
             // Xóa đơn hàng
             $sql = "DELETE FROM orders WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $res = $stmt->execute();
-
             $this->commit();
             return $res;
         } catch (Exception $e) {
@@ -183,26 +173,23 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
-
-    // --- Các phương thức làm việc với chi tiết đơn hàng (order_details) ---
-
     // Lấy chi tiết đơn hàng theo order_id
     public function getOrderDetails(int $orderId): array
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM order_details WHERE order_id=?";
+            $sql = "SELECT id, order_id, product_id, quantity, price, subtotal, created_at FROM order_details WHERE order_id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $orderId);
             $stmt->execute();
             $result = $stmt->get_result();
             while ($row = $result->fetch_assoc()) {
                 $detail = new OrderDetail(
-                    (int)$row["order_id"],
-                    (int)$row["product_id"],
-                    (int)$row["quantity"],
-                    (float)$row["price"],
-                    (float)$row["subtotal"]
+                    $row["order_id"],
+                    $row["product_id"],
+                    $row["quantity"],
+                    $row["price"],
+                    $row["subtotal"]
                 );
                 $detail->id = $row["id"];
                 $detail->createdAt = $row["created_at"];
@@ -213,7 +200,6 @@ class OrderDAO extends BaseDAO
         }
         return $list;
     }
-
     // Thêm chi tiết đơn hàng
     public function insertDetail(OrderDetail $detail): bool
     {
@@ -233,7 +219,6 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa tất cả chi tiết đơn hàng thuộc về một order_id
     public function deleteDetailsByOrderId(int $orderId): bool
     {

@@ -50,7 +50,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="#" class="text-decoration-none small text-primary fw-semibold">Xem chi tiết</a>
+                    <a href="../admin/customers/index.php" class="text-decoration-none small text-primary fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="#" class="text-decoration-none small text-success fw-semibold">Xem chi tiết</a>
+                    <a href="../admin/products/index.php" class="text-decoration-none small text-success fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="#" class="text-decoration-none small text-warning fw-semibold">Xem chi tiết</a>
+                    <a href="../admin/orders/index.php" class="text-decoration-none small text-warning fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -104,7 +104,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="#" class="text-decoration-none small text-info fw-semibold">Xem chi tiết</a>
+                    <a href="../admin/categories/index.php" class="text-decoration-none small text-info fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -122,7 +122,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="#" class="text-decoration-none small text-danger fw-semibold">Xem chi tiết</a>
+                    <a href="../admin/brands/index.php" class="text-decoration-none small text-danger fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -153,8 +153,8 @@ ob_start();
                             <?php foreach ($latestOrders as $index => $ord): ?>
                                 <tr>
                                     <td class="px-4"><?= $index + 1 ?></td>
-                                    <td class="fw-bold text-primary"><?= htmlspecialchars($ord->orderCode) ?></td>
-                                    <td class="fw-medium"><?= htmlspecialchars($ord->customerName ?? 'Khách lẻ') ?></td>
+                                    <td class="fw-bold text-primary"><?= $ord->orderCode ?></td>
+                                    <td class="fw-medium"><?= $ord->customerName ?></td>
                                     <td class="text-muted"><?= !empty($ord->createdAt) ? date('d/m/Y', strtotime($ord->createdAt)) : date('d/m/Y') ?></td>
                                     <td class="fw-bold"><?= number_format($ord->totalAmount, 0, ',', '.') ?> đ</td>
                                     <td class="text-center">
@@ -199,10 +199,10 @@ ob_start();
                             <?php foreach ($latestProducts as $index => $pro): ?>
                                 <tr>
                                     <td class="px-4"><?= $index + 1 ?></td>
-                                    <td class="fw-semibold"><?= htmlspecialchars($pro->proname) ?></td>
+                                    <td class="fw-semibold"><?= $pro->proname ?></td>
                                     <td class="text-danger fw-bold"><?= number_format($pro->price, 0, ',', '.') ?> đ</td>
-                                    <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($pro->catename ?? 'Chưa phân loại') ?></span></td>
-                                    <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($pro->brandname ?? 'Chưa có') ?></span></td>
+                                    <td><span class="badge bg-light text-dark border"><?= $pro->cateName ?></span></td>
+                                    <td><span class="badge bg-light text-dark border"><?= $pro->brandName ?></span></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

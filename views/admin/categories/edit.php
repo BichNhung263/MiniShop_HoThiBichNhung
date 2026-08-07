@@ -59,7 +59,7 @@ ob_start();
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <ul class="mb-0 ps-3">
                         <?php foreach ($errors as $error): ?>
-                            <li><?= htmlspecialchars($error) ?></li>
+                            <li><?= $error ?></li>
                         <?php endforeach; ?>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -71,15 +71,15 @@ ob_start();
 
                 <div class="mb-3">
                     <label class="form-label">Tên danh mục</label>
-                    <input type="text" class="form-control" name="cateName" value="<?= htmlspecialchars($category->catename) ?>">
+                    <input type="text" class="form-control" name="cateName" value="<?= $category->catename ?>">
                 </div>
                 <div class="mb-3">
                     <label  class="form-label">Slug</label>
-                    <input type="text" class="form-control" name="slug" value="<?= htmlspecialchars($category->slug) ?>">
+                    <input type="text" class="form-control" name="slug" value="<?= $category->slug ?>">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Mô tả</label>
-                    <textarea name="description" rows="5" class="form-control"><?= htmlspecialchars($category->description) ?></textarea>
+                    <textarea name="description" rows="5" class="form-control"><?= $category->description ?></textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label d-block">Trạng thái</label>

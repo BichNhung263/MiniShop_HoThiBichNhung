@@ -9,13 +9,27 @@ class BrandDAO extends BaseDAO
         parent::__construct();
     }
 
-    // Lấy tất cả thương hiệu
-    public function getAll(): array
+    // Lấy tất cả thương hiệu (có hỗ trợ tìm kiếm)
+    public function getAll($keyword = ""): array
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM brands ORDER BY brandname";
-            $result = $this->executeQuery($sql);
+            $sql = "SELECT id, brandname, slug, image, description, status, created_at, updated_at FROM brands";
+            if (!empty($keyword)) {
+                $sql .= " WHERE brandname LIKE ? OR slug LIKE ?";
+            }
+            $sql .= " ORDER BY brandname";
+
+            if (!empty($keyword)) {
+                $stmt = $this->prepare($sql);
+                $like = "%" . $keyword . "%";
+                $stmt->bind_param("ss", $like, $like);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            } else {
+                $result = $this->executeQuery($sql);
+            }
+
             while ($row = $result->fetch_assoc()) {
                 $brand = new Brand(
                     $row["brandname"],
@@ -54,7 +68,7 @@ class BrandDAO extends BaseDAO
     public function findById(int $id): ?Brand
     {
         try {
-            $sql = "SELECT * FROM brands WHERE id=?";
+            $sql = "SELECT id, brandname, slug, image, description, status, created_at, updated_at FROM brands WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();

@@ -9,13 +9,27 @@ class UserDAO extends BaseDAO
         parent::__construct();
     }
 
-    // Lấy tất cả người dùng
-    public function getAll(): array
+    // Lấy tất cả người dùng (có hỗ trợ tìm kiếm)
+    public function getAll($keyword = ""): array
     {
         $list = [];
         try {
-            $sql = "SELECT * FROM users ORDER BY id DESC";
-            $result = $this->executeQuery($sql);
+            $sql = "SELECT id, fullname, username, password, email, phone, address, role, status, created_at, updated_at FROM users";
+            if (!empty($keyword)) {
+                $sql .= " WHERE fullname LIKE ? OR username LIKE ? OR email LIKE ?";
+            }
+            $sql .= " ORDER BY id DESC";
+
+            if (!empty($keyword)) {
+                $stmt = $this->prepare($sql);
+                $like = "%" . $keyword . "%";
+                $stmt->bind_param("sss", $like, $like, $like);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            } else {
+                $result = $this->executeQuery($sql);
+            }
+
             while ($row = $result->fetch_assoc()) {
                 $user = new User(
                     $row["fullname"],
@@ -24,8 +38,8 @@ class UserDAO extends BaseDAO
                     $row["email"],
                     $row["phone"],
                     $row["address"],
-                    (int)$row["role"],
-                    (int)$row["status"]
+                    $row["role"],
+                    $row["status"]
                 );
                 $user->id = $row["id"];
                 $user->createdAt = $row["created_at"];
@@ -38,11 +52,26 @@ class UserDAO extends BaseDAO
         return $list;
     }
 
+    // Đếm tổng số người dùng
+    public function countAll(): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM users";
+            $result = $this->executeQuery($sql);
+            if ($row = $result->fetch_assoc()) {
+                return (int)$row['total'];
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+        return 0;
+    }
+
     // Tìm theo ID
     public function findById(int $id): ?User
     {
         try {
-            $sql = "SELECT * FROM users WHERE id=?";
+            $sql = "SELECT id, fullname, username, password, email, phone, address, role, status, created_at, updated_at FROM users WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
