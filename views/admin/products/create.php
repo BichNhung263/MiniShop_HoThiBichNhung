@@ -12,24 +12,42 @@ $brands = $brandDAO->getAll();
 
 $errors = [];
 $proname = $slug = $description = "";
-$categoryId = $brandId = null;
-$price = 0; $discountPrice = 0; $quantity = 0;
+$categoryId = $brandId = 0;
+$price = 0;
+$discountPrice = 0;
+$quantity = 0;
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $proname = trim($_POST["proname"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
-    $categoryId = !empty($_POST["categoryId"]) ? $_POST["categoryId"] : null;
-    $brandId = !empty($_POST["brandId"]) ? $_POST["brandId"] : null;
-    $price = ($_POST["price"] ?? 0);
-    $discountPrice = ($_POST["discountPrice"] ?? 0);
-    $quantity = ($_POST["quantity"] ?? 0);
+    $categoryId = isset($_POST["categoryId"]) && $_POST["categoryId"] !== "" ? (int)$_POST["categoryId"] : 0;
+    $brandId = isset($_POST["brandId"]) && $_POST["brandId"] !== "" ? (int)$_POST["brandId"] : 0;
+    $price = isset($_POST["price"]) ? floatval($_POST["price"]) : 0;
+    $discountPrice = isset($_POST["discountPrice"]) ? floatval($_POST["discountPrice"]) : 0;
+    $quantity = isset($_POST["quantity"]) ? intval($_POST["quantity"]) : 0;
     $description = trim($_POST["description"] ?? "");
-    $status = isset($_POST["status"]) ? $_POST["status"] : 1;
+    $status = $_POST["status"] ?? 1;
 
-    if ($proname == "") $errors[] = "Tên sản phẩm không được để trống.";
-    if ($slug == "") $errors[] = "Slug không được để trống.";
-    if ($price <= 0) $errors[] = "Giá sản phẩm phải lớn hơn 0.";
+    $errors = [];
+    if ($proname == "") {
+        $errors[] = "Tên sản phẩm không được để trống.";
+    }
+    if ($slug == "") {
+        $errors[] = "Slug không được để trống.";
+    }
+    if ($categoryId == 0) {
+        $errors[] = "Vui lòng chọn danh mục.";
+    }
+    if ($brandId == 0) {
+        $errors[] = "Vui lòng chọn thương hiệu.";
+    }
+    if ($price <= 0) {
+        $errors[] = "Giá bán phải lớn hơn 0.";
+    }
+    if ($quantity < 0) {
+        $errors[] = "Số lượng không hợp lệ.";
+    }
 
     if (empty($errors)) {
         $dao = new ProductDAO();
@@ -72,23 +90,19 @@ ob_start();
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Danh mục</label>
                         <select name="categoryId" class="form-select">
-                            <option value="">-- Chọn danh mục --</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat->id ?>" <?= $categoryId == $cat->id ? 'selected' : '' ?>>
-                                    <?= $cat->catename ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <option value="" <?= $categoryId == 0 ? 'selected' : '' ?>>-- Chọn danh mục --</option>
+                            <?php foreach ($categories as $item) { ?>
+                                <option value="<?= $item->id ?>" <?= $categoryId == $item->id ? 'selected' : '' ?>><?= $item->catename ?></option>
+                            <?php } ?>
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Thương hiệu</label>
                         <select name="brandId" class="form-select">
-                            <option value="">-- Chọn thương hiệu --</option>
-                            <?php foreach ($brands as $b): ?>
-                                <option value="<?= $b->id ?>" <?= $brandId == $b->id ? 'selected' : '' ?>>
-                                    <?= $b->brandname ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <option value="" <?= $brandId == 0 ? 'selected' : '' ?>>-- Chọn thương hiệu --</option>
+                            <?php foreach($brands as $item){ ?>
+                                <option value="<?= $item->id ?>" <?= $brandId == $item->id ? 'selected' : '' ?>><?= $item->brandname ?></option>
+                            <?php } ?>
                         </select>
                     </div>
                 </div>

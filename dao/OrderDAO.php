@@ -10,12 +10,53 @@ class OrderDAO extends BaseDAO
         parent::__construct();
     }
     // Lấy tất cả đơn hàng
-    public function getAll(): array
+    public function getAll($keyword = "", $status = null): array
     {
         $list = [];
         try {
-            $sql = "SELECT id, customer_id, user_id, order_code, total_amount, note, status, created_at, updated_at FROM orders ORDER BY id DESC";
-            $result = $this->executeQuery($sql);
+            $sql = "SELECT o.id, o.customer_id,
+                        o.user_id, o.order_code,
+                        o.total_amount, o.note,
+                        o.status, o.created_at, o.updated_at,
+                        c.fullname AS customerName, u.fullname AS userName
+                    FROM orders o
+                    LEFT JOIN customers c ON o.customer_id = c.id
+                    LEFT JOIN users u ON o.user_id = u.id";
+
+            $conds = [];
+            $params = [];
+            $types = "";
+
+            if (!empty($keyword)) {
+                $conds[] = "(o.order_code LIKE ? OR c.fullname LIKE ?)";
+                $like = "%" . $keyword . "%";
+                $types .= "ss";
+                $params[] = &$like;
+                $params[] = &$like;
+            }
+
+            if ($status !== null && $status !== "") {
+                $conds[] = "o.status = ?";
+                $st = (int)$status;
+                $types .= "i";
+                $params[] = &$st;
+            }
+
+            if (count($conds) > 0) {
+                $sql .= " WHERE " . implode(" AND ", $conds);
+            }
+
+            $sql .= " ORDER BY o.id DESC";
+
+            if (count($params) > 0) {
+                $stmt = $this->prepare($sql);
+                $bindNames = array_merge([$types], $params);
+                call_user_func_array([$stmt, 'bind_param'], $bindNames);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            } else {
+                $result = $this->executeQuery($sql);
+            }
             while ($row = $result->fetch_assoc()) {
                 $order = new Order(
                     $row["customer_id"],
@@ -28,6 +69,8 @@ class OrderDAO extends BaseDAO
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
                 $order->updatedAt = $row["updated_at"];
+                $order->customerName = $row["customerName"] ?? null;
+                $order->userName = $row["userName"] ?? null;
                 $list[] = $order;
             }
         } catch (Exception $e) {
@@ -50,11 +93,15 @@ class OrderDAO extends BaseDAO
         return 0;
     }
     // Lấy 5 đơn hàng mới nhất
-    public function getTop5Latest(): array
+    public function getLatest(): array
     {
         $list = [];
         try {
-            $sql = "SELECT o.id, o.customer_id, o.user_id, o.order_code, o.total_amount, o.note, o.status, o.created_at, o.updated_at, c.fullname, c.phone 
+            $sql = "SELECT o.id, o.customer_id, 
+            o.user_id, o.order_code, 
+            o.total_amount, o.note, 
+            o.status, o.created_at, 
+            o.updated_at, c.fullname, c.phone 
                     FROM orders o 
                     LEFT JOIN customers c ON o.customer_id = c.id 
                     ORDER BY o.id DESC LIMIT 5";
@@ -71,8 +118,7 @@ class OrderDAO extends BaseDAO
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
                 $order->updatedAt = $row["updated_at"];
-                $order->customerName = $row["fullname"] ?? "Khách lẻ";
-                $order->customerPhone = $row["phone"] ?? "";
+
                 $list[] = $order;
             }
         } catch (Exception $e) {
@@ -84,7 +130,15 @@ class OrderDAO extends BaseDAO
     public function findById(int $id): ?Order
     {
         try {
-            $sql = "SELECT id, customer_id, user_id, order_code, total_amount, note, status, created_at, updated_at FROM orders WHERE id=?";
+            $sql = "SELECT o.id, o.customer_id, 
+            o.user_id, o.order_code, 
+            o.total_amount, o.note, o.status, 
+            o.created_at, o.updated_at,
+            c.fullname AS customerName, u.fullname AS userName
+                    FROM orders o
+                    LEFT JOIN customers c ON o.customer_id = c.id
+                    LEFT JOIN users u ON o.user_id = u.id
+                    WHERE o.id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
@@ -101,6 +155,8 @@ class OrderDAO extends BaseDAO
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
                 $order->updatedAt = $row["updated_at"];
+                $order->customerName = $row["customerName"] ?? null;
+                $order->userName = $row["userName"] ?? null;
                 return $order;
             }
         } catch (Exception $e) {
@@ -112,8 +168,9 @@ class OrderDAO extends BaseDAO
     public function insert(Order $order): bool
     {
         try {
-            $sql = "INSERT INTO orders(customer_id, user_id, order_code, total_amount, note, status) 
-                    VALUES(?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO orders
+            (customer_id, user_id, order_code, total_amount, note, status) 
+            VALUES(?, ?, ?, ?, ?, ?)";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
                 "iisdsi",
@@ -137,7 +194,10 @@ class OrderDAO extends BaseDAO
     public function update(Order $order): bool
     {
         try {
-            $sql = "UPDATE orders SET customer_id=?, user_id=?, order_code=?, total_amount=?, note=?, status=? WHERE id=?";
+            $sql = "UPDATE orders SET 
+            customer_id=?, user_id=?, 
+            order_code=?, total_amount=?, 
+            note=?, status=? WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
                 "iisdsii",
@@ -159,9 +219,7 @@ class OrderDAO extends BaseDAO
     {
         try {
             $this->beginTransaction();
-            // Xóa các chi tiết đơn hàng trước
             $this->deleteDetailsByOrderId($id);
-            // Xóa đơn hàng
             $sql = "DELETE FROM orders WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
@@ -178,7 +236,12 @@ class OrderDAO extends BaseDAO
     {
         $list = [];
         try {
-            $sql = "SELECT id, order_id, product_id, quantity, price, subtotal, created_at FROM order_details WHERE order_id=?";
+            $sql = "SELECT 
+            od.id, od.order_id, od.product_id, od.quantity, od.price, od.subtotal, od.created_at,
+                        p.proname AS productName
+                    FROM order_details od
+                    LEFT JOIN products p ON od.product_id = p.id
+                    WHERE od.order_id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $orderId);
             $stmt->execute();
@@ -193,6 +256,7 @@ class OrderDAO extends BaseDAO
                 );
                 $detail->id = $row["id"];
                 $detail->createdAt = $row["created_at"];
+                $detail->productName = $row["productName"] ?? null;
                 $list[] = $detail;
             }
         } catch (Exception $e) {
@@ -204,7 +268,9 @@ class OrderDAO extends BaseDAO
     public function insertDetail(OrderDetail $detail): bool
     {
         try {
-            $sql = "INSERT INTO order_details(order_id, product_id, quantity, price, subtotal) VALUES(?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO order_details
+            (order_id, product_id, quantity, price, subtotal)
+             VALUES(?, ?, ?, ?, ?)";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
                 "iiidd",
@@ -231,5 +297,17 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
+
+    // Cập nhật trạng thái đơn hàng (riêng)
+    public function updateStatus(int $orderId, int $status): bool
+    {
+        try {
+            $sql = "UPDATE orders SET status=? WHERE id=?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("ii", $status, $orderId);
+            return $stmt->execute();
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 }
-?>

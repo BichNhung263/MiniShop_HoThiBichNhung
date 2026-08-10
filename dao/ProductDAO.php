@@ -38,9 +38,7 @@ class ProductDAO extends BaseDAO
             if (!empty($keyword)) {
                 $sql .= " WHERE p.proname LIKE ? OR c.catename LIKE ? OR b.brandname LIKE ?";
             }
-
             $sql .= " ORDER BY p.proname";
-
             if (!empty($keyword)) {
                 $stmt = $this->prepare($sql);
                 $like = "%" . $keyword . "%";
@@ -93,7 +91,7 @@ class ProductDAO extends BaseDAO
     }
 
     // Lấy 5 sản phẩm mới nhất
-    public function getTop5Latest(): array
+    public function getLatest(): array
     {
         $list = [];
         try {
@@ -215,7 +213,7 @@ class ProductDAO extends BaseDAO
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
-                "iisdddissi",
+                "iissddissi",
                 $product->categoryId,
                 $product->brandId,
                 $product->proname,
@@ -250,7 +248,7 @@ class ProductDAO extends BaseDAO
             status=? WHERE id=?";
             $stmt = $this->prepare($sql);
             $stmt->bind_param(
-                "iisdddissii",
+                "iissddissii",
                 $product->categoryId,
                 $product->brandId,
                 $product->proname,
@@ -281,15 +279,16 @@ class ProductDAO extends BaseDAO
             throw $e;
         }
     }
-
-    // --- Các phương thức xử lý hình ảnh sản phẩm (product_images) ---
-
     // Lấy danh sách ảnh phụ của sản phẩm
     public function getImagesByProductId(int $productId): array
     {
         $list = [];
         try {
-            $sql = "SELECT id, product_id, image, sort_order, created_at FROM product_images WHERE product_id=? ORDER BY sort_order ASC";
+            $sql = "SELECT id, product_id, 
+            image, sort_order, created_at 
+            FROM product_images 
+            WHERE product_id=? 
+            ORDER BY sort_order ASC";
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $productId);
             $stmt->execute();

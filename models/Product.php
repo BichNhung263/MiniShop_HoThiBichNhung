@@ -17,8 +17,8 @@ class Product
     public string $updatedAt;
 
     // Dữ liệu lấy từ JOIN (không lưu trong bảng products)
-    public ?string $cateName = null;
-    public ?string $brandName = null;
+    public ?string $cateName ;
+    public ?string $brandName ;
 
     public function __construct(
         ?int $categoryId = null,
@@ -32,16 +32,16 @@ class Product
         ?string $description = null,
         int $status = 1
     ) {
-        $this->categoryId   = $categoryId;
-        $this->brandId      = $brandId;
-        $this->proname      = $proname;
-        $this->slug         = $slug;
-        $this->price        = $price;
+        $this->categoryId = $categoryId;
+        $this->brandId = $brandId;
+        $this->proname = $proname;
+        $this->slug = $slug;
+        $this->price = $price;
         $this->discountPrice = $discountPrice;
-        $this->quantity     = $quantity;
-        $this->image        = $image;
-        $this->description  = $description;
-        $this->status       = $status;
+        $this->quantity = $quantity;
+        $this->image = $image;
+        $this->description = $description;
+        $this->status = $status;
     }
 }
 ?>

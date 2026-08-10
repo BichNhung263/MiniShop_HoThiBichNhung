@@ -19,17 +19,20 @@ if (!$product) { header("Location: index.php"); exit(); }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $product->proname = trim($_POST["proname"] ?? "");
     $product->slug = trim($_POST["slug"] ?? "");
-    $product->categoryId = !empty($_POST["categoryId"]) ? $_POST["categoryId"] : null;
-    $product->brandId = !empty($_POST["brandId"]) ? $_POST["brandId"] : null;
-    $product->price = ($_POST["price"] ?? 0);
-    $product->discountPrice = ($_POST["discountPrice"] ?? 0);
-    $product->quantity = ($_POST["quantity"] ?? 0);
+    $product->categoryId = isset($_POST["categoryId"]) && $_POST["categoryId"] !== "" ? (int)$_POST["categoryId"] : 0;
+    $product->brandId = isset($_POST["brandId"]) && $_POST["brandId"] !== "" ? (int)$_POST["brandId"] : 0;
+    $product->price = isset($_POST["price"]) ? floatval($_POST["price"]) : 0;
+    $product->discountPrice = isset($_POST["discountPrice"]) ? floatval($_POST["discountPrice"]) : 0;
+    $product->quantity = isset($_POST["quantity"]) ? intval($_POST["quantity"]) : 0;
     $product->description = trim($_POST["description"] ?? "");
-    $product->status = isset($_POST["status"]) ? $_POST["status"] : 1;
+    $product->status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
 
     if ($product->proname == "") $errors[] = "Tên sản phẩm không được để trống.";
     if ($product->slug == "") $errors[] = "Slug không được để trống.";
+    if ($product->categoryId == 0) $errors[] = "Vui lòng chọn danh mục.";
+    if ($product->brandId == 0) $errors[] = "Vui lòng chọn thương hiệu.";
     if ($product->price <= 0) $errors[] = "Giá sản phẩm phải lớn hơn 0.";
+    if ($product->quantity < 0) $errors[] = "Số lượng không hợp lệ.";
 
     if (empty($errors)) {
         if ($dao->update($product)) {

@@ -28,8 +28,8 @@ try {
     $totalCustomers = $customerDAO->countAll();
     $totalOrders = $orderDAO->countAll();
 
-    $latestProducts = $productDAO->getTop5Latest();
-    $latestOrders = $orderDAO->getTop5Latest();
+    $latestProducts = $productDAO->getLatest();
+    $latestOrders = $orderDAO->getLatest();
 } catch (Exception $e) {
 }
 

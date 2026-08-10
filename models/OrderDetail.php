@@ -9,6 +9,8 @@ class OrderDetail
     public float $subtotal;
 
     public string $createdAt;
+    // Dữ liệu từ JOIN
+    public ?string $productName;
 
     public function __construct(
         int $orderId = 0,
