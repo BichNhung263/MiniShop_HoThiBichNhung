@@ -13,37 +13,31 @@ class BaseDAO extends Database
     {
         return $this->conn->query($sql);
     }
-
     // CHUẨN BỊ CÂU LỆNH Prepared Statement
     protected function prepare(string $sql): mysqli_stmt|false
     {
         return $this->conn->prepare($sql);
     }
-
     // Bắt đầu Transaction
     protected function beginTransaction(): void
     {
         $this->conn->begin_transaction();
     }
-
     // Xác nhận Transaction
     protected function commit(): void
     {
         $this->conn->commit();
     }
-
     // Hủy Transaction
     protected function rollback(): void
     {
         $this->conn->rollback();
     }
-
     // Lấy ID vừa insert
     protected function getLastInsertId(): int
     {
         return $this->conn->insert_id;
     }
-
     // Đóng kết nối
     public function close(): void
     {

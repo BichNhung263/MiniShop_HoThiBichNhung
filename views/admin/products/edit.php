@@ -16,25 +16,81 @@ $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $product = $dao->findById($id);
 if (!$product) { header("Location: index.php"); exit(); }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $product->proname = trim($_POST["proname"] ?? "");
-    $product->slug = trim($_POST["slug"] ?? "");
-    $product->categoryId = isset($_POST["categoryId"]) && $_POST["categoryId"] !== "" ? (int)$_POST["categoryId"] : 0;
-    $product->brandId = isset($_POST["brandId"]) && $_POST["brandId"] !== "" ? (int)$_POST["brandId"] : 0;
-    $product->price = isset($_POST["price"]) ? floatval($_POST["price"]) : 0;
-    $product->discountPrice = isset($_POST["discountPrice"]) ? floatval($_POST["discountPrice"]) : 0;
-    $product->quantity = isset($_POST["quantity"]) ? intval($_POST["quantity"]) : 0;
-    $product->description = trim($_POST["description"] ?? "");
-    $product->status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
+$productOld = $product;
 
-    if ($product->proname == "") $errors[] = "Tên sản phẩm không được để trống.";
-    if ($product->slug == "") $errors[] = "Slug không được để trống.";
-    if ($product->categoryId == 0) $errors[] = "Vui lòng chọn danh mục.";
-    if ($product->brandId == 0) $errors[] = "Vui lòng chọn thương hiệu.";
-    if ($product->price <= 0) $errors[] = "Giá sản phẩm phải lớn hơn 0.";
-    if ($product->quantity < 0) $errors[] = "Số lượng không hợp lệ.";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $categoryid = (int)($_POST["categoryId"] ?? 0);
+    $brandid = (int)($_POST["brandId"] ?? 0);
+    $productname = trim($_POST["proname"] ?? "");
+    $slug = trim($_POST["slug"] ?? "");
+    $price = (float)($_POST["price"] ?? 0);
+    $pricediscount = (float)($_POST["discountPrice"] ?? 0);
+    $quantity = (int)($_POST["quantity"] ?? 0);
+    $description = trim($_POST["description"] ?? "");
+    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 0;
+    $fileName = $_FILES["image"] ?? "";
+    $image = "";
+    // Đọc thông tin hình ảnh
+    $fileName = $_FILES["image"]["name"] ?? "";
+    $tmpName  = $_FILES["image"]["tmp_name"] ?? "";
+    $fileSize = $_FILES["image"]["size"] ?? 0;
+    $Error    = $_FILES["image"]["error"] ?? 0;
+
+    $errors = [];
+    if ($productname == "") $errors[] = "Tên sản phẩm không được để trống.";
+    if ($slug == "") $errors[] = "Slug không được để trống.";
+    if ($categoryid == 0) $errors[] = "Vui lòng chọn danh mục.";
+    if ($brandid == 0) $errors[] = "Vui lòng chọn thương hiệu.";
+    if ($price <= 0) $errors[] = "Giá sản phẩm phải lớn hơn 0.";
+    if ($quantity < 0) $errors[] = "Số lượng không hợp lệ.";
+
+    // Validation hình ảnh
+    if ($fileName != "") {
+        if ($Error != UPLOAD_ERR_OK) {
+            $errors[] = "Upload hình ảnh không thành công.";
+        }
+
+        $allowExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if (!in_array($extension, $allowExtensions)) {
+            $errors[] = "Chỉ cho phép file JPG, JPEG, PNG hoặc WEBP.";
+        }
+
+        $maxSize = 200 * 1024;
+        if ($fileSize > $maxSize) {
+            $errors[] = "Kích thước hình ảnh <= 200 KB.";
+        }
+    }
 
     if (empty($errors)) {
+        $image = $productOld->image;
+
+        // Có chọn hình ảnh mới
+        if ($fileName != "") {
+            // Lấy phần mở rộng của file
+            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            // Đổi tên file
+            $image = time() . "_" . $slug . "." . $extension;
+
+            // Đường dẫn hình ảnh mới
+            $uploadPath = __DIR__ . "/../../../uploads/products/" . $image;
+
+            // Xóa hình ảnh cũ (nếu có)
+            if (!empty($productOld->image)) {
+                $oldImage = __DIR__ . "/../../../uploads/products/" . $productOld->image;
+                if (file_exists($oldImage)) {
+                    unlink($oldImage); // xóa file
+                }
+            }
+
+            // Upload hình ảnh mới
+            move_uploaded_file($tmpName, $uploadPath);
+        }
+
+        $product->image = $image;
+
         if ($dao->update($product)) {
             header("Location: index.php");
             exit();
@@ -51,17 +107,23 @@ ob_start();
             <h4>Cập nhật sản phẩm</h4>
         </div>
         <div class="card-body">
-            <?php if (!empty($errors)): ?>
+            <?php if (!empty($errors)) { ?>
                 <div class="alert alert-danger">
                     <ul class="mb-0">
-                        <?php foreach ($errors as $error): ?>
+                        <?php foreach ($errors as $error) { ?>
                             <li><?= $error ?></li>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </ul>
                 </div>
-            <?php endif; ?>
-            <form action="" method="POST">
+            <?php } ?>
+            <form method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="productId" value="<?= $product->id ?>">
+                <div class="text-center mb-3" id="preview">
+                    <?php if (!empty($product->image)) { ?>
+                        <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $product->image ?>"
+class="img-thumbnail" width="150" id="preview">
+                    <?php } ?>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="proname" value="<?= $product->proname ?>">
@@ -111,6 +173,10 @@ ob_start();
                 <div class="mb-3">
                     <label class="form-label">Mô tả sản phẩm</label>
                     <textarea class="form-control" name="description" rows="4"><?= $product->description ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh</label>
+                    <input type="file" id="image" name="image" class="form-control" accept="image/*">
                 </div>
                 <div class="mb-3">
                     <label class="form-label d-block">Trạng thái</label>

@@ -19,6 +19,7 @@ class Product
     // Dữ liệu lấy từ JOIN (không lưu trong bảng products)
     public ?string $cateName ;
     public ?string $brandName ;
+    public string $productName ;
 
     public function __construct(
         ?int $categoryId = null,
@@ -35,6 +36,7 @@ class Product
         $this->categoryId = $categoryId;
         $this->brandId = $brandId;
         $this->proname = $proname;
+        $this->productName = $proname;
         $this->slug = $slug;
         $this->price = $price;
         $this->discountPrice = $discountPrice;
@@ -42,6 +44,11 @@ class Product
         $this->image = $image;
         $this->description = $description;
         $this->status = $status;
+    }
+
+    public function __get($name) {
+        if ($name === 'productName') return $this->proname;
+        return null;
     }
 }
 ?>

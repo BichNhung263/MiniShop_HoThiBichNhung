@@ -101,7 +101,7 @@ class OrderDAO extends BaseDAO
             o.user_id, o.order_code, 
             o.total_amount, o.note, 
             o.status, o.created_at, 
-            o.updated_at, c.fullname, c.phone 
+            o.updated_at, c.fullname AS customerName, c.phone 
                     FROM orders o 
                     LEFT JOIN customers c ON o.customer_id = c.id 
                     ORDER BY o.id DESC LIMIT 5";
@@ -118,6 +118,7 @@ class OrderDAO extends BaseDAO
                 $order->id = $row["id"];
                 $order->createdAt = $row["created_at"];
                 $order->updatedAt = $row["updated_at"];
+                $order->customerName = $row["customerName"] ?? null;
 
                 $list[] = $order;
             }

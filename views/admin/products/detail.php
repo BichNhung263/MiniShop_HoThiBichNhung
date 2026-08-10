@@ -14,6 +14,21 @@ ob_start();
             <h4>Chi tiết sản phẩm</h4>
         </div>
         <div class="card-body">
+            <!-- Hình ảnh sản phẩm -->
+            <div class="text-center mb-4">
+                <?php if (!empty($product->image)) { ?>
+                    <img src="../../../uploads/products/<?= $product->image ?>"
+                        alt="<?= $product->proname ?>"
+                        class="img-fluid img-thumbnail"
+                        style="max-height: 250px;">
+                <?php } else { ?>
+                    <div class="border rounded d-flex align-items-center justify-content-center bg-light mx-auto"
+                        style="height: 200px; width: 250px;">
+                        <span class="text-muted fs-5">No Image</span>
+                    </div>
+                <?php } ?>
+            </div>
+
             <table class="table table-bordered">
                 <tr><th width="200">ID</th><td><?= $product->id ?></td></tr>
                 <tr><th>Tên sản phẩm</th><td><?= $product->proname ?></td></tr>

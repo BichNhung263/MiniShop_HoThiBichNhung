@@ -32,6 +32,7 @@ ob_start();
             <thead class="table-dark">
                 <tr>
                     <th>STT</th>
+                    <th>Hình ảnh</th>
                     <th>Tên sản phẩm</th>
                     <th>Danh mục</th>
                     <th>Thương hiệu</th>
@@ -44,30 +45,44 @@ ob_start();
             <tbody>
                 <?php if (empty($products)): ?>
                     <tr>
-                        <td colspan="8" class="text-center text-muted">
+                        <td colspan="9" class="text-center text-muted">
                             <?= !empty($keyword) ? "Không tìm thấy dữ liệu." : "Chưa có sản phẩm nào." ?>
                         </td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($products as $key => $product): ?>
+                    <?php foreach ($products as $key => $item): ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
-                            <td class="fw-semibold"><?= $product->proname ?></td>
-                            <td><span class="badge bg-info text-dark"><?= $product->cateName ?></span></td>
-                            <td><span class="badge bg-secondary"><?= $product->brandName ?></span></td>
-                            <td class="text-danger fw-bold"><?= number_format($product->price, 0, ',', '.') ?> đ</td>
-                            <td><?= $product->quantity ?></td>
                             <td>
-                                <?php if ($product->status == 1): ?>
+
+                                <?php if ($item->image != "") { ?>
+                                    <img
+                                        src="../../../uploads/products/<?= $item->image ?>"
+                                        alt="<?= $item->productName ?>"
+                                        class="img-thumbnail"
+                                        width="80">
+                                <?php } else { ?>
+                                    <span class="text-muted">
+                                        No Image
+                                    </span>
+                                <?php } ?>
+                            </td>
+                            <td class="fw-semibold"><?= $item->proname ?></td>
+                            <td><span class="badge bg-info text-dark"><?= $item->cateName ?></span></td>
+                            <td><span class="badge bg-secondary"><?= $item->brandName ?></span></td>
+                            <td class="text-danger fw-bold"><?= number_format($item->price, 0, ',', '.') ?> đ</td>
+                            <td><?= $item->quantity ?></td>
+                            <td>
+                                <?php if ($item->status == 1): ?>
                                     <span class="badge bg-success">Hiển thị</span>
                                 <?php else: ?>
                                     <span class="badge bg-secondary">Ẩn</span>
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">
-                                <a href="detail.php?id=<?= $product->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
-                                <a href="edit.php?id=<?= $product->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
-                                <a href="delete.php?id=<?= $product->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                                <a href="detail.php?id=<?= $item->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
+                                <a href="edit.php?id=<?= $item->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
+                                <a href="delete.php?id=<?= $item->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
