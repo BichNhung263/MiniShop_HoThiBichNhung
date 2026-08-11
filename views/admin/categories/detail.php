@@ -18,6 +18,21 @@ ob_start();
             <h4>Chi tiết danh mục</h4>
         </div>
         <div class="card-body">
+            <!-- Hình ảnh danh mục -->
+            <div class="text-center mb-4">
+                <?php if (!empty($category->image)): ?>
+                    <img src="/MiniShop_HoThiBichNhung/uploads/categories/<?= $category->image ?>"
+                        alt="<?= $category->catename ?>"
+                        class="img-fluid img-thumbnail"
+                        style="max-height: 200px;">
+                <?php else: ?>
+                    <div class="border rounded d-flex align-items-center justify-content-center bg-light mx-auto"
+                        style="height: 150px; width: 200px;">
+                        <span class="text-muted fs-5">No Image</span>
+                    </div>
+                <?php endif; ?>
+            </div>
+
             <table class="table table-bordered">
                 <tr>
                     <th width="200">ID</th>

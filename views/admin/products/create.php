@@ -9,7 +9,6 @@ $brandDAO = new BrandDAO();
 
 $categories = $categoryDAO->getAll();
 $brands = $brandDAO->getAll();
-
 $errors = [];
 $message = "";
 $proname = $slug = $description = "";
@@ -82,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Nếu không có lỗi
     if (empty($errors)) {
-        // + Upload hình ảnh
         if ($fileName != "") {
             $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
             $image = time() . "_" . $slug . "." . $extension;
@@ -106,8 +104,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // + Lưu CSDL
         $productDAO = new ProductDAO();
-        $result = $productDAO->insert($product);
-        
+        if ($productDAO->insert($product)) {
+            $productId = $product->id;
+
+            // Đọc dữ liệu Upload
+            // Sử dụng vòng lặp để Upload từng file
+            foreach ($_FILES["images"]["name"] as $key => $imgName) {
+                if ($_FILES["images"]["error"][$key] == UPLOAD_ERR_OK) {
+                    $imgExt = strtolower(pathinfo($imgName, PATHINFO_EXTENSION));
+                    $imgNew = time() . "_" . $key . "_" . $slug . "." . $imgExt;
+                    $imgPath = __DIR__ . "/../../../uploads/products/" . $imgNew;
+                    if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $imgPath)) {
+                        // Lưu vào bảng product_images
+                        $productDAO->insertImage($productId, $imgNew);
+                    }
+                }
+            }
+
+            header("Location: index.php");
+            exit();
+        } else {
+            $errors[] = "Thêm sản phẩm thất bại. Vui lòng thử lại!";
+        }
     }
 
     // Giữ lại giá trị hiển thị trên form nếu có lỗi
@@ -185,6 +203,10 @@ ob_start();
                     <input type="file" id="image" name="image" class="form-control" accept="image/*">
                 </div>
                 <div class="text-center mb-3" id="preview"></div>
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh phụ </label>
+                    <input type="file" name="images[]" id="images" class="form-control" accept="image/*" multiple>
+                </div>
                 <div class="mb-3">
                     <label class="form-label d-block">Trạng thái</label>
                     <div class="form-check form-check-inline">

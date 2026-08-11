@@ -79,8 +79,8 @@ class CategoryDAO extends BaseDAO
                 $category = new Category(
                     $row["catename"],
                     $row["slug"],
-                    $row["image"],
                     $row["description"],
+                    $row["image"],
                     $row["status"]
                 );
                 $category->id = $row["id"];

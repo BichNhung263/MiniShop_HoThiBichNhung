@@ -10,7 +10,7 @@ class ProductDAO extends BaseDAO
         parent::__construct();
     }
 
-    // Lấy tất cả sản phẩm (JOIN categories & brands + hỗ trợ tìm kiếm)
+    // Lấy tất cả sản phẩm 
     public function getAll($keyword = ""): array
     {
         $list = [];
@@ -142,7 +142,7 @@ class ProductDAO extends BaseDAO
         return $list;
     }
 
-    // Tìm theo ID (JOIN categories & brands)
+    // Tìm theo ID 
     public function findById(int $id): ?Product
     {
         try {
@@ -225,7 +225,11 @@ class ProductDAO extends BaseDAO
                 $product->description,
                 $product->status
             );
-            return $stmt->execute();
+            $result = $stmt->execute();
+            if ($result) {
+                $product->id = $this->getLastInsertId();
+            }
+            return $result;
         } catch (Exception $e) {
             throw $e;
         }
@@ -280,7 +284,7 @@ class ProductDAO extends BaseDAO
         }
     }
     // Lấy danh sách ảnh phụ của sản phẩm
-    public function getImagesByProductId(int $productId): array
+    public function getImagesByProductId($productId): array
     {
         $list = [];
         try {
@@ -310,17 +314,12 @@ class ProductDAO extends BaseDAO
     }
 
     // Thêm ảnh phụ cho sản phẩm
-    public function insertImage(ProductImage $productImage): bool
+    public function insertImage($productId, $image): bool
     {
         try {
-            $sql = "INSERT INTO product_images(product_id, image, sort_order) VALUES(?, ?, ?)";
+            $sql = "INSERT INTO product_images(product_id, image) VALUES(?, ?)";
             $stmt = $this->prepare($sql);
-            $stmt->bind_param(
-                "isi",
-                $productImage->productId,
-                $productImage->image,
-                $productImage->sortOrder
-            );
+            $stmt->bind_param("is", $productId, $image);
             return $stmt->execute();
         } catch (Exception $e) {
             throw $e;
@@ -328,13 +327,27 @@ class ProductDAO extends BaseDAO
     }
 
     // Xóa ảnh phụ theo ID
-    public function deleteImage(int $imageId): bool
+    public function deleteImage($id): bool
     {
         try {
-            $sql = "DELETE FROM product_images WHERE id=?";
+            // Lấy thông tin ảnh để xóa file
+            $sql = "SELECT image FROM product_images WHERE id=?";
             $stmt = $this->prepare($sql);
-            $stmt->bind_param("i", $imageId);
-            return $stmt->execute();
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                // Xóa file hình ảnh trong thư mục uploads/products
+                $filePath = __DIR__ . "/../uploads/products/" . $row["image"];
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+            // Xóa dữ liệu trong cơ sở dữ liệu
+            $sql2 = "DELETE FROM product_images WHERE id=?";
+            $stmt2 = $this->prepare($sql2);
+            $stmt2->bind_param("i", $id);
+            return $stmt2->execute();
         } catch (Exception $e) {
             throw $e;
         }

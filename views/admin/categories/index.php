@@ -29,6 +29,7 @@ ob_start();
             <thead class="table-dark">
                 <tr>
                     <th>STT</th>
+                    <th>Hình ảnh</th>
                     <th>Tên danh mục</th>
                     <th>Slug</th>
                     <th>Trạng thái</th>
@@ -39,7 +40,7 @@ ob_start();
             <tbody>
                 <?php if (empty($categories)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted">
+                        <td colspan="7" class="text-center text-muted">
                             <?= !empty($keyword) ? "Không tìm thấy dữ liệu." : "Chưa có danh mục nào." ?>
                         </td>
                     </tr>
@@ -47,6 +48,15 @@ ob_start();
                     <?php foreach ($categories as $key => $category): ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
+                            <td>
+                                <?php if (!empty($category->image)): ?>
+                                     <img src="/MiniShop_HoThiBichNhung/uploads/categories/<?= $category->image ?>"
+                                         alt="<?= $category->catename ?>"
+                                         width="60" height="60" class="img-thumbnail object-fit-cover">
+                                <?php else: ?>
+                                    <span class="badge bg-light text-secondary border">No Image</span>
+                                <?php endif; ?>
+                            </td>
                             <td class="fw-semibold"><?= $category->catename ?></td>
                             <td><?= $category->slug ?></td>
                             <td>

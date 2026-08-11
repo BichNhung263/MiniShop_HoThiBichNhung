@@ -18,6 +18,9 @@ if (!$product) { header("Location: index.php"); exit(); }
 
 $productOld = $product;
 
+// Gọi phương thức getImagesByProductId($productId)
+$productImages = $dao->getImagesByProductId($id);
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $categoryid = (int)($_POST["categoryId"] ?? 0);
     $brandid = (int)($_POST["brandId"] ?? 0);
@@ -68,13 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Có chọn hình ảnh mới
         if ($fileName != "") {
-            // Lấy phần mở rộng của file
             $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-            // Đổi tên file
             $image = time() . "_" . $slug . "." . $extension;
-
-            // Đường dẫn hình ảnh mới
             $uploadPath = __DIR__ . "/../../../uploads/products/" . $image;
 
             // Xóa hình ảnh cũ (nếu có)
@@ -92,12 +90,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $product->image = $image;
 
         if ($dao->update($product)) {
+            // Đọc dữ liệu Upload gallery
+            // Sử dụng vòng lặp để Upload từng file
+            foreach ($_FILES["images"]["name"] as $key => $imgName) {
+                if ($_FILES["images"]["error"][$key] == UPLOAD_ERR_OK) {
+                    $imgExt = strtolower(pathinfo($imgName, PATHINFO_EXTENSION));
+                    $imgNew = time() . "_" . $key . "_" . $slug . "." . $imgExt;
+                    $imgPath = __DIR__ . "/../../../uploads/products/" . $imgNew;
+                    if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $imgPath)) {
+                        // Lưu vào bảng product_images
+                        $dao->insertImage($id, $imgNew);
+                    }
+                }
+            }
+
             header("Location: index.php");
             exit();
         } else {
             $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
         }
     }
+
+    // Làm mới gallery sau POST
+    $productImages = $dao->getImagesByProductId($id);
 }
 ob_start();
 ?>
@@ -120,8 +135,7 @@ ob_start();
                 <input type="hidden" name="productId" value="<?= $product->id ?>">
                 <div class="text-center mb-3" id="preview">
                     <?php if (!empty($product->image)) { ?>
-                        <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $product->image ?>"
-class="img-thumbnail" width="150" id="preview">
+                        <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $product->image ?>" class="img-thumbnail" width="150">
                     <?php } ?>
                 </div>
                 <div class="mb-3">
@@ -178,6 +192,35 @@ class="img-thumbnail" width="150" id="preview">
                     <label class="form-label">Hình ảnh</label>
                     <input type="file" id="image" name="image" class="form-control" accept="image/*">
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh phụ</label>
+                    <input
+                        type="file"
+                        name="images[]"
+                        id="images"
+                        class="form-control"
+                        accept="image/*"
+                        multiple>
+                </div>
+                <!-- Hiển thị ảnh phụ - vừa xem vừa có thể xóa từng hình ảnh -->
+                <?php if (!empty($productImages)) { ?>
+                    <div class="mb-3">
+                        <label class="form-label">Ảnh phụ hiện tại</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <?php foreach ($productImages as $img) { ?>
+                                <div class="text-center">
+                                    <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $img->image ?>"
+                                        class="img-thumbnail"
+                                        style="width: 100px; height: 85px; object-fit: cover;">
+                                    <br>
+                                    <a href="delete_image.php?id=<?= $img->id ?>&product_id=<?= $id ?>"
+                                        class="btn btn-danger btn-sm mt-1"
+                                        onclick="return confirm('Xóa hình ảnh này?');">Xóa</a>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                <?php } ?>
                 <div class="mb-3">
                     <label class="form-label d-block">Trạng thái</label>
                     <div class="form-check form-check-inline">

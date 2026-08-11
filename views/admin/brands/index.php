@@ -27,6 +27,7 @@ ob_start();
             <thead class="table-dark">
                 <tr>
                     <th>STT</th>
+                    <th>Hình ảnh</th>
                     <th>Tên thương hiệu</th>
                     <th>Slug</th>
                     <th>Trạng thái</th>
@@ -37,7 +38,7 @@ ob_start();
             <tbody>
                 <?php if (empty($brands)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted">
+                        <td colspan="7" class="text-center text-muted">
                             <?= !empty($keyword) ? "Không tìm thấy dữ liệu." : "Chưa có thương hiệu nào." ?>
                         </td>
                     </tr>
@@ -45,6 +46,15 @@ ob_start();
                     <?php foreach ($brands as $key => $brand): ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
+                            <td>
+                                <?php if (!empty($brand->image)): ?>
+                                     <img src="/MiniShop_HoThiBichNhung/uploads/brands/<?= $brand->image ?>"
+                                         alt="<?= $brand->brandname ?>"
+                                         width="60" height="60" class="img-thumbnail object-fit-cover">
+                                <?php else: ?>
+                                    <span class="badge bg-light text-secondary border">No Image</span>
+                                <?php endif; ?>
+                            </td>
                             <td><?= $brand->brandname ?></td>
                             <td><?= $brand->slug ?></td>
                             <td>

@@ -11,7 +11,7 @@ ob_start();
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách sản phẩm</h4>
-            <a href="create.php" class="btn btn-primary">Thêm sản phẩm</a>
+            <a href="create.php" class="btn btn-primary fw-bold">Thêm sản phẩm</a>
         </div>
 
         <?php if (!empty($_GET['error'])): ?>
@@ -57,7 +57,7 @@ ob_start();
 
                                 <?php if ($item->image != "") { ?>
                                     <img
-                                        src="../../../uploads/products/<?= $item->image ?>"
+                                        src="/MiniShop_HoThiBichNhung/uploads/products/<?= $item->image ?>"
                                         alt="<?= $item->productName ?>"
                                         class="img-thumbnail"
                                         width="80">
