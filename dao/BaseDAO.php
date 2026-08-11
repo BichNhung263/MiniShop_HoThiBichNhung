@@ -43,5 +43,13 @@ class BaseDAO extends Database
     {
         parent::close();
     }
+
+    public function count(string $table)
+    {
+        $sql = "SELECT COUNT(*) AS total FROM $table";
+        $result = $this->conn->query($sql);
+        $row = $result->fetch_assoc();
+        return (int)$row["total"];
+    }
 }
 ?>

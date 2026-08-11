@@ -352,5 +352,55 @@ class ProductDAO extends BaseDAO
             throw $e;
         }
     }
+
+
+    public function getPage(int $limit, int $offset)
+    {
+        $sql = "SELECT
+        p.id,
+        p.category_id,
+        p.brand_id,
+        p.proname,
+        p.slug,
+        p.price,
+        p.discount_price,
+        p.quantity,
+        p.image,
+        p.description,
+        p.status,
+        p.created_at,
+        p.updated_at,
+        c.catename AS cateName,
+        b.brandname AS brandName
+        FROM products p
+        INNER JOIN categories c ON p.category_id= c.id
+        INNER JOIN brands b ON p.brand_id=b.id
+        ORDER BY p.proname
+        LIMIT ? OFFSET ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $products = [];
+        while ($row = $result->fetch_assoc()){
+            $product = new Product(
+                $row["category_id"],
+                $row["brand_id"],
+                $row["proname"],
+                $row["slug"],
+                $row["price"],
+                $row["discount_price"],
+                $row["quantity"],
+                $row["image"],
+                $row["description"],
+                $row["status"]
+            );
+            $product->id= $row["id"];
+            $product->cateName= $row["cateName"];
+            $product->brandName = $row["brandName"];
+            $products[]= $product;
+        }
+        return $products;
+    }
 }
 ?>

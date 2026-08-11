@@ -6,7 +6,16 @@ $keyword = trim($_GET["keyword"] ?? "");
 $dao = new ProductDAO();
 $products = $dao->getAll($keyword);
 ob_start();
+
+$limit = 10;
+$page = (int)($_GET["page"] ?? 1);
+$offset = ($page - 1) * $limit;
+$productDAO = new ProductDAO();
+$totalRecords = $productDAO->count("products");
+$totalPages = ceil($totalRecords / $limit);
+$products = $productDAO->getPage($limit, $offset);
 ?>
+
 <main class="container my-4">
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -89,6 +98,29 @@ ob_start();
                 <?php endif; ?>
             </tbody>
         </table>
+
+
+        <nav>
+            <ul class="pagination">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>">
+                        Trước
+                    </a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php } ?>
+                <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>">
+                        Sau
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </section>
 </main>
 <?php
