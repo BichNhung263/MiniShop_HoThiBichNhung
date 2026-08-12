@@ -14,7 +14,7 @@ $page = (int)($_GET["page"] ?? 1);
 $limit = (int)($_GET["limit"] ?? 10);
 $offset = ($page - 1) * $limit;
 $orderDAO = new OrderDAO();
-$totalRecords = $orderDAO->count("orders", "order_code", $keyword);
+$totalRecords = $orderDAO->count("orders", "orderCode", $keyword);
 $totalPages = ceil($totalRecords / $limit);
 $orders = $orderDAO->getPage($limit, $offset, $keyword);
 ?>

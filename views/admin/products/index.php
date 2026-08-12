@@ -3,6 +3,11 @@ $pageTitle = "Danh sách sản phẩm";
 require_once __DIR__ . "/../../../dao/ProductDAO.php";
 
 $keyword = trim($_GET["keyword"] ?? "");
+$sort = $_GET["sort"] ?? "name_asc";
+$allowedSorts = ["name_asc", "name_desc", "price_asc", "price_desc"];
+if (!in_array($sort, $allowedSorts)) {
+    $sort = "name_asc";
+}
 $dao = new ProductDAO();
 $products = $dao->getAll($keyword);
 ob_start();
@@ -15,7 +20,7 @@ $offset = ($page - 1) * $limit;
 $productDAO = new ProductDAO();
 $totalRecords = $productDAO->count("products", "proname", $keyword);
 $totalPages = ceil($totalRecords / $limit);
-$products = $productDAO->getPage($limit, $offset, $keyword);
+$products = $productDAO->getPage($limit, $offset, $keyword, $sort);
 ?>
 
 <main class="container my-4">
@@ -29,18 +34,23 @@ $products = $productDAO->getPage($limit, $offset, $keyword);
             <div class="alert alert-danger"><?= $_GET['error'] ?></div>
         <?php endif; ?>
 
-        <form class="row mb-3">
-            <div class="col-md-4">
+        <div class="row mb-3">
+            <div class="col-md-8">
                 <form method="GET" class="d-flex">
                     <input
                         type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>"
                         class="form-control" placeholder="Nhập tên sản phẩm...">
-                    <!-- Giữ số sản phẩm/trang -->
+                    <select name="sort" class="form-select ms-2">
+                        <option value="name_asc" <?= $sort == 'name_asc' ? 'selected' : '' ?>>Tên A - Z</option>
+                        <option value="name_desc" <?= $sort == 'name_desc' ? 'selected' : '' ?>>Tên Z - A</option>
+                        <option value="price_asc" <?= $sort == 'price_asc' ? 'selected' : '' ?>>Giá thấp → cao</option>
+                        <option value="price_desc" <?= $sort == 'price_desc' ? 'selected' : '' ?>>Giá cao → thấp</option>
+                    </select>
                     <input type="hidden" name="limit" value="<?= $limit ?>">
                     <button class="btn btn-primary ms-2">Tìm </button>
                 </form>
             </div>
-        </form>
+        </div>
 
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">
@@ -109,6 +119,8 @@ $products = $productDAO->getPage($limit, $offset, $keyword);
             <div class="d-flex align-items-center">
                 <label class="me-2">Hiển thị</label>
                 <form method="GET">
+                    <input type="hidden" name="keyword" value="<?= htmlspecialchars($keyword) ?>">
+                    <input type="hidden" name="sort" value="<?= $sort ?>">
                     <select name="limit" class="form-select" onchange="this.form.submit()">
                         <option value="10" <?= $limit == 10 ? 'selected' : '' ?>>
                             10
@@ -127,19 +139,19 @@ $products = $productDAO->getPage($limit, $offset, $keyword);
         <nav>
             <ul class="pagination">
                 <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?limit=<?= $limit ?>&page=<?= $page - 1 ?>">
+                    <a class="page-link" href="?keyword=<?= urlencode($keyword) ?>&sort=<?= $sort ?>&limit=<?= $limit ?>&page=<?= $page - 1 ?>">
                         Trước
                     </a>
                 </li>
                 <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
                     <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?limit=<?= $limit ?>&page=<?= $i ?>">
+                        <a class="page-link" href="?keyword=<?= urlencode($keyword) ?>&sort=<?= $sort ?>&limit=<?= $limit ?>&page=<?= $i ?>">
                             <?= $i ?>
                         </a>
                     </li>
                 <?php } ?>
                 <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?limit=<?= $limit ?>&page=<?= $page + 1 ?>">
+                    <a class="page-link" href="?keyword=<?= urlencode($keyword) ?>&sort=<?= $sort ?>&limit=<?= $limit ?>&page=<?= $page + 1 ?>">
                         Sau
                     </a>
                 </li>
