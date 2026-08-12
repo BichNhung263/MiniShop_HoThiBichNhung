@@ -8,13 +8,14 @@ $products = $dao->getAll($keyword);
 ob_start();
 
 $limit = 10;
+$keyword = trim($_GET["keyword"] ?? "");
 $page = (int)($_GET["page"] ?? 1);
 $limit = (int)($_GET["limit"] ?? 10);
 $offset = ($page - 1) * $limit;
 $productDAO = new ProductDAO();
-$totalRecords = $productDAO->count("products");
+$totalRecords = $productDAO->count("products", "proname", $keyword);
 $totalPages = ceil($totalRecords / $limit);
-$products = $productDAO->getPage($limit, $offset);
+$products = $productDAO->getPage($limit, $offset, $keyword);
 ?>
 
 <main class="container my-4">
@@ -30,11 +31,14 @@ $products = $productDAO->getPage($limit, $offset);
 
         <form class="row mb-3">
             <div class="col-md-4">
-                <input type="text" name="keyword" class="form-control"
-                    placeholder="Nhập từ khóa..." value="<?= $_GET['keyword'] ?? '' ?>">
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                <form method="GET" class="d-flex">
+                    <input
+                        type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>"
+                        class="form-control" placeholder="Nhập tên sản phẩm...">
+                    <!-- Giữ số sản phẩm/trang -->
+                    <input type="hidden" name="limit" value="<?= $limit ?>">
+                    <button class="btn btn-primary ms-2">Tìm </button>
+                </form>
             </div>
         </form>
 

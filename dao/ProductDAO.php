@@ -354,7 +354,7 @@ class ProductDAO extends BaseDAO
     }
 
 
-    public function getPage(int $limit, int $offset)
+    public function getPage(int $limit, int $offset, string $keyword="")
     {
         $sql = "SELECT
         p.id,
@@ -375,10 +375,12 @@ class ProductDAO extends BaseDAO
         FROM products p
         INNER JOIN categories c ON p.category_id= c.id
         INNER JOIN brands b ON p.brand_id=b.id
+        WHERE p.proname LIKE ?
         ORDER BY p.proname
         LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ii", $limit, $offset);
+        $keyword = "%$keyword%";
+        $stmt->bind_param("sii",$keyword, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $products = [];
