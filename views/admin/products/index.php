@@ -9,6 +9,7 @@ ob_start();
 
 $limit = 10;
 $page = (int)($_GET["page"] ?? 1);
+$limit = (int)($_GET["limit"] ?? 10);
 $offset = ($page - 1) * $limit;
 $productDAO = new ProductDAO();
 $totalRecords = $productDAO->count("products");
@@ -100,22 +101,41 @@ $products = $productDAO->getPage($limit, $offset);
         </table>
 
 
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="d-flex align-items-center">
+                <label class="me-2">Hiển thị</label>
+                <form method="GET">
+                    <select name="limit" class="form-select" onchange="this.form.submit()">
+                        <option value="10" <?= $limit == 10 ? 'selected' : '' ?>>
+                            10
+                        </option>
+                        <option value="20" <?= $limit == 20 ? 'selected' : '' ?>>
+                            20
+                        </option>
+                        <option value="30" <?= $limit == 30 ? 'selected' : '' ?>>
+                            30
+                        </option>
+
+                    </select>
+                </form>
+            </div>
+        </div>
         <nav>
             <ul class="pagination">
                 <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?page=<?= $page - 1 ?>">
+                    <a class="page-link" href="?limit=<?= $limit ?>&page=<?= $page - 1 ?>">
                         Trước
                     </a>
                 </li>
                 <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
                     <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>">
+                        <a class="page-link" href="?limit=<?= $limit ?>&page=<?= $i ?>">
                             <?= $i ?>
                         </a>
                     </li>
                 <?php } ?>
                 <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?page=<?= $page + 1 ?>">
+                    <a class="page-link" href="?limit=<?= $limit ?>&page=<?= $page + 1 ?>">
                         Sau
                     </a>
                 </li>
