@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,5 +17,21 @@
             border-radius: 0.375rem;
         }
     </style>
+    
 </head>
-<body class="bg-light">
+
+<?php
+$user = $_SESSION["user"];
+?>
+
+<div class="container-fluid d-flex justify-content-between align-items-center">
+<button id="btnMenu" class="btn btn-outline-secondary">
+<i class="bi bi-list"></i>
+</button>
+<div class="d-flex align-items-center gap-2">
+<i class="bi bi-person-circle fs-3"></i>
+<span>
+<?= htmlspecialchars($user->fullname) ?>
+</span>
+</div>
+</div>
