@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../models/User.php';
 require_once __DIR__ . '/../../../middleware/AuthMiddleware.php';
+
 session_start();
 AuthMiddleware::handle();
 include __DIR__ . "/header.php";
