@@ -8,14 +8,14 @@ $products = $dao->getAll($keyword);
 ob_start();
 
 $limit = 10;
-$keyword = trim($_GET["keyword"]?? "");
+$keyword = trim($_GET["keyword"] ?? "");
 $page = (int)($_GET["page"] ?? 1);
 $limit = (int)($_GET["limit"] ?? 10);
 $offset = ($page - 1) * $limit;
 $productDAO = new ProductDAO();
-$totalRecords = $productDAO->count("products");
+$totalRecords = $productDAO->count("products", "proname", $keyword);
 $totalPages = ceil($totalRecords / $limit);
-$products = $productDAO->getPage($limit, $offset);
+$products = $productDAO->getPage($limit, $offset, $keyword);
 ?>
 
 <main class="container my-4">
@@ -40,7 +40,6 @@ $products = $productDAO->getPage($limit, $offset);
                     <button class="btn btn-primary ms-2">Tìm </button>
                 </form>
             </div>
-        </form>
 
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">
