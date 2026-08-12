@@ -21,17 +21,26 @@
 </head>
 
 <?php
-$user = $_SESSION["user"];
+$user = $_SESSION["user"] ?? null;
 ?>
 
-<div class="container-fluid d-flex justify-content-between align-items-center">
-<button id="btnMenu" class="btn btn-outline-secondary">
-<i class="bi bi-list"></i>
-</button>
-<div class="d-flex align-items-center gap-2">
-<i class="bi bi-person-circle fs-3"></i>
-<span>
-<?= htmlspecialchars($user->fullname) ?>
-</span>
-</div>
+<body class="bg-light">
+
+    <!-- HEADER -->
+    <div class="container-fluid bg-dark text-white d-flex justify-content-between align-items-center px-3 py-2">
+
+        <button id="btnMenu" class="btn btn-outline-light">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-person-circle fs-4"></i>
+            <span>
+                <?= htmlspecialchars($user->fullname) ?>
+            </span>
+            <a href="/MiniShop_HoThiBichNhung/views/admin/logout.php" class="text-decoration-none text-light">
+                | Đăng xuất
+            </a>
+        </div>
+    </div>
 </div>
