@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Cập nhật sản phẩm";
 require_once __DIR__ . "/../../../dao/ProductDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 require_once __DIR__ . "/../../../dao/CategoryDAO.php";
 require_once __DIR__ . "/../../../dao/BrandDAO.php";
 
@@ -22,6 +23,7 @@ $productOld = $product;
 $productImages = $dao->getImagesByProductId($id);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     $categoryid = (int)($_POST["categoryId"] ?? 0);
     $brandid = (int)($_POST["brandId"] ?? 0);
     $productname = trim($_POST["proname"] ?? "");
@@ -132,6 +134,7 @@ ob_start();
                 </div>
             <?php } ?>
             <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <input type="hidden" name="productId" value="<?= $product->id ?>">
                 <div class="text-center mb-3" id="preview">
                     <?php if (!empty($product->image)) { ?>

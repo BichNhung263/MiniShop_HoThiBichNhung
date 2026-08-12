@@ -1,12 +1,14 @@
 <?php
 $pageTitle = "Thêm người dùng";
 require_once __DIR__ . "/../../../dao/UserDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
 $fullname = $username = $password = $email = $phone = $address = "";
 $role = 0; $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     $fullname = trim($_POST["fullname"] ?? "");
     $username = trim($_POST["username"] ?? "");
     $password = trim($_POST["password"] ?? "");
@@ -50,6 +52,7 @@ ob_start();
                 </div>
             <?php endif; ?>
             <form action="" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <div class="mb-3">
                     <label class="form-label">Họ và tên</label>
                     <input type="text" class="form-control" name="fullname" value="<?= $fullname ?>">

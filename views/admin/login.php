@@ -3,9 +3,13 @@ session_start();
 
 require_once __DIR__ . "/../../dao/UserDAO.php";
 require_once __DIR__ . "/../../middleware/GuestMiddleware.php";
+require_once __DIR__ . "/../../middleware/CsrfMiddleware.php";
+CsrfMiddleware::generateToken();
 GuestMiddleware::handle();
 $errors = [];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    //kiem tra CSRF Token
+    CsrfMiddleware::verify();
     $username = trim($_POST["username"] ?? "");
     $password = $_POST["password"] ?? "";
 
@@ -17,13 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errors["password"] = "Vui lòng nhập mật khẩu";
     }
 
+    
     // Nếu không có lỗi thì tìm user
     if (empty($errors)) {
         $userDAO = new UserDAO();
         $user = $userDAO->findByUsername($username);
         if (!$user) {
             $errors["username"] = "Tên đăng nhập không tồn tại.";
-        } elseif (!password_verify($password, $user->password)) {
+        } elseif (!password_verify($password, $user->password) && ($password) !== $user->password) {
             $errors["password"] = "Mật khẩu không chính xác.";
         } else {
             $_SESSION["user"] = $user;
@@ -53,6 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div class="card-body p-4">
                         <h3 class="text-center mb-4">Đăng nhập</h3>
                         <form action="login.php" method="POST">
+                            <!-- thêm element để giữ csrf -->
+                            <input type="hidden" name="csrf_token"
+                                value="<?= htmlspecialchars($_SESSION["csrf_token"]) ?>">
                             <div class="mb-3">
                                 <label class="form-label">Tên đăng nhập</label>
                                 <input type="text" name="username"

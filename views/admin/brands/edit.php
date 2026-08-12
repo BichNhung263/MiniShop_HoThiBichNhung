@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Cập nhật thương hiệu";
 require_once __DIR__ . "/../../../dao/BrandDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
 $dao = new BrandDAO();
@@ -11,6 +12,7 @@ if (!$brand) { header("Location: index.php"); exit(); }
 $brandOld = clone $brand;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     $brandname = trim($_POST["brandname"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
     $description = trim($_POST["description"] ?? "");
@@ -100,6 +102,7 @@ ob_start();
                 </div>
             <?php endif; ?>
             <form action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <input type="hidden" name="brandId" value="<?= $brand->id ?>">
 
                 <div class="text-center mb-3" id="preview">

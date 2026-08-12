@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Chi tiết đơn hàng";
 require_once __DIR__ . "/../../../dao/OrderDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $dao = new OrderDAO();
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -10,6 +11,7 @@ $details = $dao->getOrderDetails($id);
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    CsrfMiddleware::verify();
     $newStatus = isset($_POST['status']) ? (int)$_POST['status'] : $order->status;
     $order->status = $newStatus;
     if ($dao->updateStatus($order->id, $newStatus)) {
@@ -54,6 +56,7 @@ ob_start();
                 </p>
 
                 <form method="POST" class="row g-2 align-items-center">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                     <div class="col-auto">
                         <label class="form-label">Cập nhật trạng thái</label>
                         <select name="status" class="form-select">

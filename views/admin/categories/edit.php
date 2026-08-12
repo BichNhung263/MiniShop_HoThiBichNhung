@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Cập nhật danh mục";
 require_once __DIR__ . "/../../../dao/CategoryDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $categoryDAO = new CategoryDAO();
 $errors = [];
@@ -16,6 +17,7 @@ if (!$category) {
 $categoryOld = clone $category;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     $cateName = trim($_POST["cateName"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
     $description = trim($_POST["description"] ?? "");
@@ -110,6 +112,7 @@ ob_start();
             <?php endif; ?>
 
             <form action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <input type="hidden" name="categoryId" value="<?= $category->id ?>">
 
                 <div class="text-center mb-3" id="preview">

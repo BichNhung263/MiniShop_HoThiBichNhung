@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Thêm sản phẩm";
 require_once __DIR__ . "/../../../dao/ProductDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 require_once __DIR__ . "/../../../dao/CategoryDAO.php";
 require_once __DIR__ . "/../../../dao/BrandDAO.php";
 
@@ -19,6 +20,7 @@ $quantity = 0;
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     // Đọc dữ liệu từ Form
     $categoryid = (int)($_POST["categoryId"] ?? 0);
     $brandid = (int)($_POST["brandId"] ?? 0);
@@ -152,6 +154,7 @@ ob_start();
                 </div>
             <?php } ?>
             <form action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <div class="mb-3">
                     <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="proname" value="<?= $proname ?>" placeholder="Nhập tên sản phẩm...">

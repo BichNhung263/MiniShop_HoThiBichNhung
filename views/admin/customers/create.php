@@ -1,12 +1,14 @@
 <?php
 $pageTitle = "Thêm khách hàng";
 require_once __DIR__ . "/../../../dao/CustomerDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
 $fullname = $email = $phone = $address = $note = "";
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     $fullname = trim($_POST["fullname"] ?? "");
     $email = trim($_POST["email"] ?? "");
     $phone = trim($_POST["phone"] ?? "");
@@ -46,6 +48,7 @@ ob_start();
                 </div>
             <?php endif; ?>
             <form action="" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <div class="mb-3">
                     <label class="form-label">Họ và tên</label>
                     <input type="text" class="form-control" name="fullname" value="<?= $fullname ?>">

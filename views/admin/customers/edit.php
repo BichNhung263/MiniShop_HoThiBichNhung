@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Cập nhật khách hàng";
 require_once __DIR__ . "/../../../dao/CustomerDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
 $dao = new CustomerDAO();
@@ -9,6 +10,7 @@ $customer = $dao->findById($id);
 if (!$customer) { header("Location: index.php"); exit(); }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     $customer->fullname = trim($_POST["fullname"] ?? "");
     $customer->email = trim($_POST["email"] ?? "");
     $customer->phone = trim($_POST["phone"] ?? "");
@@ -46,6 +48,7 @@ ob_start();
                 </div>
             <?php endif; ?>
             <form action="" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <input type="hidden" name="customerId" value="<?= $customer->id ?>">
                 <div class="mb-3">
                     <label class="form-label">Họ và tên</label>

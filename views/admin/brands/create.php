@@ -2,11 +2,13 @@
 $pageTitle = "Thêm thương hiệu";
 $errors = [];
 require_once __DIR__ . "/../../../dao/BrandDAO.php";
+require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 $brandDAO = new BrandDAO();
 $brandname = $slug = $description = "";
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    CsrfMiddleware::verify();
     // Đọc dữ liệu từ Form
     $brandname = trim($_POST["brandname"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
@@ -96,6 +98,7 @@ ob_start();
                 </div>
             <?php endif; ?>
             <form action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <div class="mb-3">
                     <label class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" name="brandname" value="<?= $brandname ?>" placeholder="Nhập tên thương hiệu...">
