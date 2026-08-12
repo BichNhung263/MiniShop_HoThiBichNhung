@@ -157,5 +157,48 @@ class UserDAO extends BaseDAO
             throw $e;
         }
     }
+
+    public function getPage(int $limit, int $offset, string $keyword="")
+    {
+        $sql = "SELECT
+            id,
+            fullname,
+            username,
+            password,
+            email,
+            phone,
+            address,
+            role,
+            status,
+            created_at,
+            updated_at
+        FROM users
+        WHERE fullname LIKE ? OR username LIKE ? OR email LIKE ?
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?";
+        $stmt = $this->conn->prepare($sql);
+        $keyword = "%$keyword%";
+        $stmt->bind_param("sssii", $keyword, $keyword, $keyword, $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $users = [];
+        while ($row = $result->fetch_assoc()){
+            $user = new User(
+                $row["fullname"],
+                $row["username"],
+                $row["password"],
+                $row["email"],
+                $row["phone"],
+                $row["address"],
+                $row["role"],
+                $row["status"]
+            );
+            $user->id = $row["id"];
+            $user->createdAt = $row["created_at"];
+            $user->updatedAt = $row["updated_at"];
+            $users[] = $user;
+        }
+        return $users;
+    }
 }
 ?>

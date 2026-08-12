@@ -62,13 +62,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Đổi tên file
             $image = time() . "_" . $slug . "." . $extension;
             // Thư mục & đường dẫn hình ảnh mới
-            $uploadDir = __DIR__ . "/../../../uploads/categories/";
-            $uploadPath = $uploadDir . $image;
+            $uploadPath = __DIR__ . "/../../../uploads/categories/" .$image;
             // Xóa hình ảnh cũ (nếu có)
             if (!empty($categoryOld->image)) {
-                $oldImage = $uploadDir . $categoryOld->image;
+                $oldImage = __DIR__ . "/../../../uploads/categories/" . $categoryOld->image;
                 if (file_exists($oldImage)) {
-                    unlink($oldImage);
+                    unlink($oldImage); // xóa file
                 }
             }
             // Upload hình ảnh mới

@@ -149,5 +149,36 @@ class CustomerDAO extends BaseDAO
             throw $e;
         }
     }
+
+    public function getPage(int $limit, int $offset, string $keyword="")
+    {
+        $sql = "SELECT
+            id, fullname, phone, email, address, note, status, created_at, updated_at
+            FROM customers
+            WHERE fullname LIKE ?
+            ORDER BY fullname
+            LIMIT ? OFFSET ?";
+        $stmt = $this->conn->prepare($sql);
+        $keyword = "%$keyword%";
+        $stmt->bind_param("sii",$keyword, $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $customers = [];
+        while ($row = $result->fetch_assoc()){
+            $customer = new Customer(
+                $row["fullname"],
+                $row["phone"],
+                $row["email"],
+                $row["address"],
+                $row["note"],
+                $row["status"]
+            );
+            $customer->id = $row["id"];
+            $customer->createdAt = $row["created_at"];
+            $customer->updatedAt = $row["updated_at"];
+            $customers[] = $customer;
+        }
+        return $customers;
+    }
 }
 ?>

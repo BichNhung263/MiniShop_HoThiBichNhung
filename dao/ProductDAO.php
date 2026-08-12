@@ -368,8 +368,6 @@ class ProductDAO extends BaseDAO
         p.image,
         p.description,
         p.status,
-        p.created_at,
-        p.updated_at,
         c.catename AS cateName,
         b.brandname AS brandName
         FROM products p

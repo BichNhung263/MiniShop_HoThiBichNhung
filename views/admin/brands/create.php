@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Thêm thương hiệu";
 $errors = [];
+require_once __DIR__ . "/../../../dao/BrandDAO.php";
 $brandDAO = new BrandDAO();
 $brandname = $slug = $description = "";
 $status = 1;
