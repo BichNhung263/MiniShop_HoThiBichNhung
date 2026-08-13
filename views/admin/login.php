@@ -32,6 +32,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $errors["password"] = "Mật khẩu không chính xác.";
         } else {
             $_SESSION["user"] = $user;
+
+            // Ghi nhớ đăng nhập bằng Cookie
+            if (!empty($_POST["remember"])) {
+                // Lưu username vào Cookie trong 7 ngày
+                setcookie("remember_user", $user->username, time() + (7 * 24 * 60 * 60), "/");
+            } else {
+                // Nếu không tích chọn, xóa Cookie cũ nếu có
+                if (isset($_COOKIE["remember_user"])) {
+                    setcookie("remember_user", "", time() - 3600, "/");
+                }
+            }
+
             // Chuyển đến Dashboard
             header("Location: dashboard.php");
             exit;

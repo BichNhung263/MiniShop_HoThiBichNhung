@@ -2,8 +2,12 @@
 session_start();
 // Khởi động Session
 session_unset();
-// Xóa các biến dữ liệu đang được lưu trong Session.
-session_destroy(); // hủy dữ liệu Session trên Server.
+session_destroy();
+
+// Xóa Cookie ghi nhớ đăng nhập khi người dùng bấm Đăng xuất
+if (isset($_COOKIE["remember_user"])) {
+    setcookie("remember_user", "", time() - 3600, "/");
+}
+
 header("Location: login.php");
-// Chuyển hướng người dùng về trang đăng nhập.
-exit; // Dừng chương trình
+exit; 
