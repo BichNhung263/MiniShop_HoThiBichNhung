@@ -1,21 +1,6 @@
 <?php
 $pageTitle = "Danh sách sản phẩm";
-require_once __DIR__ . "/../../../dao/ProductDAO.php";
-
-$keyword = trim($_GET["keyword"] ?? "");
-$dao = new ProductDAO();
-$products = $dao->getAll($keyword);
 ob_start();
-
-$limit = 10;
-$keyword = trim($_GET["keyword"] ?? "");
-$page = (int)($_GET["page"] ?? 1);
-$limit = (int)($_GET["limit"] ?? 10);
-$offset = ($page - 1) * $limit;
-$productDAO = new ProductDAO();
-$totalRecords = $productDAO->count("products", "proname", $keyword);
-$totalPages = ceil($totalRecords / $limit);
-$products = $productDAO->getPage($limit, $offset, $keyword);
 ?>
 
 <main class="container my-4">
@@ -148,5 +133,5 @@ $products = $productDAO->getPage($limit, $offset, $keyword);
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>
