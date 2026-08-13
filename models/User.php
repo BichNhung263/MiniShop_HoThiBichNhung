@@ -1,4 +1,6 @@
 <?php
+namespace Models;
+
 class User
 {
     public int $id;
@@ -34,4 +36,5 @@ class User
         $this->status   = $status;
     }
 }
+class_alias('Models\User', 'User');
 ?>

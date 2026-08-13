@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../models/User.php';
+namespace Middleware;
+
 class CsrfMiddleware
 {
     public static function generateToken()

@@ -1,11 +1,13 @@
 <?php 
 $pageTitle = "Dashboard";
 
-require_once __DIR__ . "/../../dao/CategoryDAO.php";
-require_once __DIR__ . "/../../dao/BrandDAO.php";
-require_once __DIR__ . "/../../dao/ProductDAO.php";
-require_once __DIR__ . "/../../dao/CustomerDAO.php";
-require_once __DIR__ . "/../../dao/OrderDAO.php";
+require_once __DIR__ . "/../../autoload.php";
+
+use DAO\CategoryDAO;
+use DAO\BrandDAO;
+use DAO\ProductDAO;
+use DAO\CustomerDAO;
+use DAO\OrderDAO;
 
 $totalCategories = 0;
 $totalBrands = 0;

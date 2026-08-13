@@ -1,7 +1,9 @@
 <?php
-require_once __DIR__ . "/../../dao/ProductDAO.php";
+namespace Controllers\Admin;
 
-Class ProductController {
+use DAO\ProductDAO;
+
+class ProductController {
     //...
     public function index()
     {

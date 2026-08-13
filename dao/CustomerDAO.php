@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . "/BaseDAO.php";
-require_once __DIR__ . "/../models/Customer.php";
+namespace DAO;
+
+use Models\Customer;
 
 class CustomerDAO extends BaseDAO
 {

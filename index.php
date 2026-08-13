@@ -1,21 +1,30 @@
 <?php
-require_once __DIR__ . "/controllers/admin/ProductController.php";
-//require_once __DIR__ . "controllers/admin/CategoryController.php";
+require_once __DIR__ . '/autoload.php';
 
-//Nhận Request
+// Nhận Request
+$area = $_GET["area"] ?? "client";
 $controller = $_GET["controller"] ?? "product";
 $action = $_GET["action"] ?? "index";
 
-//Xác định tên controller
-$controllerClass = ucfirst($controller). "Controller";
+// Xác định tên Controller
+if ($area === "admin") {
+    $controllerClass = "Controllers\\Admin\\" . ucfirst($controller) . "Controller";
+} else {
+    $controllerClass = "Controllers\\Client\\" . ucfirst($controller) . "Controller";
+}
 
-//kiểm tra controller
-if(!class_exists($controllerClass)){
+// Kiểm tra Controller
+if (!class_exists($controllerClass)) {
     die("Controller không tồn tại");
 }
 
-//tạo controller
+// Tạo Controller
 $controllerObject = new $controllerClass();
 
-//kiểm tra Action
+// Kiểm tra Action
+if (!method_exists($controllerObject, $action)) {
+    die("Action không tồn tại");
+}
+
+// Gọi Action
 $controllerObject->$action();

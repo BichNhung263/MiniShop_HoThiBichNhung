@@ -1,9 +1,12 @@
 <?php
 session_start();
 
-require_once __DIR__ . "/../../dao/UserDAO.php";
-require_once __DIR__ . "/../../middleware/GuestMiddleware.php";
-require_once __DIR__ . "/../../middleware/CsrfMiddleware.php";
+require_once __DIR__ . "/../../autoload.php";
+
+use DAO\UserDAO;
+use Middleware\GuestMiddleware;
+use Middleware\CsrfMiddleware;
+
 CsrfMiddleware::generateToken();
 GuestMiddleware::handle();
 $errors = [];

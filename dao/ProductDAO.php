@@ -1,7 +1,8 @@
 <?php
-require_once __DIR__ . "/BaseDAO.php";
-require_once __DIR__ . "/../models/Product.php";
-require_once __DIR__ . "/../models/ProductImage.php";
+namespace DAO;
+
+use Models\Product;
+use Models\ProductImage;
 
 class ProductDAO extends BaseDAO
 {

@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . "/../config/database.php";
+namespace DAO;
+
+use Config\Database;
 
 class BaseDAO extends Database
 {
@@ -9,12 +11,12 @@ class BaseDAO extends Database
     }
 
     // THỰC THI CÂU LỆNH 
-    protected function executeQuery(string $sql): mysqli_result|false
+    protected function executeQuery(string $sql): \mysqli_result|false
     {
         return $this->conn->query($sql);
     }
     // CHUẨN BỊ CÂU LỆNH Prepared Statement
-    protected function prepare(string $sql): mysqli_stmt|false
+    protected function prepare(string $sql): \mysqli_stmt|false
     {
         return $this->conn->prepare($sql);
     }

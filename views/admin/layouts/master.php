@@ -1,12 +1,11 @@
 <?php
-require_once __DIR__ . '/../../../models/User.php';
-//require_once __DIR__ . '/../../../middleware/AuthMiddleware.php';
-require_once __DIR__ . '/../../../middleware/CsrfMiddleware.php';
+use Middleware\AuthMiddleware;
+use Middleware\CsrfMiddleware;
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-//AuthMiddleware::handle();
+AuthMiddleware::handle();
 CsrfMiddleware::generateToken();
 include __DIR__ . "/header.php";
 ?>
