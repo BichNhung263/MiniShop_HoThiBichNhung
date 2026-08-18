@@ -19,7 +19,7 @@ class OrderController {
         $orderDAO = new OrderDAO();
         $totalRecords = $orderDAO->count(
             "orders",
-            "orderCode",
+            "order_code",
             $keyword
         );
         $totalPages = ceil($totalRecords / $limit);

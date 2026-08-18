@@ -23,3 +23,10 @@ spl_autoload_register(function ($className) {
         }
     }
 });
+
+if (!defined('BASE_URL')) {
+    define('BASE_URL', '/MiniShop_HoThiBichNhung');
+}
+if (!defined('PRODUCT_IMAGE_URL')) {
+    define('PRODUCT_IMAGE_URL', BASE_URL . '/uploads/products/');
+}

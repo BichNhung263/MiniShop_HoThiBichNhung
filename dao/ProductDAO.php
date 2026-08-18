@@ -143,7 +143,126 @@ class ProductDAO extends BaseDAO
         return $list;
     }
 
-    // Tìm theo ID 
+    // Alias cho getDiscount
+    public function getDiscountProducts(int $limit = 8): array
+    {
+        return $this->getDiscount($limit);
+    }
+
+    // Lấy danh sách sản phẩm mới nhất với limit tùy chọn
+    public function getNewProducts(int $limit = 4): array
+    {
+        $list = [];
+        try {
+            $sql = "SELECT 
+                        p.id, 
+                        p.category_id, 
+                        p.brand_id, 
+                        p.proname, 
+                        p.slug, 
+                        p.price, 
+                        p.discount_price, 
+                        p.quantity, 
+                        p.image, 
+                        p.description, 
+                        p.status, 
+                        p.created_at, 
+                        p.updated_at, 
+                        c.catename AS cateName, 
+                        b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    ORDER BY p.id DESC LIMIT ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("i", $limit);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $product = new Product(
+                    $row["category_id"],
+                    $row["brand_id"],
+                    $row["proname"],
+                    $row["slug"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
+                    $row["image"],
+                    $row["description"],
+                    $row["status"]
+                );
+                $product->id = $row["id"];
+                $product->createdAt = $row["created_at"];
+                $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
+                $list[] = $product;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+    // Lấy sản phẩm giảm giá (discount_price > 0)
+    public function getDiscount(int $limit = 8): array
+
+    {
+        $list = [];
+        try {
+            $sql = "SELECT 
+                        p.id, 
+                        p.category_id, 
+                        p.brand_id, 
+                        p.proname, 
+                        p.slug, 
+                        p.price, 
+                        p.discount_price, 
+                        p.quantity, 
+                        p.image, 
+                        p.description, 
+                        p.status, 
+                        p.created_at, 
+                        p.updated_at, 
+                        c.catename AS cateName, 
+                        b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    WHERE p.discount_price > 0 AND p.status = 1
+                    ORDER BY p.discount_price DESC 
+                    LIMIT ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("i", $limit);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $product = new Product(
+                    $row["category_id"],
+                    $row["brand_id"],
+                    $row["proname"],
+                    $row["slug"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
+                    $row["image"],
+                    $row["description"],
+                    $row["status"]
+                );
+                $product->id = $row["id"];
+                $product->createdAt = $row["created_at"];
+                $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
+                $list[] = $product;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+
     public function findById(int $id): ?Product
     {
         try {
