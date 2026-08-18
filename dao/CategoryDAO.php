@@ -52,6 +52,36 @@ class CategoryDAO extends BaseDAO
         return $list;
     }
 
+    // Lấy danh mục theo giới hạn số lượng
+    public function getByLimit(int $limit = 5): array
+    {
+        $list = [];
+        try {
+            $sql = "SELECT id, catename, slug, description, image, status, created_at, updated_at FROM categories ORDER BY id ASC LIMIT ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("i", $limit);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $category = new Category(
+                    $row["catename"],
+                    $row["slug"],
+                    $row["description"],
+                    $row["image"],
+                    $row["status"]
+                );
+                $category->id = $row["id"];
+                $category->createdAt = $row["created_at"];
+                $category->updatedAt = $row["updated_at"];
+                $list[] = $category;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+
     // Đếm tổng số danh mục
     public function countAll(): int
     {

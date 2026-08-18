@@ -76,6 +76,13 @@ class ProductDAO extends BaseDAO
         return $list;
     }
 
+    // Tìm kiếm sản phẩm theo từ khóa
+    public function search(string $keyword): array
+    {
+        return $this->getAll($keyword);
+    }
+
+
     // Đếm tổng số sản phẩm
     public function countAll(): int
     {
@@ -203,6 +210,184 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
+
+    // Lấy sản phẩm theo danh mục ($slug)
+    public function getByCategory(string $slug): array
+    {
+        $list = [];
+        try {
+            $sql = "SELECT 
+                        p.id, p.category_id, p.brand_id, p.proname, p.slug, 
+                        p.price, p.discount_price, p.quantity, p.image, 
+                        p.description, p.status, p.created_at, p.updated_at, 
+                        c.catename AS cateName, b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    WHERE c.slug = ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("s", $slug);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $product = new Product(
+                    $row["category_id"],
+                    $row["brand_id"],
+                    $row["proname"],
+                    $row["slug"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
+                    $row["image"],
+                    $row["description"],
+                    $row["status"]
+                );
+                $product->id = $row["id"];
+                $product->createdAt = $row["created_at"];
+                $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
+                $list[] = $product;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+    // Lấy sản phẩm theo thương hiệu ($slug)
+    public function getByBrand(string $slug): array
+    {
+        $list = [];
+        try {
+            $sql = "SELECT 
+                        p.id, p.category_id, p.brand_id, p.proname, p.slug, 
+                        p.price, p.discount_price, p.quantity, p.image, 
+                        p.description, p.status, p.created_at, p.updated_at, 
+                        c.catename AS cateName, b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    WHERE b.slug = ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("s", $slug);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $product = new Product(
+                    $row["category_id"],
+                    $row["brand_id"],
+                    $row["proname"],
+                    $row["slug"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
+                    $row["image"],
+                    $row["description"],
+                    $row["status"]
+                );
+                $product->id = $row["id"];
+                $product->createdAt = $row["created_at"];
+                $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
+                $list[] = $product;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+    // Lấy chi tiết sản phẩm theo slug
+    public function getBySlug(string $slug): ?Product
+    {
+        try {
+            $sql = "SELECT 
+                        p.id, p.category_id, p.brand_id, p.proname, p.slug, 
+                        p.price, p.discount_price, p.quantity, p.image, 
+                        p.description, p.status, p.created_at, p.updated_at, 
+                        c.catename AS cateName, b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    WHERE p.slug = ? LIMIT 1";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("s", $slug);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $product = new Product(
+                    $row["category_id"],
+                    $row["brand_id"],
+                    $row["proname"],
+                    $row["slug"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
+                    $row["image"],
+                    $row["description"],
+                    $row["status"]
+                );
+                $product->id = $row["id"];
+                $product->createdAt = $row["created_at"];
+                $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
+                return $product;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return null;
+    }
+
+    // Lấy danh sách sản phẩm liên quan (cùng danh mục)
+    public function getRelatedProducts(int $categoryId, int $excludeId, int $limit = 4): array
+    {
+        $list = [];
+        try {
+            $sql = "SELECT 
+                        p.id, p.category_id, p.brand_id, p.proname, p.slug, 
+                        p.price, p.discount_price, p.quantity, p.image, 
+                        p.description, p.status, p.created_at, p.updated_at, 
+                        c.catename AS cateName, b.brandname AS brandName 
+                    FROM products p 
+                    INNER JOIN categories c ON p.category_id = c.id 
+                    INNER JOIN brands b ON p.brand_id = b.id 
+                    WHERE p.category_id = ? AND p.id != ? AND p.status = 1 
+                    LIMIT ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("iii", $categoryId, $excludeId, $limit);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $product = new Product(
+                    $row["category_id"],
+                    $row["brand_id"],
+                    $row["proname"],
+                    $row["slug"],
+                    $row["price"],
+                    $row["discount_price"],
+                    $row["quantity"],
+                    $row["image"],
+                    $row["description"],
+                    $row["status"]
+                );
+                $product->id = $row["id"];
+                $product->createdAt = $row["created_at"];
+                $product->updatedAt = $row["updated_at"];
+                $product->cateName = $row["cateName"];
+                $product->brandName = $row["brandName"];
+                $list[] = $product;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+
 
     // Lấy sản phẩm giảm giá (discount_price > 0)
     public function getDiscount(int $limit = 8): array

@@ -50,6 +50,36 @@ class BrandDAO extends BaseDAO
         return $list;
     }
 
+    // Lấy thương hiệu theo giới hạn số lượng
+    public function getByLimit(int $limit = 5): array
+    {
+        $list = [];
+        try {
+            $sql = "SELECT id, brandname, slug, description, image, status, created_at, updated_at FROM brands ORDER BY id ASC LIMIT ?";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("i", $limit);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $brand = new Brand(
+                    $row["brandname"],
+                    $row["slug"],
+                    $row["description"],
+                    $row["image"],
+                    $row["status"]
+                );
+                $brand->id = $row["id"];
+                $brand->createdAt = $row["created_at"];
+                $brand->updatedAt = $row["updated_at"];
+                $list[] = $brand;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return $list;
+    }
+
+
     // Đếm tổng số thương hiệu
     public function countAll(): int
     {
