@@ -2,9 +2,9 @@
 require_once __DIR__ . '/autoload.php';
 session_start();
 // Nhận Request
-$area = $_GET["area"] ?? null;
-$controller = $_GET["controller"] ?? null;
-$action = $_GET["action"] ?? null;
+$area = $_GET["area"] ?? "client";
+$controller = $_GET["controller"] ?? "home";
+$action = $_GET["action"] ?? "index";
 
 if ($area === null) {
     $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -37,10 +37,10 @@ if ($area === null) {
     }
 }
 
-// Giá trị mặc định nếu chưa có
-$area = $area ?? 'client';
-$controller = $controller ?? 'product';
-$action = $action ?? 'index';
+// // Giá trị mặc định nếu chưa có
+// $area = $area ?? 'client';
+// $controller = $controller ?? 'product';
+// $action = $action ?? 'index';
 
 //kiểm tra Authentication cho Admin
 if ($area === "admin" && $controller !== "auth") {
