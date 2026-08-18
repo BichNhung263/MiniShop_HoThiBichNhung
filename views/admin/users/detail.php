@@ -1,11 +1,10 @@
 <?php
 $pageTitle = "Chi tiết người dùng";
-require_once __DIR__ . "/../../../dao/UserDAO.php";
 
-$dao = new UserDAO();
+$dao = new \DAO\UserDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $user = $dao->findById($id);
-if (!$user) { header("Location: index.php"); exit(); }
+if (!$user) { header("Location: /MiniShop_HoThiBichNhung/admin/user"); exit(); }
 ob_start();
 ?>
 <main class="container my-4">
@@ -44,13 +43,13 @@ ob_start();
                 <tr><th>Ngày tạo</th><td><?= !empty($user->createdAt) ? date('d/m/Y H:i:s', strtotime($user->createdAt)) : '-' ?></td></tr>
             </table>
             <div class="d-flex gap-2 mt-3">
-                <a href="edit.php?id=<?= $user->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                <a href="/MiniShop_HoThiBichNhung/admin/user/edit/<?= $user->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="/MiniShop_HoThiBichNhung/admin/user" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

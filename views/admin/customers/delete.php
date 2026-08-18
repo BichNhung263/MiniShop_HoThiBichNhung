@@ -1,10 +1,9 @@
 <?php
-require_once __DIR__ . "/../../../dao/CustomerDAO.php";
-$dao = new CustomerDAO();
+$dao = new \DAO\CustomerDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 if ($id > 0 && $dao->delete($id)) {
-    header("Location: index.php"); exit();
+    header("Location: /MiniShop_HoThiBichNhung/admin/customer"); exit();
 } else {
-    header("Location: index.php?error=Xóa khách hàng thất bại!"); exit();
+    header("Location: /MiniShop_HoThiBichNhung/admin/customer?error=Xóa khách hàng thất bại!"); exit();
 }
 ?>

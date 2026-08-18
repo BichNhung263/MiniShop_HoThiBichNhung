@@ -28,4 +28,3 @@ class CsrfMiddleware
     }
 }
 
-CsrfMiddleware::generateToken();

@@ -7,24 +7,23 @@ ob_start();
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách sản phẩm</h4>
-            <a href="create.php" class="btn btn-primary fw-bold">Thêm sản phẩm</a>
+            <a href="/MiniShop_HoThiBichNhung/admin/product/create" class="btn btn-primary fw-bold">Thêm sản phẩm</a>
         </div>
 
         <?php if (!empty($_GET['error'])): ?>
             <div class="alert alert-danger"><?= $_GET['error'] ?></div>
         <?php endif; ?>
 
-        <form class="row mb-3">
-            <div class="col-md-4">
-                <form method="GET" class="d-flex">
-                    <input
-                        type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>"
-                        class="form-control" placeholder="Nhập tên sản phẩm...">
-                    <!-- Giữ số sản phẩm/trang -->
-                    <input type="hidden" name="limit" value="<?= $limit ?>">
-                    <button class="btn btn-primary ms-2">Tìm </button>
-                </form>
-            </div>
+       <form method="GET" class="row mb-3">
+    <div class="col-md-4">
+        <div class="d-flex">
+            <input type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>" class="form-control" placeholder="Nhập tên sản phẩm...">
+            <input type="hidden" name="limit" value="<?= $limit ?>">
+
+            <button class="btn btn-primary ms-2">Tìm</button>
+        </div>
+    </div>
+</form>
 
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">
@@ -78,9 +77,9 @@ ob_start();
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">
-                                <a href="detail.php?id=<?= $item->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
-                                <a href="edit.php?id=<?= $item->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
-                                <a href="delete.php?id=<?= $item->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                                <a href="/MiniShop_HoThiBichNhung/admin/product/detail/<?= $item->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
+                                <a href="/MiniShop_HoThiBichNhung/admin/product/edit/<?= $item->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
+                                <a href="/MiniShop_HoThiBichNhung/admin/product/delete/<?= $item->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

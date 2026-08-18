@@ -1,18 +1,16 @@
 <?php
 $pageTitle = "Cập nhật thương hiệu";
-require_once __DIR__ . "/../../../dao/BrandDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
-$dao = new BrandDAO();
+$dao = new \DAO\BrandDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $brand = $dao->findById($id);
-if (!$brand) { header("Location: index.php"); exit(); }
+if (!$brand) { header("Location: /MiniShop_HoThiBichNhung/admin/brand"); exit(); }
 
 $brandOld = clone $brand;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $brandname = trim($_POST["brandname"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
     $description = trim($_POST["description"] ?? "");
@@ -77,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $brand->status = $status;
 
         if ($dao->update($brand)) {
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/brand");
             exit();
         } else {
             $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
@@ -141,7 +139,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/brand" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
@@ -149,5 +147,5 @@ ob_start();
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

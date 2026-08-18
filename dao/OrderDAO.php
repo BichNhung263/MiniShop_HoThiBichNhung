@@ -74,7 +74,7 @@ class OrderDAO extends BaseDAO
                 $order->userName = $row["userName"] ?? null;
                 $list[] = $order;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -88,7 +88,7 @@ class OrderDAO extends BaseDAO
             if ($row = $result->fetch_assoc()) {
                 return (int)$row['total'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return 0;
@@ -123,7 +123,7 @@ class OrderDAO extends BaseDAO
 
                 $list[] = $order;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -161,7 +161,7 @@ class OrderDAO extends BaseDAO
                 $order->userName = $row["userName"] ?? null;
                 return $order;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return null;
@@ -188,7 +188,7 @@ class OrderDAO extends BaseDAO
                 $order->id = $this->getLastInsertId();
             }
             return $result;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -212,7 +212,7 @@ class OrderDAO extends BaseDAO
                 $order->id
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -228,7 +228,7 @@ class OrderDAO extends BaseDAO
             $res = $stmt->execute();
             $this->commit();
             return $res;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->rollback();
             throw $e;
         }
@@ -261,7 +261,7 @@ class OrderDAO extends BaseDAO
                 $detail->productName = $row["productName"] ?? null;
                 $list[] = $detail;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -283,7 +283,7 @@ class OrderDAO extends BaseDAO
                 $detail->subtotal
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -295,7 +295,7 @@ class OrderDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $orderId);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -308,7 +308,7 @@ class OrderDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("ii", $status, $orderId);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

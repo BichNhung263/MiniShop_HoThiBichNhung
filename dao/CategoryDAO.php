@@ -46,7 +46,7 @@ class CategoryDAO extends BaseDAO
                 $category->updatedAt = $row["updated_at"];
                 $list[] = $category;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -61,7 +61,7 @@ class CategoryDAO extends BaseDAO
             if ($row = $result->fetch_assoc()) {
                 return (int)$row['total'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return 0;
@@ -89,7 +89,7 @@ class CategoryDAO extends BaseDAO
                 $category->updatedAt = $row["updated_at"];
                 return $category;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return null;
@@ -110,7 +110,7 @@ class CategoryDAO extends BaseDAO
                 $category->status
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -131,7 +131,7 @@ class CategoryDAO extends BaseDAO
                 $category->id
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -144,7 +144,7 @@ class CategoryDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

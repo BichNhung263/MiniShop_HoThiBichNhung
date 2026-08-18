@@ -1,23 +1,21 @@
 <?php
 $pageTitle = "Cập nhật danh mục";
-require_once __DIR__ . "/../../../dao/CategoryDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
-$categoryDAO = new CategoryDAO();
+$categoryDAO = new \DAO\CategoryDAO();
 $errors = [];
 
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $category = $categoryDAO->findById($id);
 
 if (!$category) {
-    header("Location: index.php");
+    header("Location: /MiniShop_HoThiBichNhung/admin/category");
     exit();
 }
 
 $categoryOld = clone $category;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $cateName = trim($_POST["cateName"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
     $description = trim($_POST["description"] ?? "");
@@ -83,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $category->status = $status;
 
         if ($categoryDAO->update($category)) {
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/category");
             exit();
         } else {
             $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
@@ -152,7 +150,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/category" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
@@ -161,5 +159,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

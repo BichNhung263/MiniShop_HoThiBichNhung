@@ -1,58 +1,10 @@
 <?php
-session_start();
-
-require_once __DIR__ . "/../../autoload.php";
-
-use DAO\UserDAO;
-use Middleware\GuestMiddleware;
 use Middleware\CsrfMiddleware;
 
-CsrfMiddleware::generateToken();
-GuestMiddleware::handle();
-$errors = [];
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    //kiem tra CSRF Token
-    CsrfMiddleware::verify();
-    $username = trim($_POST["username"] ?? "");
-    $password = $_POST["password"] ?? "";
-
-    //validate
-    if ($username === "") {
-        $errors["username"] = "Vui lòng nhập tên đăng nhập";
-    }
-    if ($password === "") {
-        $errors["password"] = "Vui lòng nhập mật khẩu";
-    }
-
-    
-    // Nếu không có lỗi thì tìm user
-    if (empty($errors)) {
-        $userDAO = new UserDAO();
-        $user = $userDAO->findByUsername($username);
-        if (!$user) {
-            $errors["username"] = "Tên đăng nhập không tồn tại.";
-        } elseif (!password_verify($password, $user->password) && ($password) !== $user->password) {
-            $errors["password"] = "Mật khẩu không chính xác.";
-        } else {
-            $_SESSION["user"] = $user;
-
-            // Ghi nhớ đăng nhập bằng Cookie
-            if (!empty($_POST["remember"])) {
-                // Lưu username vào Cookie trong 7 ngày
-                setcookie("remember_user", $user->username, time() + (7 * 24 * 60 * 60), "/");
-            } else {
-                // Nếu không tích chọn, xóa Cookie cũ nếu có
-                if (isset($_COOKIE["remember_user"])) {
-                    setcookie("remember_user", "", time() - 3600, "/");
-                }
-            }
-
-            // Chuyển đến Dashboard
-            header("Location: dashboard.php");
-            exit;
-        }
-    }
+if (!isset($errors)) {
+    $errors = [];
 }
+\Middleware\CsrfMiddleware::generateToken();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,10 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="card shadow">
                     <div class="card-body p-4">
                         <h3 class="text-center mb-4">Đăng nhập</h3>
-                        <form action="login.php" method="POST">
-                            <!-- thêm element để giữ csrf -->
+                        <form action="index.php?area=admin&controller=auth&action=login" method="POST">
                             <input type="hidden" name="csrf_token"
-                                value="<?= htmlspecialchars($_SESSION["csrf_token"]) ?>">
+                                value='<?= htmlspecialchars($_SESSION["csrf_token"] ?? "") ?>'>
                             <div class="mb-3">
                                 <label class="form-label">Tên đăng nhập</label>
                                 <input type="text" name="username"

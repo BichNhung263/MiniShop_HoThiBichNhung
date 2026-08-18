@@ -1,21 +1,17 @@
 <?php
 $pageTitle = "Cập nhật sản phẩm";
-require_once __DIR__ . "/../../../dao/ProductDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
-require_once __DIR__ . "/../../../dao/CategoryDAO.php";
-require_once __DIR__ . "/../../../dao/BrandDAO.php";
 
-$categoryDAO = new CategoryDAO();
-$brandDAO = new BrandDAO();
+$categoryDAO = new \DAO\CategoryDAO();
+$brandDAO = new \DAO\BrandDAO();
 
 $categories = $categoryDAO->getAll();
 $brands = $brandDAO->getAll();
 
 $errors = [];
-$dao = new ProductDAO();
+$dao = new \DAO\ProductDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $product = $dao->findById($id);
-if (!$product) { header("Location: index.php"); exit(); }
+if (!$product) { header("Location: /MiniShop_HoThiBichNhung/admin/product"); exit(); }
 
 $productOld = $product;
 
@@ -23,7 +19,7 @@ $productOld = $product;
 $productImages = $dao->getImagesByProductId($id);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $categoryid = (int)($_POST["categoryId"] ?? 0);
     $brandid = (int)($_POST["brandId"] ?? 0);
     $productname = trim($_POST["proname"] ?? "");
@@ -106,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/product");
             exit();
         } else {
             $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
@@ -238,7 +234,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/product" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

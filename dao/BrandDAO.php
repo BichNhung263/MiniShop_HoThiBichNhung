@@ -44,7 +44,7 @@ class BrandDAO extends BaseDAO
                 $brand->updatedAt = $row["updated_at"];
                 $list[] = $brand;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -59,7 +59,7 @@ class BrandDAO extends BaseDAO
             if ($row = $result->fetch_assoc()) {
                 return (int)$row['total'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return 0;
@@ -87,7 +87,7 @@ class BrandDAO extends BaseDAO
                 $brand->updatedAt = $row["updated_at"];
                 return $brand;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return null;
@@ -108,7 +108,7 @@ class BrandDAO extends BaseDAO
                 $brand->status
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -129,7 +129,7 @@ class BrandDAO extends BaseDAO
                 $brand->id
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -142,7 +142,7 @@ class BrandDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

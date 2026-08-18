@@ -1,16 +1,14 @@
 <?php
 $pageTitle = "Cập nhật người dùng";
-require_once __DIR__ . "/../../../dao/UserDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
-$dao = new UserDAO();
+$dao = new \DAO\UserDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $user = $dao->findById($id);
-if (!$user) { header("Location: index.php"); exit(); }
+if (!$user) { header("Location: /MiniShop_HoThiBichNhung/admin/user"); exit(); }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $user->fullname = trim($_POST["fullname"] ?? "");
     $user->username = trim($_POST["username"] ?? "");
     $user->email = trim($_POST["email"] ?? "");
@@ -27,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($errors)) {
         if ($dao->update($user)) {
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/user");
             exit();
         } else {
             $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
@@ -103,7 +101,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/user" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
@@ -111,5 +109,5 @@ ob_start();
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

@@ -1,14 +1,12 @@
 <?php
 $pageTitle = "Thêm khách hàng";
-require_once __DIR__ . "/../../../dao/CustomerDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
 $fullname = $email = $phone = $address = $note = "";
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $fullname = trim($_POST["fullname"] ?? "");
     $email = trim($_POST["email"] ?? "");
     $phone = trim($_POST["phone"] ?? "");
@@ -20,10 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($phone == "") $errors[] = "Điện thoại không được để trống.";
 
     if (empty($errors)) {
-        $dao = new CustomerDAO();
-        $customer = new Customer($fullname, $email, $phone, $address, $note, $status);
+        $dao = new \DAO\CustomerDAO();
+        $customer = new \Models\Customer($fullname, $email, $phone, $address, $note, $status);
         if ($dao->insert($customer)) {
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/customer");
             exit();
         } else {
             $errors[] = "Thêm thất bại. Vui lòng thử lại!";
@@ -83,7 +81,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/customer" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
@@ -91,5 +89,5 @@ ob_start();
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

@@ -1,22 +1,7 @@
 <?php
 $pageTitle = "Danh sách đơn hàng";
-require_once __DIR__ . "/../../../dao/OrderDAO.php";
-
-$keyword = trim($_GET['keyword'] ?? "");
 $status = isset($_GET['status']) && $_GET['status'] !== '' ? (int)$_GET['status'] : null;
-$dao = new OrderDAO();
-$orders = $dao->getAll($keyword, $status);
 ob_start();
-
-$limit = 10;
-$keyword = trim($_GET["keyword"] ?? "");
-$page = (int)($_GET["page"] ?? 1);
-$limit = (int)($_GET["limit"] ?? 10);
-$offset = ($page - 1) * $limit;
-$orderDAO = new OrderDAO();
-$totalRecords = $orderDAO->count("orders", "orderCode", $keyword);
-$totalPages = ceil($totalRecords / $limit);
-$orders = $orderDAO->getPage($limit, $offset, $keyword);
 ?>
 <main class="container my-4">
     <section class="mb-5">
@@ -88,7 +73,7 @@ $orders = $orderDAO->getPage($limit, $offset, $keyword);
                             </td>
                             <td><?= $order->createdAt ?></td>
                             <td class="text-center">
-                                <a href="detail.php?id=<?= $order->id ?>" class="btn btn-info btn-sm text-white">Chi tiết</a>
+                                <a href="/MiniShop_HoThiBichNhung/admin/order/detail/<?= $order->id ?>" class="btn btn-info btn-sm text-white">Chi tiết</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -140,5 +125,5 @@ $orders = $orderDAO->getPage($limit, $offset, $keyword);
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

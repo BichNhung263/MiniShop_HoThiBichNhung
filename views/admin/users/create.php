@@ -1,14 +1,12 @@
 <?php
 $pageTitle = "Thêm người dùng";
-require_once __DIR__ . "/../../../dao/UserDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
 $errors = [];
 $fullname = $username = $password = $email = $phone = $address = "";
 $role = 0; $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $fullname = trim($_POST["fullname"] ?? "");
     $username = trim($_POST["username"] ?? "");
     $password = trim($_POST["password"] ?? "");
@@ -24,10 +22,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($email == "") $errors[] = "Email không được để trống.";
 
     if (empty($errors)) {
-        $dao = new UserDAO();
-        $user = new User($fullname, $username, md5($password), $email, $phone, $address, $role, $status);
+        $dao = new \DAO\UserDAO();
+        $user = new \Models\User($fullname, $username, md5($password), $email, $phone, $address, $role, $status);
         if ($dao->insert($user)) {
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/user");
             exit();
         } else {
             $errors[] = "Thêm thất bại. Vui lòng thử lại!";
@@ -102,7 +100,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/user" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
@@ -110,5 +108,5 @@ ob_start();
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

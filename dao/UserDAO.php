@@ -47,7 +47,7 @@ class UserDAO extends BaseDAO
                 $user->updatedAt = $row["updated_at"];
                 $list[] = $user;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -62,7 +62,7 @@ class UserDAO extends BaseDAO
             if ($row = $result->fetch_assoc()) {
                 return (int)$row['total'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return 0;
@@ -93,7 +93,7 @@ class UserDAO extends BaseDAO
                 $user->updatedAt = $row["updated_at"];
                 return $user;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return null;
@@ -117,7 +117,7 @@ class UserDAO extends BaseDAO
                 $user->status
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -141,7 +141,7 @@ class UserDAO extends BaseDAO
                 $user->id
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -154,7 +154,7 @@ class UserDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

@@ -1,21 +1,19 @@
 <?php
 $pageTitle = "Chi tiết đơn hàng";
-require_once __DIR__ . "/../../../dao/OrderDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
-$dao = new OrderDAO();
+$dao = new \DAO\OrderDAO();
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $order = $dao->findById($id);
-if (!$order) { header('Location: index.php'); exit(); }
+if (!$order) { header('Location: /MiniShop_HoThiBichNhung/admin/order'); exit(); }
 $details = $dao->getOrderDetails($id);
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     $newStatus = isset($_POST['status']) ? (int)$_POST['status'] : $order->status;
     $order->status = $newStatus;
     if ($dao->updateStatus($order->id, $newStatus)) {
-        header('Location: index.php');
+        header('Location: /MiniShop_HoThiBichNhung/admin/order');
         exit();
     } else {
         $errors[] = 'Cập nhật trạng thái thất bại.';
@@ -106,5 +104,5 @@ ob_start();
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

@@ -1,15 +1,13 @@
 <?php
 $pageTitle = "Thêm danh mục mới";
-require_once __DIR__ . "/../../../dao/CategoryDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
 
-$categoryDAO = new CategoryDAO();
+$categoryDAO = new \DAO\CategoryDAO();
 $errors = [];
 $cateName = $slug = $description = "";
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     // Đọc dữ liệu từ Form
     $cateName = trim($_POST["cateName"] ?? "");
     $slug = trim($_POST["slug"] ?? "");
@@ -64,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // + Tạo Category object
-        $category = new Category(
+        $category = new \Models\Category(
             $cateName,
             $slug,
             $description,
@@ -74,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // + Lưu CSDL
         if ($categoryDAO->insert($category)) {
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/category");
             exit();
         } else {
             $errors[] = "Thêm danh mục thất bại. Vui lòng thử lại!";
@@ -133,7 +131,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary px-4">Lưu</button>
                     <button type="reset" class="btn btn-secondary px-4">Làm mới</button>
-                    <a href="index.php" class="btn btn-outline-dark px-4">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/category" class="btn btn-outline-dark px-4">Quay lại</a>
                 </div>
             </form>
         </div>
@@ -142,5 +140,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

@@ -1,12 +1,6 @@
 <?php
 use Middleware\AuthMiddleware;
 use Middleware\CsrfMiddleware;
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-AuthMiddleware::handle();
-CsrfMiddleware::generateToken();
 include __DIR__ . "/header.php";
 ?>
 

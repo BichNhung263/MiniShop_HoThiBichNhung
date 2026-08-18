@@ -1,11 +1,10 @@
 <?php
 $pageTitle = "Chi tiết sản phẩm";
-require_once __DIR__ . "/../../../dao/ProductDAO.php";
 
-$dao = new ProductDAO();
+$dao = new \DAO\ProductDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $product = $dao->findById($id);
-if (!$product) { header("Location: index.php"); exit(); }
+if (!$product) { header("Location: /MiniShop_HoThiBichNhung/admin/product"); exit(); }
 
 // Gọi phương thức getImagesByProductId($productId)
 $productImages = $dao->getImagesByProductId($id);
@@ -98,13 +97,13 @@ ob_start();
             <?php } ?>
 
             <div class="d-flex gap-2 mt-3">
-                <a href="edit.php?id=<?= $product->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                <a href="/MiniShop_HoThiBichNhung/admin/product/edit?id=<?= $product->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="/MiniShop_HoThiBichNhung/admin/product" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>
 </main>
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

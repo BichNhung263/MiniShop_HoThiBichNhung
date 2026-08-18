@@ -18,11 +18,11 @@ $latestProducts = [];
 $latestOrders = [];
 
 try {
-    $categoryDAO = new CategoryDAO();
-    $brandDAO = new BrandDAO();
-    $productDAO = new ProductDAO();
-    $customerDAO = new CustomerDAO();
-    $orderDAO = new OrderDAO();
+    $categoryDAO = new \DAO\CategoryDAO();
+    $brandDAO = new \DAO\BrandDAO();
+    $productDAO = new \DAO\ProductDAO();
+    $customerDAO = new \DAO\CustomerDAO();
+    $orderDAO = new \DAO\OrderDAO();
 
     $totalCategories = $categoryDAO->countAll();
     $totalBrands = $brandDAO->countAll();
@@ -52,7 +52,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="../admin/customers/index.php" class="text-decoration-none small text-primary fw-semibold">Xem chi tiết</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/customer" class="text-decoration-none small text-primary fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="../admin/products/index.php" class="text-decoration-none small text-success fw-semibold">Xem chi tiết</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/product" class="text-decoration-none small text-success fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="../admin/orders/index.php" class="text-decoration-none small text-warning fw-semibold">Xem chi tiết</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/order" class="text-decoration-none small text-warning fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="../admin/categories/index.php" class="text-decoration-none small text-info fw-semibold">Xem chi tiết</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/category" class="text-decoration-none small text-info fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -124,7 +124,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="../admin/brands/index.php" class="text-decoration-none small text-danger fw-semibold">Xem chi tiết</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/brand" class="text-decoration-none small text-danger fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>

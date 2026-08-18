@@ -1,20 +1,19 @@
 <?php
-require_once __DIR__ . "/../../../dao/CategoryDAO.php";
 
-$categoryDAO = new CategoryDAO();
+$categoryDAO = new \DAO\CategoryDAO();
 
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 
 if ($id > 0) {
     if ($categoryDAO->delete($id)) {
-        header("Location: index.php");
+        header("Location: /MiniShop_HoThiBichNhung/admin/category");
         exit();
     } else {
-        header("Location: index.php?error=Xóa danh mục thất bại!");
+        header("Location: /MiniShop_HoThiBichNhung/admin/category?error=Xóa danh mục thất bại!");
         exit();
     }
 } else {
-    header("Location: index.php");
+    header("Location: /MiniShop_HoThiBichNhung/admin/category");
     exit();
 }
 ?>

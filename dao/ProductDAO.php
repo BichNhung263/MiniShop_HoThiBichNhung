@@ -70,7 +70,7 @@ class ProductDAO extends BaseDAO
                 $product->brandName = $row["brandName"];
                 $list[] = $product;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -85,7 +85,7 @@ class ProductDAO extends BaseDAO
             if ($row = $result->fetch_assoc()) {
                 return (int)$row['total'];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return 0;
@@ -137,7 +137,7 @@ class ProductDAO extends BaseDAO
                 $product->brandName = $row["brandName"];
                 $list[] = $product;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -191,7 +191,7 @@ class ProductDAO extends BaseDAO
                 $product->brandName = $row["brandName"];
                 return $product;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return null;
@@ -231,7 +231,7 @@ class ProductDAO extends BaseDAO
                 $product->id = $this->getLastInsertId();
             }
             return $result;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -267,7 +267,7 @@ class ProductDAO extends BaseDAO
                 $product->id
             );
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -280,7 +280,7 @@ class ProductDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("i", $id);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -308,7 +308,7 @@ class ProductDAO extends BaseDAO
                 $img->createdAt = $row["created_at"];
                 $list[] = $img;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
         return $list;
@@ -322,7 +322,7 @@ class ProductDAO extends BaseDAO
             $stmt = $this->prepare($sql);
             $stmt->bind_param("is", $productId, $image);
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -349,7 +349,7 @@ class ProductDAO extends BaseDAO
             $stmt2 = $this->prepare($sql2);
             $stmt2->bind_param("i", $id);
             return $stmt2->execute();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

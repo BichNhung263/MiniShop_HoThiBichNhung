@@ -1,12 +1,12 @@
 <?php
 $pageTitle = "Thêm sản phẩm";
-require_once __DIR__ . "/../../../dao/ProductDAO.php";
-require_once __DIR__ . "/../../../middleware/CsrfMiddleware.php";
-require_once __DIR__ . "/../../../dao/CategoryDAO.php";
-require_once __DIR__ . "/../../../dao/BrandDAO.php";
+use DAO\CategoryDAO;
+use DAO\BrandDAO;
+use DAO\ProductDAO;
+use Middleware\CsrfMiddleware;
 
-$categoryDAO = new CategoryDAO();
-$brandDAO = new BrandDAO();
+$categoryDAO = new \DAO\CategoryDAO();
+$brandDAO = new \DAO\BrandDAO();
 
 $categories = $categoryDAO->getAll();
 $brands = $brandDAO->getAll();
@@ -20,7 +20,7 @@ $quantity = 0;
 $status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    CsrfMiddleware::verify();
+    \Middleware\CsrfMiddleware::verify();
     // Đọc dữ liệu từ Form
     $categoryid = (int)($_POST["categoryId"] ?? 0);
     $brandid = (int)($_POST["brandId"] ?? 0);
@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // + Tạo Product
-        $product = new Product(
+        $product = new \Models\Product(
             $categoryid,
             $brandid,
             $productname,
@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         );
 
         // + Lưu CSDL
-        $productDAO = new ProductDAO();
+        $productDAO = new \DAO\ProductDAO();
         if ($productDAO->insert($product)) {
             $productId = $product->id;
 
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
-            header("Location: index.php");
+            header("Location: /MiniShop_HoThiBichNhung/admin/product");
             exit();
         } else {
             $errors[] = "Thêm sản phẩm thất bại. Vui lòng thử lại!";
@@ -225,7 +225,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                    <a href="/MiniShop_HoThiBichNhung/admin/product" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

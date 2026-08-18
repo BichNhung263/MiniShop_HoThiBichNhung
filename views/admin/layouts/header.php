@@ -38,7 +38,7 @@ $user = $_SESSION["user"] ?? null;
             <span>
                 <?= htmlspecialchars($user->fullname) ?>
             </span>
-            <a href="/MiniShop_HoThiBichNhung/views/admin/logout.php" class="text-decoration-none text-light">
+            <a href="index.php?area=admin&controller=auth&action=logout" class="text-decoration-none text-light">
                 | Đăng xuất
             </a>
         </div>

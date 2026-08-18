@@ -1,14 +1,14 @@
 <?php
 namespace Controllers\Admin;
 
-use DAO\ProductDAO;
+use DAO\BrandDAO;
 
-class ProductController {
+class BrandController {
 
     public function index()
     {
         // Gán dữ liệu cho tiêu đề trang
-        $title = "Quản lý sản phẩm";
+        $title = "Quản lý thương hiệu";
         // Đọc request từ URL
         $keyword = trim($_GET["keyword"] ?? "");
         $limit = (int)($_GET["limit"] ?? 10);
@@ -16,39 +16,39 @@ class ProductController {
         // Xử lý offset
         $offset = ($page - 1) * $limit;
         // Gọi Dao
-        $productDAO = new ProductDAO();
-        $totalRecords = $productDAO->count(
-            "products",
-            "proname",
+        $brandDAO = new BrandDAO();
+        $totalRecords = $brandDAO->count(
+            "brands",
+            "brandname",
             $keyword
         );
         $totalPages = ceil($totalRecords / $limit);
-        $products = $productDAO->getPage(
+        $brands = $brandDAO->getPage(
             $limit,
             $offset,
             $keyword
         );
         // Gọi View
-        require __DIR__ . "/../../views/admin/products/index.php";
+        require __DIR__ . "/../../views/admin/brands/index.php";
     }
 
     public function create()
     {
-        require __DIR__ . "/../../views/admin/products/create.php";
+        require __DIR__ . "/../../views/admin/brands/create.php";
     }
 
     public function edit()
     {
-        require __DIR__ . "/../../views/admin/products/edit.php";
+        require __DIR__ . "/../../views/admin/brands/edit.php";
     }
 
     public function detail()
     {
-        require __DIR__ . "/../../views/admin/products/detail.php";
+        require __DIR__ . "/../../views/admin/brands/detail.php";
     }
 
     public function delete()
     {
-        require __DIR__ . "/../../views/admin/products/delete.php";
+        require __DIR__ . "/../../views/admin/brands/delete.php";
     }
 }

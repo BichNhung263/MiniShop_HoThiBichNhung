@@ -1,13 +1,12 @@
 <?php
 $pageTitle = "Chi tiết danh mục";
-require_once __DIR__ . "/../../../dao/CategoryDAO.php";
 
-$categoryDAO = new CategoryDAO();
+$categoryDAO = new \DAO\CategoryDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $category = $categoryDAO->findById($id);
 
 if (!$category) {
-    header("Location: index.php");
+    header("Location: /MiniShop_HoThiBichNhung/admin/category");
     exit();
 }
 ob_start();
@@ -67,8 +66,8 @@ ob_start();
             </table>
 
             <div class="d-flex gap-2 mt-3">
-                <a href="edit.php?id=<?= $category->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="index.php" class="btn btn-secondary">Quay lại</a>
+                <a href="/MiniShop_HoThiBichNhung/admin/category/edit/<?= $category->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="/MiniShop_HoThiBichNhung/admin/category" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>
@@ -76,5 +75,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-include "../layouts/master.php";
+include __DIR__ . "/../layouts/master.php";
 ?>

@@ -1,10 +1,9 @@
 <?php
-require_once __DIR__ . "/../../../dao/UserDAO.php";
-$dao = new UserDAO();
+$dao = new \DAO\UserDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 if ($id > 0 && $dao->delete($id)) {
-    header("Location: index.php"); exit();
+    header("Location: /MiniShop_HoThiBichNhung/admin/user"); exit();
 } else {
-    header("Location: index.php?error=Xóa người dùng thất bại!"); exit();
+    header("Location: /MiniShop_HoThiBichNhung/admin/user?error=Xóa người dùng thất bại!"); exit();
 }
 ?>
