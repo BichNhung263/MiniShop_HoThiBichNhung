@@ -80,6 +80,21 @@ class CartController
     // Hiển thị trang giỏ hàng
     public function index()
     {
+        //Lấy giỏ hàng từ Session
+        $cart = $_SESSION[CART_SESSION_KEY] ?? [];
+        //Tính tổng tiền
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item ["price"] * $item["quantity"];
+        }
+        //tiêu đề trang
+        $title = "Giỏ hàng";
+        //Bắt đầu nội dung View
+        ob_start();
+        require __DIR__ ."/../../views/client/cart/index.php";
+        $content = ob_get_clean();
+        // hiển thị layout chung
+        require __DIR__ . "/../../views/client/layouts/master.php";
     }
 
     // Cập nhật số lượng sản phẩm trong giỏ
