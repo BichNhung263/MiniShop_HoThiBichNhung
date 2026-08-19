@@ -1,19 +1,19 @@
 RewriteEngine On
 RewriteBase /MiniShop_HoThiBichNhung/
 
+# Giỏ hàng
+RewriteRule ^cart/add/?$ index.php?area=client&controller=cart&action=add [L,QSA]
+RewriteRule ^cart/update/?$ index.php?area=client&controller=cart&action=update [L,QSA]
+RewriteRule ^cart/remove/?$ index.php?area=client&controller=cart&action=remove [L,QSA]
+RewriteRule ^cart/?$ index.php?area=client&controller=cart&action=index [L,QSA]
+
 # Tìm kiếm: /search
 RewriteRule ^search/?$ index.php?area=client&controller=product&action=search [L,QSA]
 
-# Chi tiết sản phẩm: /product/chuot-logitech
-# $1 = slug sản phẩm
 RewriteRule ^product/([^/]+)/?$ index.php?area=client&controller=product&action=detail&slug=$1 [L,QSA]
 
-# Danh mục: /category/laptop
-# $1 = slug danh mục
 RewriteRule ^category/([^/]+)/?$ index.php?area=client&controller=product&action=category&slug=$1 [L,QSA]
 
-# Thương hiệu: /brand/asus
-# $1 = slug thương hiệu
 RewriteRule ^brand/([^/]+)/?$ index.php?area=client&controller=product&action=brand&slug=$1 [L,QSA]
 
 # Không rewrite file và thư mục có thật

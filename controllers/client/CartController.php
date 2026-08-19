@@ -1,18 +1,14 @@
 <?php
 namespace Controllers\Client;
-
 use DAO\ProductDAO;
 
 class CartController
 {
     private ProductDAO $productDAO;
-
     public function __construct()
     {
         $this->productDAO = new ProductDAO();
     }
-
-    // Thêm sản phẩm vào giỏ hàng
     public function add()
     {
         // 1. Khởi tạo Cart nếu chưa có
@@ -29,9 +25,8 @@ class CartController
             ]);
             exit;
         }
-        //4. Lấy sp từ DB
+        // 4. Lấy sản phẩm từ Database
         $product = $this->productDAO->findById($productid);
-
         // 5. Kiểm tra sản phẩm
         if (!$product) {
             echo json_encode([
@@ -40,12 +35,10 @@ class CartController
             ]);
             exit;
         }
-
         // 6. Xác định giá bán
         $price = $product->pricediscount > 0
             ? $product->pricediscount
             : $product->price;
-
         // 7. Kiểm tra sản phẩm đã có trong Cart chưa
         if (isset($_SESSION["cart"][$productid])) {
             // Đã có -> tăng số lượng
@@ -54,20 +47,17 @@ class CartController
             // Chưa có -> thêm sản phẩm
             $_SESSION["cart"][$productid] = [
                 "productid"   => $product->id,
-                "productname" => $product->productname,
+                "productname" => $product->proname,
                 "image"       => $product->image,
                 "price"       => $price,
                 "quantity"    => 1
             ];
         }
-
         // 8. Tính tổng số lượng trong Cart
         $cartCount = 0;
-
         foreach ($_SESSION["cart"] as $item) {
             $cartCount += $item["quantity"];
         }
-
         // 9. Trả JSON
         echo json_encode([
             "success" => true,
@@ -76,8 +66,6 @@ class CartController
         ]);
         exit;
     }
-
-    // Hiển thị trang giỏ hàng
     public function index()
     {
         //Lấy giỏ hàng từ Session
@@ -85,26 +73,70 @@ class CartController
         //Tính tổng tiền
         $total = 0;
         foreach ($cart as $item) {
-            $total += $item ["price"] * $item["quantity"];
+            $total += $item["price"] * $item["quantity"];
         }
-        //tiêu đề trang
+        // Tiêu đề trang
         $title = "Giỏ hàng";
         //Bắt đầu nội dung View
         ob_start();
-        require __DIR__ ."/../../views/client/cart/index.php";
+        require __DIR__ . "/../../views/client/cart/index.php";
         $content = ob_get_clean();
         // hiển thị layout chung
         require __DIR__ . "/../../views/client/layouts/master.php";
     }
 
-    // Cập nhật số lượng sản phẩm trong giỏ
     public function update()
     {
+        // 1. Nhận dữ liệu từ AJAX
+        $productid = $_POST["productid"] ?? null;
+        $quantity = (int)($_POST["quantity"] ?? 1);
+        // 2. Kiểm tra sản phẩm có trong Cart không
+        if ($productid && isset($_SESSION[CART_SESSION_KEY][$productid])) {
+            if ($quantity > 0) {
+                $_SESSION[CART_SESSION_KEY][$productid]["quantity"] = $quantity;
+            } else {
+                unset($_SESSION[CART_SESSION_KEY][$productid]);
+            }
+        }
+        // 3. Tính lại tổng số lượng trong Cart
+        $cartCount = 0;
+        if (isset($_SESSION[CART_SESSION_KEY])) {
+            foreach ($_SESSION[CART_SESSION_KEY] as $item) {
+                $cartCount += $item["quantity"];
+            }
+        }
+        // 4. Trả JSON
+        echo json_encode([
+            "success"   => true,
+            "cartCount" => $cartCount
+        ]);
+        exit;
     }
-
-    // Xóa sản phẩm khỏi giỏ hàng
     public function remove()
     {
+        // 1. Nhận productid từ AJAX
+        $productid = $_POST["productid"] ?? null;
+
+        // 2. Kiểm tra sản phẩm có trong Cart không
+        if ($productid && isset($_SESSION[CART_SESSION_KEY][$productid])) {
+            unset($_SESSION[CART_SESSION_KEY][$productid]);
+        }
+
+        // 3. Tính lại tổng số lượng trong Cart
+        $cartCount = 0;
+        if (isset($_SESSION[CART_SESSION_KEY])) {
+            foreach ($_SESSION[CART_SESSION_KEY] as $item) {
+                $cartCount += $item["quantity"];
+            }
+        }
+
+        // 4. Trả JSON
+        echo json_encode([
+            "success"   => true,
+            "message"   => "Đã xóa sản phẩm khỏi giỏ hàng",
+            "cartCount" => $cartCount
+        ]);
+        exit;
     }
 
     // Lấy số lượng trên Header

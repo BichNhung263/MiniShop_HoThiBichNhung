@@ -27,14 +27,24 @@
                             <td>
                                 <img src="<?= PRODUCT_IMAGE_URL . $item['image'] ?>" alt="<?= htmlspecialchars($item['productname']) ?>" style="width: 70px; height: 70px; object-fit: contain;">
                             </td>
-                            <td class="text-start fw-bold"><?= ($item['productname']) ?></td>
+                            <td class="text-start fw-bold"><?= htmlspecialchars($item['productname'] ?? $item['proname'] ?? '') ?></td>
                             <td class="text-danger fw-semibold"><?= number_format($item['price']) ?> đ</td>
-                            <td style="width: 120px;">
-                                <input type="number" class="form-control text-center input-quantity" data-productid="<?= $id ?>" value="<?= $item['quantity'] ?>" min="1">
-                            </td>
-                            <td class="text-danger fw-bold"><?= number_format($item['price'] * $item['quantity']) ?> đ</td>
                             <td>
-                                <button type="button" class="btn btn-danger btn-sm btn-remove-cart" data-productid="<?= $id ?>" title="Xóa">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        onclick="updateCart(<?= $item['productid'] ?>, <?= $item['quantity'] - 1 ?>)">
+                                        -
+                                    </button>
+                                    <span class="px-2 fw-bold" id="qty-<?= $item['productid'] ?>"><?= $item['quantity'] ?></span>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                        onclick="updateCart(<?= $item['productid'] ?>, <?= $item['quantity'] + 1 ?>)">
+                                        +
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="text-danger fw-bold" id="total-<?= $item['productid'] ?>"><?= number_format($item['price'] * $item['quantity']) ?> đ</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removeCart(<?= $item['productid'] ?>)" title="Xóa">
                                     <i class=" "></i> Xóa
                                 </button>
                             </td>
@@ -51,7 +61,7 @@
                 </a>
             </div>
             <div class="text-end">
-                <h4 class="fw-bold mb-2">Tổng tiền: <span class="text-danger"><?= number_format($total) ?> đ</span></h4>
+                <h4 class="fw-bold mb-2">Tổng tiền: <span class="text-danger" id="cartTotalSum"><?= number_format($total) ?> đ</span></h4>
                 <a href="<?= BASE_URL ?>/cart/checkout" class="btn btn-success btn-lg px-4">
                     <i class=" "></i> Đặt hàng
                 </a>
