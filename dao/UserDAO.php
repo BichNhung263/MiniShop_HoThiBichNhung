@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Models\User;
@@ -159,7 +160,7 @@ class UserDAO extends BaseDAO
         }
     }
 
-    public function getPage(int $limit, int $offset, string $keyword="")
+    public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
             id,
@@ -183,7 +184,7 @@ class UserDAO extends BaseDAO
         $stmt->execute();
         $result = $stmt->get_result();
         $users = [];
-        while ($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
             $user = new User(
                 $row["fullname"],
                 $row["username"],
@@ -202,8 +203,8 @@ class UserDAO extends BaseDAO
         return $users;
     }
 
-    
-public function findByUsername(string $username): ?User
+
+    public function findByUsername(string $username): ?User
     {
         $sql = "SELECT * FROM users WHERE username =?";
         $stmt = $this->conn->prepare($sql);
@@ -211,7 +212,7 @@ public function findByUsername(string $username): ?User
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        if(!$row){
+        if (!$row) {
             return null;
         }
         return new User(
@@ -226,4 +227,3 @@ public function findByUsername(string $username): ?User
         );
     }
 }
-?>

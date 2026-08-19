@@ -5,7 +5,7 @@ $baseUrl = "/MiniShop_HoThiBichNhung";
     <a href="#" class="d-flex align-items-center mb-4 text-white text-decoration-none fs-5 fw-bold px-2">
         <i class="bi bi-cart3 fs-4 me-2"></i> Mini Shop
     </a>
-    
+
     <ul class="nav nav-pills flex-column mb-auto gap-1">
         <li class="nav-item">
             <a href="<?= $baseUrl ?>/admin/dashboard" class="nav-link text-white-50 py-2 px-3">

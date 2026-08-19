@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Models\Brand;
@@ -177,7 +178,7 @@ class BrandDAO extends BaseDAO
         }
     }
 
-    public function getPage(int $limit, int $offset, string $keyword="")
+    public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
         b.id,
@@ -194,11 +195,11 @@ class BrandDAO extends BaseDAO
         LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
         $keyword = "%$keyword%";
-        $stmt->bind_param("sii",$keyword, $limit, $offset);
+        $stmt->bind_param("sii", $keyword, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $brands = [];
-        while ($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
             $brand = new Brand(
                 $row["brandname"],
                 $row["slug"],
@@ -214,5 +215,3 @@ class BrandDAO extends BaseDAO
         return $brands;
     }
 }
-
-?>

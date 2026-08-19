@@ -1,4 +1,5 @@
 <?php
+
 use Composers\HeaderComposer;
 
 $headerData = HeaderComposer::compose();
@@ -12,37 +13,28 @@ $keyword = $_GET['keyword'] ?? '';
 <header class="bg-dark shadow-sm">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-
             <!-- LOGO -->
             <a class="navbar-brand fw-bold d-flex align-items-center"
-               href="<?= $baseUrl ?>">
+                href="<?= $baseUrl ?>">
                 <i class="bi bi-shop me-2 fs-4"></i>
                 MiniShop
             </a>
 
             <!-- BUTTON MOBILE -->
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#clientNavbar"
-                aria-controls="clientNavbar"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#clientNavbar" aria-controls="clientNavbar" 
+            aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <!-- MENU -->
             <div class="collapse navbar-collapse" id="clientNavbar">
-
                 <!-- MENU BÊN TRÁI -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
                     <!-- TRANG CHỦ -->
                     <li class="nav-item">
                         <a class="nav-link"
-                           href="<?= $baseUrl ?>">
+                            href="<?= $baseUrl ?>">
                             <i class="bi bi-house-door me-1"></i>
                             Trang chủ
                         </a>
@@ -50,7 +42,7 @@ $keyword = $_GET['keyword'] ?? '';
 
                     <!-- DANH MỤC -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#"  id="categoryDropdown"
+                        <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-grid me-1"></i>
                             Danh mục
@@ -60,7 +52,7 @@ $keyword = $_GET['keyword'] ?? '';
                             <?php foreach ($categories as $category): ?>
                                 <li>
                                     <a class="dropdown-item"
-                                       href="<?= BASE_URL ?>/category/<?= $category->slug ?>">
+                                        href="<?= BASE_URL ?>/category/<?= $category->slug ?>">
                                         <?= ($category->catename) ?>
                                     </a>
                                 </li>
@@ -80,7 +72,7 @@ $keyword = $_GET['keyword'] ?? '';
                             <?php foreach ($brands as $brand): ?>
                                 <li>
                                     <a class="dropdown-item"
-                                       href="<?= BASE_URL ?>/brand/<?= $brand->slug ?>">
+                                        href="<?= BASE_URL ?>/brand/<?= $brand->slug ?>">
                                         <?= ($brand->brandname) ?>
                                     </a>
                                 </li>
@@ -94,7 +86,7 @@ $keyword = $_GET['keyword'] ?? '';
                 <form class="d-flex me-lg-3 mb-2 mb-lg-0" action="<?= BASE_URL ?>/search" method="GET">
                     <div class="input-group">
                         <input type="search" name="keyword" class="form-control" placeholder="Tìm kiếm sản phẩm..."
-                            value="<?= htmlspecialchars($keyword) ?>">
+                            value="<?= ($keyword) ?>">
                         <button type="submit" class="btn btn-outline-light" title="Tìm kiếm">
                             <i class="bi bi-search"></i>
                         </button>
@@ -105,23 +97,17 @@ $keyword = $_GET['keyword'] ?? '';
                 <a
                     href="<?= $baseUrl ?>/admin/auth/login"
                     class="btn btn-outline-light me-2 mb-2 mb-lg-0"
-                    title="Đăng nhập"
-                >
+                    title="Đăng nhập">
                     <i class="bi bi-person"></i>
                 </a>
 
                 <!-- GIỎ HÀNG -->
-                <a
-                    href="<?= $baseUrl ?>/cart" 
-                    class="btn btn-warning position-relative mb-2 mb-lg-0" 
-                    title="Giỏ hàng">
+                <a href="<?= BASE_URL ?>/cart"
+                    class="btn btn-warning position-relative">
                     <i class="bi bi-cart3"></i>
-                    <span
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        0
-                    </span>
+                    <span id="cartCount"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                 </a>
-
             </div>
         </div>
     </nav>

@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Models\Category;
@@ -180,7 +181,7 @@ class CategoryDAO extends BaseDAO
     }
 
 
-    public function getPage(int $limit, int $offset, string $keyword="")
+    public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
             c.id, 
@@ -197,11 +198,11 @@ class CategoryDAO extends BaseDAO
             LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
         $keyword = "%$keyword%";
-        $stmt->bind_param("sii",$keyword, $limit, $offset);
+        $stmt->bind_param("sii", $keyword, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $categories = [];
-        while ($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
             $category = new Category(
                 $row["catename"],
                 $row["slug"],
@@ -217,5 +218,3 @@ class CategoryDAO extends BaseDAO
         return $categories;
     }
 }
-
-?>

@@ -1,6 +1,8 @@
 <?php
+
 use Middleware\AuthMiddleware;
 use Middleware\CsrfMiddleware;
+
 include __DIR__ . "/header.php";
 ?>
 

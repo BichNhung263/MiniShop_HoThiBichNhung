@@ -5,7 +5,10 @@ $errors = [];
 $dao = new \DAO\CustomerDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $customer = $dao->findById($id);
-if (!$customer) { header("Location: /MiniShop_HoThiBichNhung/admin/customer"); exit(); }
+if (!$customer) {
+    header("Location: /MiniShop_HoThiBichNhung/admin/customer");
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     \Middleware\CsrfMiddleware::verify();

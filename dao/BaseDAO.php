@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Config\Database;
@@ -57,7 +58,7 @@ class BaseDAO extends Database
 
         $sql = "SELECT COUNT(*) AS total FROM $table WHERE $column LIKE ?";
         $stmt = $this->conn->prepare($sql);
-        $keyword="%$keyword%";
+        $keyword = "%$keyword%";
         $stmt->bind_param("s", $keyword);
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();

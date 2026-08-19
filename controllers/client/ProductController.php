@@ -1,4 +1,5 @@
 <?php
+
 namespace Controllers\Client;
 
 use DAO\ProductDAO;
@@ -16,7 +17,6 @@ class ProductController
     public function category()
     {
         // Đọc slug danh mục từ URL
-        // category/laptop → slug = laptop
         $slug = $_GET['slug'] ?? '';
         // Gọi ProductDAO để lấy sản phẩm theo slug
         $products = $this->productDAO->getByCategory($slug);
@@ -32,7 +32,6 @@ class ProductController
     public function brand()
     {
         // Đọc slug thương hiệu từ URL
-        // /brand/asus → slug = asus
         $slug = $_GET['slug'] ?? '';
         // Gọi ProductDAO để lấy sản phẩm theo slug
         $products = $this->productDAO->getByBrand($slug);
@@ -48,7 +47,6 @@ class ProductController
     public function detail()
     {
         // Đọc slug sản phẩm từ URL
-        // /product/chuot-logitech → slug = chuot-logitech
         $slug = $_GET['slug'] ?? '';
         // Gọi ProductDAO để lấy chi tiết sản phẩm theo slug
         $product = $this->productDAO->getBySlug($slug);

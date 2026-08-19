@@ -11,7 +11,10 @@ $errors = [];
 $dao = new \DAO\ProductDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $product = $dao->findById($id);
-if (!$product) { header("Location: /MiniShop_HoThiBichNhung/admin/product"); exit(); }
+if (!$product) {
+    header("Location: /MiniShop_HoThiBichNhung/admin/product");
+    exit();
+}
 
 $productOld = $product;
 

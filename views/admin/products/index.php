@@ -14,16 +14,16 @@ ob_start();
             <div class="alert alert-danger"><?= $_GET['error'] ?></div>
         <?php endif; ?>
 
-       <form method="GET" class="row mb-3">
-    <div class="col-md-4">
-        <div class="d-flex">
-            <input type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>" class="form-control" placeholder="Nhập tên sản phẩm...">
-            <input type="hidden" name="limit" value="<?= $limit ?>">
+        <form method="GET" class="row mb-3">
+            <div class="col-md-4">
+                <div class="d-flex">
+                    <input type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>" class="form-control" placeholder="Nhập tên sản phẩm...">
+                    <input type="hidden" name="limit" value="<?= $limit ?>">
 
-            <button class="btn btn-primary ms-2">Tìm</button>
-        </div>
-    </div>
-</form>
+                    <button class="btn btn-primary ms-2">Tìm</button>
+                </div>
+            </div>
+        </form>
 
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">

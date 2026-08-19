@@ -15,11 +15,11 @@
                 <?php if (!empty($product->cateName)): ?>
                     <li class="breadcrumb-item">
                         <a href="<?= BASE_URL ?>/category/<?= $product->slug ?>" class="text-decoration-none">
-                            <?= htmlspecialchars($product->cateName) ?>
+                            <?= ($product->cateName) ?>
                         </a>
                     </li>
                 <?php endif; ?>
-                <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($product->proname) ?></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= ($product->proname) ?></li>
             </ol>
         </nav>
 
@@ -29,10 +29,10 @@
             <div class="col-md-5">
                 <div class="card border-0 shadow-sm p-3 text-center">
                     <?php if (!empty($product->image)): ?>
-                        <img src="<?= PRODUCT_IMAGE_URL . htmlspecialchars($product->image) ?>" 
-                             class="img-fluid rounded" 
-                             alt="<?= htmlspecialchars($product->proname) ?>"
-                             style="max-height: 400px; object-fit: contain;">
+                        <img src="<?= PRODUCT_IMAGE_URL . ($product->image) ?>"
+                            class="img-fluid rounded"
+                            alt="<?= ($product->proname) ?>"
+                            style="max-height: 400px; object-fit: contain;">
                     <?php else: ?>
                         <div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 350px;">
                             <i class="bi bi-image text-muted fs-1"></i>
@@ -43,7 +43,7 @@
 
             <!-- THÔNG TIN SẢN PHẨM -->
             <div class="col-md-7">
-                <h2 class="fw-bold mb-3"><?= htmlspecialchars($product->proname) ?></h2>
+                <h2 class="fw-bold mb-3"><?= ($product->proname) ?></h2>
 
                 <!-- BRAND & CATEGORY -->
                 <div class="mb-3 text-muted small d-flex gap-3">
@@ -71,7 +71,7 @@
 
                 <!-- MÔ TẢ NGẮN / TRẠNG THÁI -->
                 <div class="mb-4">
-                    <p class="mb-2"><strong>Trạng thái:</strong> 
+                    <p class="mb-2"><strong>Trạng thái:</strong>
                         <?php if ($product->quantity > 0): ?>
                             <span class="badge bg-success">Còn hàng (<?= $product->quantity ?>)</span>
                         <?php else: ?>
@@ -85,7 +85,7 @@
                     <div class="mb-4">
                         <h5 class="fw-bold border-bottom pb-2">Mô tả sản phẩm</h5>
                         <div class="text-secondary lh-base">
-                            <?= nl2br(htmlspecialchars($product->description)) ?>
+                            <?= ($product->description) ?>
                         </div>
                     </div>
                 <?php endif; ?>

@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class User
@@ -37,4 +38,3 @@ class User
     }
 }
 class_alias('Models\User', 'User');
-?>

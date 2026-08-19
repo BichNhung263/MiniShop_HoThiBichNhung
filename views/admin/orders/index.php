@@ -30,7 +30,7 @@ ob_start();
                     <option value="4" <?= $status === 4 ? 'selected' : '' ?>>Đã hủy</option>
                 </select>
             </div>
-            
+
         </form>
 
         <table class="table table-bordered table-hover align-middle">
@@ -62,12 +62,23 @@ ob_start();
                             <td>
                                 <?php
                                 switch ($order->status) {
-                                    case 0: echo '<span class="badge bg-secondary">Chờ xác nhận</span>'; break;
-                                    case 1: echo '<span class="badge bg-info">Đã xác nhận</span>'; break;
-                                    case 2: echo '<span class="badge bg-warning text-dark">Đang giao</span>'; break;
-                                    case 3: echo '<span class="badge bg-success">Hoàn thành</span>'; break;
-                                    case 4: echo '<span class="badge bg-danger">Đã hủy</span>'; break;
-                                    default: echo '<span class="badge bg-secondary">Chờ xác nhận</span>';
+                                    case 0:
+                                        echo '<span class="badge bg-secondary">Chờ xác nhận</span>';
+                                        break;
+                                    case 1:
+                                        echo '<span class="badge bg-info">Đã xác nhận</span>';
+                                        break;
+                                    case 2:
+                                        echo '<span class="badge bg-warning text-dark">Đang giao</span>';
+                                        break;
+                                    case 3:
+                                        echo '<span class="badge bg-success">Hoàn thành</span>';
+                                        break;
+                                    case 4:
+                                        echo '<span class="badge bg-danger">Đã hủy</span>';
+                                        break;
+                                    default:
+                                        echo '<span class="badge bg-secondary">Chờ xác nhận</span>';
                                 }
                                 ?>
                             </td>

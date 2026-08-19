@@ -14,7 +14,7 @@ ob_start();
             <div class="col-md-4">
                 <form method="GET" class="d-flex">
                     <input
-                        type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>"
+                        type="text" name="keyword" value="<?= ($keyword) ?>"
                         class="form-control" placeholder="Nhập tên danh mục...">
                     <!-- Giữ số sản phẩm/trang -->
                     <input type="hidden" name="limit" value="<?= $limit ?>">
@@ -48,15 +48,17 @@ ob_start();
                             <td><?= $key + 1 ?></td>
                             <td>
                                 <?php if (!empty($category->image)): ?>
-                                     <img src="/MiniShop_HoThiBichNhung/uploads/categories/<?= $category->image ?>"
-                                         alt="<?= $category->catename ?>"
-                                         width="60" height="60" class="img-thumbnail object-fit-cover">
+                                    <img src="/MiniShop_HoThiBichNhung/uploads/categories/<?= $category->image ?>"
+                                        alt="<?= $category->catename ?>"
+                                        width="60" height="60" class="img-thumbnail object-fit-cover">
                                 <?php else: ?>
                                     <span class="badge bg-light text-secondary border">No Image</span>
                                 <?php endif; ?>
                             </td>
                             <td class="fw-semibold"><?= $category->catename ?></td>
-                            <td><?= $category->slug ?></td>
+                            <td>
+                                <?= $category->slug ?>
+                            </td>
                             <td>
                                 <?php if ($category->status == 1): ?>
                                     <span class="badge bg-success">Hiển thị</span>
@@ -81,7 +83,6 @@ ob_start();
                 <?php endif; ?>
             </tbody>
         </table>
-
 
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">

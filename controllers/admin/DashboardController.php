@@ -1,7 +1,9 @@
 <?php
+
 namespace Controllers\Admin;
 
-class DashboardController {
+class DashboardController
+{
 
     public function index()
     {

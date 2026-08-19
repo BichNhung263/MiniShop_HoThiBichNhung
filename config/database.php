@@ -1,4 +1,5 @@
 <?php
+
 namespace Config;
 
 class Database
@@ -35,14 +36,14 @@ class Database
 
     // Trả về đối tượng kết nối MySQLi
     public function getConnection(): \mysqli
-{
-return $this->conn;
-}
-//Đóng kết nối
-public function close(): void
-{
-if (isset($this->conn)) {
-$this->conn->close();
-}
-}
+    {
+        return $this->conn;
+    }
+    //Đóng kết nối
+    public function close(): void
+    {
+        if (isset($this->conn)) {
+            $this->conn->close();
+        }
+    }
 }

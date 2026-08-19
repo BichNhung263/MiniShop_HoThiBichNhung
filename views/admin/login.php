@@ -1,4 +1,5 @@
 <?php
+
 use Middleware\CsrfMiddleware;
 
 if (!isset($errors)) {

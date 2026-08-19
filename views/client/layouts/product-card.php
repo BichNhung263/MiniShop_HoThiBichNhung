@@ -13,8 +13,9 @@
             <a href="<?= BASE_URL ?>/product/<?= $product->slug ?>" class="btn btn-outline-secondary btn-sm" title="Xem chi tiết">
                 <i class="bi bi-eye"></i>
             </a>
-            <button type="button" class="btn btn-primary btn-sm" title="Mua hàng">
-                <i class="bi bi-cart-plus"></i>
+            <button type="button" class="btn btn-primary btn-add-cart"
+                data-productid="<?= $product->id ?>">
+                <i class="fa-solid fa-cart-plus"></i> 🛒
             </button>
         </div>
     </div>

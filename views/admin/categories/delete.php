@@ -16,4 +16,3 @@ if ($id > 0) {
     header("Location: /MiniShop_HoThiBichNhung/admin/category");
     exit();
 }
-?>

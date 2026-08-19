@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class Brand
@@ -27,4 +28,3 @@ class Brand
         $this->status = $status;
     }
 }
-?>

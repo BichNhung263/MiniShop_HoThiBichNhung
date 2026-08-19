@@ -1,4 +1,4 @@
-<?php
+<?php 
 $pageTitle = "Danh sách thương hiệu";
 ob_start();
 ?>
@@ -12,7 +12,7 @@ ob_start();
             <div class="col-md-4">
                 <form method="GET" class="d-flex">
                     <input
-                        type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>"
+                        type="text" name="keyword" value="<?= ($keyword) ?>"
                         class="form-control" placeholder="Nhập tên thương hiệu...">
                     <!-- Giữ số sản phẩm/trang -->
                     <input type="hidden" name="limit" value="<?= $limit ?>">
@@ -46,9 +46,9 @@ ob_start();
                             <td><?= $key + 1 ?></td>
                             <td>
                                 <?php if (!empty($brand->image)): ?>
-                                     <img src="/MiniShop_HoThiBichNhung/uploads/brands/<?= $brand->image ?>"
-                                         alt="<?= $brand->brandname ?>"
-                                         width="60" height="60" class="img-thumbnail object-fit-cover">
+                                    <img src="/MiniShop_HoThiBichNhung/uploads/brands/<?= $brand->image ?>"
+                                        alt="<?= $brand->brandname ?>"
+                                        width="60" height="60" class="img-thumbnail object-fit-cover">
                                 <?php else: ?>
                                     <span class="badge bg-light text-secondary border">No Image</span>
                                 <?php endif; ?>

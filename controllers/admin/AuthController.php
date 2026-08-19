@@ -1,4 +1,5 @@
 <?php
+
 namespace Controllers\Admin;
 
 use DAO\UserDAO;
@@ -69,6 +70,6 @@ class AuthController
         }
 
         header("Location: /MiniShop_HoThiBichNhung/admin/login");
-            exit;
+        exit;
     }
 }

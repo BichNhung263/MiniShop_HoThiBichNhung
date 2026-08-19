@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Models\Product;
@@ -659,7 +660,7 @@ class ProductDAO extends BaseDAO
     }
 
 
-    public function getPage(int $limit, int $offset, string $keyword="")
+    public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
         p.id,
@@ -683,11 +684,11 @@ class ProductDAO extends BaseDAO
         LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
         $keyword = "%$keyword%";
-        $stmt->bind_param("sii",$keyword, $limit, $offset);
+        $stmt->bind_param("sii", $keyword, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $products = [];
-        while ($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
             $product = new Product(
                 $row["category_id"],
                 $row["brand_id"],
@@ -700,12 +701,11 @@ class ProductDAO extends BaseDAO
                 $row["description"],
                 $row["status"]
             );
-            $product->id= $row["id"];
-            $product->cateName= $row["cateName"];
+            $product->id = $row["id"];
+            $product->cateName = $row["cateName"];
             $product->brandName = $row["brandName"];
-            $products[]= $product;
+            $products[] = $product;
         }
         return $products;
     }
 }
-?>

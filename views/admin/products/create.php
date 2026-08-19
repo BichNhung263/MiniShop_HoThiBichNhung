@@ -1,5 +1,6 @@
 <?php
 $pageTitle = "Thêm sản phẩm";
+
 use DAO\CategoryDAO;
 use DAO\BrandDAO;
 use DAO\ProductDAO;

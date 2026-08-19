@@ -1,9 +1,11 @@
 <?php
+
 namespace Controllers\Admin;
 
 use DAO\CategoryDAO;
 
-class CategoryController {
+class CategoryController
+{
 
     public function index()
     {

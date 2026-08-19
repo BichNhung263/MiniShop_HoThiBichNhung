@@ -1,4 +1,5 @@
 <?php
+
 namespace Middleware;
 
 class CsrfMiddleware
@@ -20,11 +21,11 @@ class CsrfMiddleware
         }
 
         $token = $_POST["csrf_token"] ?? "";
-        if (!isset($_SESSION["csrf_token"]) ||
+        if (
+            !isset($_SESSION["csrf_token"]) ||
             !hash_equals($_SESSION["csrf_token"], $token)
         ) {
             die("CSRF Token không hợp lệ.");
         }
     }
 }
-

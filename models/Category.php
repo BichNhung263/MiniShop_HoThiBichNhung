@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class Category
@@ -14,11 +15,11 @@ class Category
     public string $updatedAt;
 
     public function __construct(
-        string $catename="",
-        string $slug="",
-        ?string $description=null,
-        ?string $image=null,
-        int $status=1
+        string $catename = "",
+        string $slug = "",
+        ?string $description = null,
+        ?string $image = null,
+        int $status = 1
     ) {
         $this->catename = $catename;
         $this->slug = $slug;

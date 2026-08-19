@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class Customer
@@ -15,12 +16,12 @@ class Customer
     public string $updatedAt;
 
     public function __construct(
-        string $fullname="",
-        string $email="",
-        string $phone="",
-        ?string $address=null,
-        string $note="",
-        int $status=1
+        string $fullname = "",
+        string $email = "",
+        string $phone = "",
+        ?string $address = null,
+        string $note = "",
+        int $status = 1
     ) {
         $this->fullname = $fullname;
         $this->email = $email;
@@ -30,4 +31,3 @@ class Customer
         $this->status = $status;
     }
 }
-?>

@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class ProductImage
@@ -19,4 +20,3 @@ class ProductImage
         $this->sortOrder = $sortOrder;
     }
 }
-?>

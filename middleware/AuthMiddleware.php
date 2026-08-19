@@ -12,20 +12,10 @@ class AuthMiddleware
             session_start();
         }
 
-        // // Khôi phục đăng nhập bằng cookie
-        // if (!isset($_SESSION["user"]) && isset($_COOKIE["remember_user"])) {
-        //     $userDAO = new UserDAO();
-        //     $user = $userDAO->findByUsername($_COOKIE["remember_user"]);
-
-        //     if ($user) {
-        //         $_SESSION["user"] = $user;
-        //     }
-        // }
-
         // Chưa đăng nhập
         if (!isset($_SESSION["user"])) {
             header("Location: /MiniShop_HoThiBichNhung/admin/login");
-                exit;
+            exit;
         }
 
         // Kiểm tra quyền Admin

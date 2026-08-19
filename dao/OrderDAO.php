@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Models\Order;
@@ -313,7 +314,7 @@ class OrderDAO extends BaseDAO
         }
     }
 
-    public function getPage(int $limit, int $offset, string $keyword="")
+    public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
             o.id,
@@ -333,14 +334,14 @@ class OrderDAO extends BaseDAO
                     WHERE o.order_code LIKE ?
                     ORDER BY o.id DESC
                     LIMIT ? OFFSET ?";
-        
+
         $stmt = $this->conn->prepare($sql);
         $keyword = "%$keyword%";
-        $stmt->bind_param("sii",$keyword, $limit, $offset);
+        $stmt->bind_param("sii", $keyword, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $orders = [];
-        while ($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
             $order = new Order(
                 $row["customer_id"],
                 $row["user_id"],
@@ -359,4 +360,3 @@ class OrderDAO extends BaseDAO
         return $orders;
     }
 }
-

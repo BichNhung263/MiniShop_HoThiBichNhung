@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class OrderDetail
@@ -28,4 +29,3 @@ class OrderDetail
         $this->subtotal = $subtotal;
     }
 }
-?>

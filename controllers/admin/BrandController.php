@@ -1,9 +1,11 @@
 <?php
+
 namespace Controllers\Admin;
 
 use DAO\BrandDAO;
 
-class BrandController {
+class BrandController
+{
 
     public function index()
     {

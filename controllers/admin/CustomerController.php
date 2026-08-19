@@ -1,9 +1,11 @@
 <?php
+
 namespace Controllers\Admin;
 
 use DAO\CustomerDAO;
 
-class CustomerController {
+class CustomerController
+{
 
     public function index()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace DAO;
 
 use Models\Customer;
@@ -151,7 +152,7 @@ class CustomerDAO extends BaseDAO
         }
     }
 
-    public function getPage(int $limit, int $offset, string $keyword="")
+    public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
             id, fullname, phone, email, address, note, status, created_at, updated_at
@@ -161,11 +162,11 @@ class CustomerDAO extends BaseDAO
             LIMIT ? OFFSET ?";
         $stmt = $this->conn->prepare($sql);
         $keyword = "%$keyword%";
-        $stmt->bind_param("sii",$keyword, $limit, $offset);
+        $stmt->bind_param("sii", $keyword, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $customers = [];
-        while ($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
             $customer = new Customer(
                 $row["fullname"],
                 $row["phone"],
@@ -182,4 +183,3 @@ class CustomerDAO extends BaseDAO
         return $customers;
     }
 }
-?>

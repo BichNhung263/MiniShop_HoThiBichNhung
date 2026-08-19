@@ -3,7 +3,8 @@ $pageTitle = "Thêm người dùng";
 
 $errors = [];
 $fullname = $username = $password = $email = $phone = $address = "";
-$role = 0; $status = 1;
+$role = 0;
+$status = 1;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     \Middleware\CsrfMiddleware::verify();

@@ -4,7 +4,10 @@ $pageTitle = "Chi tiết sản phẩm";
 $dao = new \DAO\ProductDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $product = $dao->findById($id);
-if (!$product) { header("Location: /MiniShop_HoThiBichNhung/admin/product"); exit(); }
+if (!$product) {
+    header("Location: /MiniShop_HoThiBichNhung/admin/product");
+    exit();
+}
 
 // Gọi phương thức getImagesByProductId($productId)
 $productImages = $dao->getImagesByProductId($id);
@@ -79,7 +82,10 @@ ob_start();
                         <?php endif; ?>
                     </td>
                 </tr>
-                <tr><th>Ngày tạo</th><td><?= !empty($product->createdAt) ? date('d/m/Y H:i:s', strtotime($product->createdAt)) : '-' ?></td></tr>
+                <tr>
+                    <th>Ngày tạo</th>
+                    <td><?= !empty($product->createdAt) ? date('d/m/Y H:i:s', strtotime($product->createdAt)) : '-' ?></td>
+                </tr>
             </table>
 
             <!-- Hiển thị Gallery - chỉ xem hình ảnh -->

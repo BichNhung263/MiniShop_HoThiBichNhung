@@ -4,7 +4,10 @@ $pageTitle = "Chi tiết thương hiệu";
 $dao = new \DAO\BrandDAO();
 $id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
 $brand = $dao->findById($id);
-if (!$brand) { header("Location: /MiniShop_HoThiBichNhung/admin/brand"); exit(); }
+if (!$brand) {
+    header("Location: /MiniShop_HoThiBichNhung/admin/brand");
+    exit();
+}
 ob_start();
 ?>
 <main class="container my-4">

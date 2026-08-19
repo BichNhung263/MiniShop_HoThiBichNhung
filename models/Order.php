@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class Order
@@ -34,4 +35,3 @@ class Order
         $this->status = $status;
     }
 }
-?>

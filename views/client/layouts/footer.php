@@ -32,28 +32,28 @@
 
                     <li class="mb-2">
                         <a href="#"
-                           class="text-secondary text-decoration-none">
+                            class="text-secondary text-decoration-none">
                             Giới thiệu
                         </a>
                     </li>
 
                     <li class="mb-2">
                         <a href="#"
-                           class="text-secondary text-decoration-none">
+                            class="text-secondary text-decoration-none">
                             Chính sách bảo hành
                         </a>
                     </li>
 
                     <li class="mb-2">
                         <a href="#"
-                           class="text-secondary text-decoration-none">
+                            class="text-secondary text-decoration-none">
                             Chính sách đổi trả
                         </a>
                     </li>
 
                     <li>
                         <a href="#"
-                           class="text-secondary text-decoration-none">
+                            class="text-secondary text-decoration-none">
                             Liên hệ
                         </a>
                     </li>

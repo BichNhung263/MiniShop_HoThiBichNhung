@@ -25,9 +25,7 @@ spl_autoload_register(function ($className) {
     }
 });
 
-if (!defined('BASE_URL')) {
-    define('BASE_URL', '/MiniShop_HoThiBichNhung');
-}
-if (!defined('PRODUCT_IMAGE_URL')) {
-    define('PRODUCT_IMAGE_URL', BASE_URL . '/uploads/products/');
+// Nạp file cấu hình toàn cục
+if (file_exists(__DIR__ . '/config/config.php')) {
+    require_once __DIR__ . '/config/config.php';
 }
