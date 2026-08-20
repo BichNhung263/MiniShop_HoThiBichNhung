@@ -9,7 +9,6 @@ spl_autoload_register(function ($className) {
         'Composers\\' => __DIR__ . '/composers/',
         'Services\\' => __DIR__ . '/services/',
     ];
-
     foreach ($prefixes as $prefix => $baseDir) {
         // Kiểm tra class có thuộc namespace này không
         if (str_starts_with($className, $prefix)) {
@@ -25,8 +24,6 @@ spl_autoload_register(function ($className) {
         }
     }
 });
-
-// Nạp file cấu hình toàn cục
 if (file_exists(__DIR__ . '/config/config.php')) {
     require_once __DIR__ . '/config/config.php';
 }

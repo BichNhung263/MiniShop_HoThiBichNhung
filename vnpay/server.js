@@ -24,7 +24,7 @@ app.get("/payment", async (req, res) => {
             vnp_TxnRef: orderId + moment().format('HHmmss'),
             vnp_OrderInfo: 'ThanhToanDonHang' + orderId,
             vnp_OrderType: 'other',
-            vnp_ReturnUrl: 'http://localhost:5173/vnpay-return',
+            vnp_ReturnUrl: 'http://localhost/MiniShop_HoThiBichNhung/cart/vnpay_return',
             vnp_Locale: 'vn',
             vnp_CreateDate: moment().format('YYYYMMDDHHmmss'),
             vnp_BankCode: 'NCB',

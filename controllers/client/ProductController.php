@@ -23,7 +23,6 @@ class ProductController
         $content = ob_get_clean();
         require __DIR__ . "/../../views/client/layouts/master.php";
     }
-    
     // Sản phẩm theo thương hiệu
     public function brand()
     {

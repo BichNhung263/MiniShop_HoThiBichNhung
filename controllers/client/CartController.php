@@ -20,13 +20,13 @@ class CartController
     }
     public function add()
     {
-        // 1. Khởi tạo Cart nếu chưa có
+        //Khởi tạo Cart nếu chưa có
         if (!isset($_SESSION[CART_SESSION_KEY])) {
             $_SESSION[CART_SESSION_KEY] = [];
         }
-        // 2. Nhận productid từ AJAX
+        //Nhận productid từ AJAX
         $productid = $_POST["productid"] ?? null;
-        // 3. Kiểm tra productid
+        //Kiểm tra productid
         if (!$productid) {
             echo json_encode([
                 "success" => false,
@@ -34,9 +34,9 @@ class CartController
             ]);
             exit;
         }
-        // 4. Lấy sản phẩm từ Database
+        //Lấy sản phẩm từ Database
         $product = $this->productDAO->findById($productid);
-        // 5. Kiểm tra sản phẩm
+        //Kiểm tra sản phẩm
         if (!$product) {
             echo json_encode([
                 "success" => false,
@@ -44,16 +44,16 @@ class CartController
             ]);
             exit;
         }
-        // 6. Xác định giá bán
+        //Xác định giá bán
         $price = $product->pricediscount > 0
             ? $product->pricediscount
             : $product->price;
-        // 7. Kiểm tra sản phẩm đã có trong Cart chưa
+        //Kiểm tra sản phẩm đã có trong Cart chưa
         if (isset($_SESSION[CART_SESSION_KEY][$productid])) {
-            // Đã có -> tăng số lượng
+            // Đã có 
             $_SESSION[CART_SESSION_KEY][$productid]["quantity"]++;
         } else {
-            // Chưa có -> thêm sản phẩm
+            // Chưa có
             $_SESSION[CART_SESSION_KEY][$productid] = [
                 "productid"   => $product->id,
                 "productname" => $product->proname,
@@ -62,12 +62,12 @@ class CartController
                 "quantity"    => 1
             ];
         }
-        // 8. Tính tổng số lượng trong Cart
+        //Tính tổng số lượng trong Cart
         $cartCount = 0;
         foreach ($_SESSION[CART_SESSION_KEY] as $item) {
             $cartCount += $item["quantity"];
         }
-        // 9. Trả JSON
+        //Trả JSON
         echo json_encode([
             "success" => true,
             "message" => "Đã thêm sản phẩm vào giỏ hàng",
@@ -95,10 +95,10 @@ class CartController
     }
     public function update()
     {
-        // 1. Nhận dữ liệu từ AJAX
+        //Nhận dữ liệu từ AJAX
         $productid = $_POST["productid"] ?? null;
         $quantity = (int)($_POST["quantity"] ?? 1);
-        // 2. Kiểm tra sản phẩm có trong Cart không
+        //Kiểm tra sản phẩm có trong Cart không
         if ($productid && isset($_SESSION[CART_SESSION_KEY][$productid])) {
             if ($quantity > 0) {
                 $_SESSION[CART_SESSION_KEY][$productid]["quantity"] = $quantity;
@@ -106,14 +106,14 @@ class CartController
                 unset($_SESSION[CART_SESSION_KEY][$productid]);
             }
         }
-        // 3. Tính lại tổng số lượng trong Cart
+        //Tính lại tổng số lượng trong Cart
         $cartCount = 0;
         if (isset($_SESSION[CART_SESSION_KEY])) {
             foreach ($_SESSION[CART_SESSION_KEY] as $item) {
                 $cartCount += $item["quantity"];
             }
         }
-        // 4. Trả JSON
+        //Trả JSON
         echo json_encode([
             "success"   => true,
             "cartCount" => $cartCount
@@ -122,20 +122,20 @@ class CartController
     }
     public function remove()
     {
-        // 1. Nhận productid từ AJAX
+        //Nhận productid từ AJAX
         $productid = $_POST["productid"] ?? null;
-        // 2. Kiểm tra sản phẩm có trong Cart không
+        //Kiểm tra sản phẩm có trong Cart không
         if ($productid && isset($_SESSION[CART_SESSION_KEY][$productid])) {
             unset($_SESSION[CART_SESSION_KEY][$productid]);
         }
-        // 3. Tính lại tổng số lượng trong Cart
+        //Tính lại tổng số lượng trong Cart
         $cartCount = 0;
         if (isset($_SESSION[CART_SESSION_KEY])) {
             foreach ($_SESSION[CART_SESSION_KEY] as $item) {
                 $cartCount += $item["quantity"];
             }
         }
-        // 4. Trả JSON
+        //Trả JSON
         echo json_encode([
             "success"   => true,
             "message"   => "Đã xóa sản phẩm khỏi giỏ hàng",
@@ -143,7 +143,7 @@ class CartController
         ]);
         exit;
     }
-    // Lấy số lượng trên Header
+    //Lấy số lượng trên Header
     public function count()
     {
     }
@@ -159,42 +159,42 @@ class CartController
             require __DIR__ . "/../../views/client/layouts/master.php";
             return;
         }
-        // 1. Nhận dữ liệu từ form
+        //Nhận dữ liệu từ form
         $fullname      = trim($_POST["fullname"] ?? "");
         $email         = trim($_POST["email"] ?? ($_SESSION["client_user"]["email"] ?? ""));
         $phone         = trim($_POST["phone"] ?? "");
         $address       = trim($_POST["address"] ?? "");
         $note          = trim($_POST["note"] ?? "");
         $paymentMethod = trim($_POST["payment_method"] ?? "cod");
-        // 2. Kiểm tra dữ liệu và giỏ hàng
+        //Kiểm tra dữ liệu và giỏ hàng
         if (empty($fullname) || empty($phone) || empty($address) || empty($cart)) {
             $_SESSION["order_error"] = "Vui lòng nhập đầy đủ thông tin bắt buộc và kiểm tra giỏ hàng!";
             header("Location: " . BASE_URL . "/cart/checkout");
             exit;
         }
-        // 3. Tính tổng tiền
+        //Tính tổng tiền
         $total = 0;
         foreach ($cart as $item) {
             $total += $item["price"] * $item["quantity"];
         }
         try {
-            // 4. Bắt đầu Transaction
+            // Bắt đầu Transaction
             $this->customerDAO->beginTransaction();
-            // 5. Tìm Customer theo số điện thoại
+            //Tìm Customer theo số điện thoại
             $customer = $this->customerDAO->findByPhone($phone);
             if (!$customer) {
-                // Chưa tồn tại -> tạo Customer mới
+                //Chưa tồn tại -> tạo Customer mới
                 $customer = new Customer($fullname, $email, $phone, $address, $note);
                 $this->customerDAO->insert($customer);
             }
-            // Lấy ID người dùng nếu đã đăng nhập (để liên kết đơn hàng với tài khoản khách hàng)
+            //Lấy ID người dùng nếu đã đăng nhập (để liên kết đơn hàng với tài khoản khách hàng)
             $userId = isset($_SESSION["client_user"]) ? (int)$_SESSION["client_user"]["id"] : null;
-            // 6. Lưu Order
+            //Lưu Order
             $orderCode = "ORD" . date("YmdHis");
             $orderNote = $note . ($paymentMethod === "vnpay" ? " [VNPAY]" : " [COD]");
             $order = new Order($customer->id, $userId, $orderCode, $total, $orderNote, 0);
             $this->orderDAO->insert($order);
-            // 7. Lưu các OrderDetail
+            //Lưu các OrderDetail
             foreach ($cart as $item) {
                 $subtotal = $item["price"] * $item["quantity"];
                 $detail = new OrderDetail(
@@ -206,23 +206,17 @@ class CartController
                 );
                 $this->orderDAO->insertDetail($detail);
             }
-            // 8. Thành công 
+            //Thành công 
             $this->customerDAO->commit();
-            //Gửi email xác nhận đơn hàng
-            if (!empty($email)) {
-                $subject = "Xác nhận đơn hàng: " . $orderCode . " - MiniShop";
-                $body = "Xin chào " . $fullname . ",\n\n"
-                      . "Cảm ơn bạn đã đặt hàng tại MiniShop!\n"
-                      . "Mã đơn hàng của bạn là: " . $orderCode . "\n"
-                      . "Tổng tiền thanh toán: " . number_format($total, 0, ',', '.') . " VNĐ\n\n"
-                      . "Chúng tôi sẽ xử lý và giao hàng cho bạn trong thời gian sớm nhất.\n"
-                      . "Trân trọng,\nMiniShop";
-                $headers = "From: bichnhung@minishop.com\r\n"
-                         . "Content-Type: text/plain; charset=UTF-8\r\n";
-                @mail($email, $subject, $body, $headers);
-            }
-            // Nếu chọn thanh toán VNPAY
+            // Gửi email xác nhận đơn hàng & lưu nhật ký email_logs
+            $this->sendOrderSuccessEmail($email, $fullname, $orderCode, $total, $paymentMethod);
             if ($paymentMethod === "vnpay") {
+                // Lưu session tạm để vnpay_return dùng lại gửi mail hoặc hiển thị
+                $_SESSION['pending_vnpay_order'] = [
+                    'email' => $email,
+                    'fullname' => $fullname,
+                    'total' => $total
+                ];
                 $vnpayUrl = \Services\VNPayService::createPaymentUrl($orderCode, $total);
                 header("Location: " . $vnpayUrl);
                 exit;
@@ -247,12 +241,18 @@ class CartController
     // Kết quả trả về từ VNPAY sau khi thanh toán
     public function vnpay_return()
     {
-        $isValid = \Services\VNPayService::validateReturn($_GET);
+        $isValid   = \Services\VNPayService::validateReturn($_GET);
         $orderCode = $_GET['vnp_TxnRef'] ?? '';
         if ($isValid) {
+            // Gửi email xác nhận thanh toán VNPAY thành công
+            if (!empty($_SESSION['pending_vnpay_order'])) {
+                $info = $_SESSION['pending_vnpay_order'];
+                $this->sendOrderSuccessEmail($info['email'], $info['fullname'], $orderCode, $info['total'], 'vnpay');
+                unset($_SESSION['pending_vnpay_order']);
+            }
             // Xóa Cart trong Session
             unset($_SESSION[CART_SESSION_KEY]);
-            $title = "Thanh toán VNPAY thành công";
+            $title = "Đặt hàng thành công";
             $orderSuccess = true;
             ob_start();
             require __DIR__ . "/../../views/client/cart/checkout.php";
@@ -263,6 +263,95 @@ class CartController
             $_SESSION["order_error"] = "Thanh toán qua VNPAY thất bại hoặc bị hủy.";
             header("Location: " . BASE_URL . "/cart/checkout");
             exit;
+        }
+    }
+    // Hàm phụ trợ gửi Email THẬT qua Gmail SMTP và Lưu Nhật Ký email_logs
+    private function sendOrderSuccessEmail(string $email, string $fullname, string $orderCode, float $total, string $paymentMethod)
+    {
+        if (empty($email)) return;
+        $methodName = ($paymentMethod === 'vnpay') ? 'VNPAY Online' : 'Thanh toán khi nhận hàng (COD)';
+        $subject = "Xác nhận đơn hàng #" . $orderCode . " - MiniShop";
+        $body = "Xin chào " . $fullname . ",\n\n"
+              . "Cảm ơn bạn đã mua sắm tại MiniShop!\n"
+              . "--------------------------------------------------\n"
+              . "Mã đơn hàng: " . $orderCode . "\n"
+              . "Phương thức thanh toán: " . $methodName . "\n"
+              . "Tổng tiền thanh toán: " . number_format($total, 0, ',', '.') . " VNĐ\n"
+              . "--------------------------------------------------\n"
+              . "Đơn hàng của bạn đã được xác nhận thành công và đang được xử lý.\n\n"
+              . "Trân trọng,\n"
+              . "Đội ngũ MiniShop";
+        //Thử gửi qua Gmail SMTP trực tiếp
+        $sent = $this->sendGmailSMTP($email, $subject, $body);
+        //Dự phòng bằng mail() mặc định
+        if (!$sent) {
+            $headers = "From: bichnhung263@gmail.com\r\n"
+                     . "Reply-To: bichnhung263@gmail.com\r\n"
+                     . "Content-Type: text/plain; charset=UTF-8\r\n";
+            @mail($email, $subject, $body, $headers);
+        }
+        //Lưu lịch sử vào bảng email_logs trong CSDL
+        try {
+            $db = $this->customerDAO->getConnection();
+            $status = $sent ? 'sent' : 'logged';
+            $stmt = $db->prepare("INSERT INTO email_logs (recipient_email, subject, body, status) VALUES (?, ?, ?, ?)");
+            if ($stmt) {
+                $stmt->bind_param("ssss", $email, $subject, $body, $status);
+                $stmt->execute();
+            }
+        } catch (\Exception $e) {
+            // Không ngắt luồng nếu lưu log lỗi
+        }
+    }
+    // Gửi Gmail SMTP socket trực tiếp không qua file trung gian
+    private function sendGmailSMTP(string $toEmail, string $subject, string $bodyContent): bool
+    {
+        $user = "bichnhung263@gmail.com";
+        $pass = str_replace(' ', '', "ggxr wodx oazs fiub"); 
+        if (empty($pass)) return false;
+        try {
+            $socket = @fsockopen("ssl://smtp.gmail.com", 465, $errno, $errstr, 15);
+            if (!$socket) return false;
+            $read = function($sock) {
+                $res = "";
+                while ($line = fgets($sock, 512)) {
+                    $res .= $line;
+                    if (substr($line, 3, 1) == ' ') break;
+                }
+                return $res;
+            };
+            $read($socket);
+            fputs($socket, "EHLO localhost\r\n");
+            $read($socket);
+            fputs($socket, "AUTH LOGIN\r\n");
+            $read($socket);
+            fputs($socket, base64_encode($user) . "\r\n");
+            $read($socket);
+            fputs($socket, base64_encode($pass) . "\r\n");
+            $authRes = $read($socket);
+            if (strpos($authRes, '235') === false) { 
+                fclose($socket); 
+                return false; 
+            }
+            fputs($socket, "MAIL FROM: <$user>\r\n");
+            $read($socket);
+            fputs($socket, "RCPT TO: <$toEmail>\r\n");
+            $read($socket);
+            fputs($socket, "DATA\r\n");
+            $read($socket);
+            $headers  = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $headers .= "From: MiniShop <$user>\r\n";
+            $headers .= "To: <$toEmail>\r\n";
+            $headers .= "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n";
+            $msg = $headers . "\r\n" . nl2br($bodyContent) . "\r\n.\r\n";
+            fputs($socket, $msg);
+            $read($socket);
+            fputs($socket, "QUIT\r\n"); 
+            fclose($socket);
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 }

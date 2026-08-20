@@ -1,53 +1,42 @@
 <?php
 
 use Composers\HeaderComposer;
-
 $headerData = HeaderComposer::compose();
 $categories = $headerData['categories'];
 $brands = $headerData['brands'];
-
 $baseUrl = defined('BASE_URL') ? BASE_URL : '/MiniShop_HoThiBichNhung';
 $keyword = $_GET['keyword'] ?? '';
 ?>
-
 <header class="bg-dark shadow-sm">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <!-- LOGO -->
             <a class="navbar-brand fw-bold d-flex align-items-center"
                 href="<?= $baseUrl ?>">
-                
                 MiniShop
             </a>
-
             <!-- BUTTON MOBILE -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
             data-bs-target="#clientNavbar" aria-controls="clientNavbar" 
             aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <!-- MENU -->
             <div class="collapse navbar-collapse" id="clientNavbar">
-                <!-- MENU BÊN TRÁI -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <!-- TRANG CHỦ -->
                     <li class="nav-item">
                         <a class="nav-link"
                             href="<?= $baseUrl ?>">
-
                             Trang chủ
                         </a>
                     </li>
-
                     <!-- DANH MỤC -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
                             Danh mục
                         </a>
-
                         <ul class="dropdown-menu shadow">
                             <?php foreach ($categories as $category): ?>
                                 <li>
@@ -59,15 +48,12 @@ $keyword = $_GET['keyword'] ?? '';
                             <?php endforeach; ?>
                         </ul>
                     </li>
-
                     <!-- THƯƠNG HIỆU -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-
                             Thương hiệu
                         </a>
-
                         <ul class="dropdown-menu shadow">
                             <?php foreach ($brands as $brand): ?>
                                 <li>
@@ -79,9 +65,7 @@ $keyword = $_GET['keyword'] ?? '';
                             <?php endforeach; ?>
                         </ul>
                     </li>
-
                 </ul>
-
                 <!-- THANH TÌM KIẾM -->
                 <form class="d-flex me-lg-3 mb-2 mb-lg-0" action="<?= BASE_URL ?>/search" method="GET">
                     <div class="input-group">
@@ -92,7 +76,6 @@ $keyword = $_GET['keyword'] ?? '';
                         </button>
                     </div>
                 </form>
-
                 <!-- ĐĂNG NHẬP / ĐĂNG XUẤT -->
                 <?php if (isset($_SESSION["client_user"])): ?>
                     <a href="<?= $baseUrl ?>/admin/dashboard" class="text-light text-decoration-none me-2 mb-2 mb-lg-0" title="Trang quản trị Admin">
@@ -109,7 +92,6 @@ $keyword = $_GET['keyword'] ?? '';
                         <i class="bi bi-person"></i>
                     </a>
                 <?php endif; ?>
-
                 <!-- GIỎ HÀNG -->
                 <a href="<?= BASE_URL ?>/cart"
                     class="btn btn-warning position-relative">

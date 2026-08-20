@@ -5,13 +5,11 @@ session_start();
 $area = $_GET["area"] ?? null; 
 $controller = $_GET["controller"] ?? null;
 $action = $_GET["action"] ?? null;
-
 if ($area === null) {
     $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
     $base = '/MiniShop_HoThiBichNhung';
     $path = trim(substr($uri, strlen($base)), '/');
     $segs = $path !== '' ? explode('/', $path) : [];
-
     if (count($segs) > 0 && $segs[0] === 'admin') {
         $area = 'admin';
         $seg1 = $segs[1] ?? '';
@@ -36,17 +34,14 @@ if ($area === null) {
         $area = 'client';
     }
 }
-
 // Giá trị mặc định nếu chưa có
 $area = $area ?? 'client';
 $controller = $controller ?? 'home';
 $action = $action ?? 'index';
-
 //kiểm tra Authentication cho Admin
 if ($area === "admin" && $controller !== "auth") {
     \Middleware\AuthMiddleware::handle();
 }
-
 //Kiểm tra Guest
 if ($area === "admin" && $controller === "auth" && $action === "login") {
     \Middleware\GuestMiddleware::handle();
@@ -61,19 +56,15 @@ if ($area === "admin") {
 } else {
     $controllerClass = "Controllers\\Client\\" . ucfirst($controller) . "Controller";
 }
-
 // Kiểm tra Controller
 if (!class_exists($controllerClass)) {
     die("Controller không tồn tại");
 }
-
 // Tạo Controller
 $controllerObject = new $controllerClass();
-
 // Kiểm tra Action
 if (!method_exists($controllerObject, $action)) {
     die("Action không tồn tại");
 }
-
 // Gọi Action
 $controllerObject->$action();

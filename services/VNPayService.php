@@ -5,64 +5,102 @@ namespace Services;
 class VNPayService
 {
     /**
-     * Tạo URL chuyển sang cổng thanh toán VNPAY
+     * Lấy IP thực của client
      */
-    public static function createPaymentUrl(string $orderCode, float $totalAmount): string
+    private static function getClientIp(): string
     {
-        $vnpUrl = VNP_URL;
-        $vnp_Returnurl = VNP_RETURN_URL;
-        $vnp_TmnCode = VNP_TMN_CODE;
-        $vnp_HashSecret = VNP_HASH_SECRET;
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ip = trim($ips[0]);
+        }
+        if ($ip === '::1' || filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
+            $ip = '127.0.0.1';
+        }
+        return $ip;
+    }
 
-        $vnp_TxnRef = $orderCode;
+    /**
+     * Tạo URL chuyển sang cổng thanh toán VNPAY (Chuẩn VNPAY v2.1.0)
+     */
+    public static function createPaymentUrl(string $orderCode, float $totalAmount, string $bankCode = "NCB"): string
+    {
+        $vnpUrl         = VNP_URL;
+        $vnp_Returnurl  = VNP_RETURN_URL;
+        $vnp_TmnCode    = trim(VNP_TMN_CODE);
+        $vnp_HashSecret = trim(VNP_HASH_SECRET);
+
+        $vnp_TxnRef    = $orderCode;
         $vnp_OrderInfo = "ThanhToanDonHang" . $orderCode;
         $vnp_OrderType = "other";
-        $vnp_Amount = (int)($totalAmount * 100);
-        $vnp_Locale = "vn";
-        $vnp_IpAddr = "127.0.0.1";
+        $vnp_Amount    = (int)($totalAmount * 100);
+        $vnp_Locale    = "vn";
+        $vnp_IpAddr    = self::getClientIp();
 
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $now = date('YmdHis');
-        // Nếu đồng hồ máy tính bị chỉnh sang năm 2026 -> chuyển lại năm 2024 để khớp với Server VNPAY
-        if (str_starts_with($now, '2026')) {
-            $now = '2024' . substr($now, 4);
-        }
-        $vnp_CreateDate = $now;
-        $inputData = array(
-            "vnp_Amount" => $vnp_Amount,
-            "vnp_BankCode" => "NCB",
-            "vnp_Command" => "pay",
+        $vnp_CreateDate = date('YmdHis');
+
+        $inputData = [
+            "vnp_Version"    => "2.1.0",
+            "vnp_TmnCode"    => $vnp_TmnCode,
+            "vnp_Amount"     => $vnp_Amount,
+            "vnp_Command"    => "pay",
             "vnp_CreateDate" => $vnp_CreateDate,
-            "vnp_CurrCode" => "VND",
-            "vnp_IpAddr" => $vnp_IpAddr,
-            "vnp_Locale" => $vnp_Locale,
-            "vnp_OrderInfo" => $vnp_OrderInfo,
-            "vnp_OrderType" => $vnp_OrderType,
-            "vnp_ReturnUrl" => $vnp_Returnurl,
-            "vnp_TmnCode" => $vnp_TmnCode,
-            "vnp_TxnRef" => $vnp_TxnRef,
-            "vnp_Version" => "2.1.0",
-        );
+            "vnp_CurrCode"   => "VND",
+            "vnp_IpAddr"     => $vnp_IpAddr,
+            "vnp_Locale"     => $vnp_Locale,
+            "vnp_OrderInfo"  => $vnp_OrderInfo,
+            "vnp_OrderType"  => $vnp_OrderType,
+            "vnp_ReturnUrl"  => $vnp_Returnurl,
+            "vnp_TxnRef"     => $vnp_TxnRef
+        ];
+
+        if (!empty($bankCode)) {
+            $inputData['vnp_BankCode'] = $bankCode;
+        }
+
         ksort($inputData);
-        $hashData = http_build_query($inputData, '', '&', PHP_QUERY_RFC3986);
-        $vnpSecureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
-        $vnp_Url = $vnpUrl . "?" . $hashData . "&vnp_SecureHash=" . $vnpSecureHash;
+        $query = "";
+        $i = 0;
+        $hashdata = "";
+        foreach ($inputData as $key => $value) {
+            if ($i == 1) {
+                $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+            } else {
+                $hashdata .= urlencode($key) . "=" . urlencode($value);
+                $i = 1;
+            }
+            $query .= urlencode($key) . "=" . urlencode($value) . '&';
+        }
+
+        $vnp_Url = $vnpUrl . "?" . $query;
+        if (isset($vnp_HashSecret)) {
+            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+            $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+        }
 
         return $vnp_Url;
     }
 
+    /**
+     * Xác thực kết quả trả về từ VNPAY (Chuẩn VNPAY v2.1.0)
+     */
     public static function validateReturn(array $queryParams): bool
     {
         $vnp_SecureHash = $queryParams['vnp_SecureHash'] ?? '';
-        $vnp_HashSecret = VNP_HASH_SECRET;
+        $vnp_HashSecret = trim(VNP_HASH_SECRET);
 
-        $inputData = array();
+        $inputData = [];
         foreach ($queryParams as $key => $value) {
             if (substr($key, 0, 4) == "vnp_") {
                 $inputData[$key] = $value;
             }
         }
+
         unset($inputData['vnp_SecureHash']);
+        unset($inputData['vnp_SecureHashType']);
         ksort($inputData);
 
         $i = 0;
@@ -77,6 +115,8 @@ class VNPayService
         }
 
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
-        return (hash_equals($secureHash, $vnp_SecureHash) && ($queryParams['vnp_ResponseCode'] ?? '') === '00');
+
+        return hash_equals(strtolower($secureHash), strtolower($vnp_SecureHash))
+            && ($queryParams['vnp_ResponseCode'] ?? '') === '00';
     }
 }

@@ -43,3 +43,104 @@ footer a:hover {
     color: #fff !important;
     text-decoration: underline !important;
 }
+@media (max-width: 991.98px) {
+    .navbar-brand {
+        font-size: 1.15rem;
+    }
+    header form {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    .banner-content {
+        padding: 20px 15px !important;
+        min-height: 260px !important;
+    }
+    .banner-slide-1, .banner-slide-2, .banner-slide-3 {
+        min-height: 260px !important;
+    }
+    #homeBanner h1 {
+        font-size: 1.6rem !important;
+    }
+    #homeBanner p {
+        font-size: 0.95rem !important;
+    }
+}
+@media (max-width: 575.98px) {
+    .card-img-top {
+        height: 150px !important;
+    }
+    .card-body {
+        padding: 0.75rem;
+    }
+    .card-body h5 {
+        font-size: 0.95rem;
+    }
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
+@media (min-width: 992px) {
+    #homeBanner h1 {
+        font-size: 2.5rem;
+    }
+}
+/* BANNER */
+.banner-slide-1 {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+    min-height: 320px;
+}
+.banner-slide-2 {
+    background: linear-gradient(135deg, #0d6efd 0%, #6f42c1 100%) !important;
+    min-height: 320px;
+}
+.banner-slide-3 {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important;
+    min-height: 320px;
+}
+.banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    padding: 40px 20px;
+    color: #fff;
+    text-align: center;
+}
+.banner-icon {
+    font-size: 4rem;
+    margin-bottom: 12px;
+}
+.banner-badge-yellow {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+    border-radius: 20px;
+    font-size: .85rem;
+}
+.banner-badge-white {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    font-size: .85rem;
+}
+.banner-title {
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+.banner-desc {
+    opacity: .82;
+    font-size: 1.05rem;
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+}
+#homeBanner .carousel-indicators button {
+    width: 30px;
+    border-radius: 10px;
+}
+
