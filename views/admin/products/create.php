@@ -1,144 +1,7 @@
 <?php
-$pageTitle = "Thêm sản phẩm";
-
-use DAO\CategoryDAO;
-use DAO\BrandDAO;
-use DAO\ProductDAO;
-use Middleware\CsrfMiddleware;
-
-$categoryDAO = new \DAO\CategoryDAO();
-$brandDAO = new \DAO\BrandDAO();
-
-$categories = $categoryDAO->getAll();
-$brands = $brandDAO->getAll();
-$errors = [];
-$message = "";
-$proname = $slug = $description = "";
-$categoryId = $brandId = 0;
-$price = 0;
-$discountPrice = 0;
-$quantity = 0;
-$status = 1;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    // Đọc dữ liệu từ Form
-    $categoryid = (int)($_POST["categoryId"] ?? 0);
-    $brandid = (int)($_POST["brandId"] ?? 0);
-    $productname = trim($_POST["proname"] ?? "");
-    $slug = trim($_POST["slug"] ?? "");
-    $price = (float)($_POST["price"] ?? 0);
-    $pricediscount = (float)($_POST["discountPrice"] ?? 0);
-    $quantity = (int)($_POST["quantity"] ?? 0);
-    $description = trim($_POST["description"] ?? "");
-    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 0;
-    $fileName = $_FILES["image"] ?? "";
-    $image = "";
-
-    // Đọc thông tin hình ảnh
-    $fileName = $_FILES["image"]["name"] ?? "";
-    $tmpName = $_FILES["image"]["tmp_name"] ?? "";
-    $fileSize = $_FILES["image"]["size"] ?? 0;
-    $Error = $_FILES["image"]["error"] ?? 0;
-
-    $errors = [];
-
-    // Validation
-    if ($productname == "") {
-        $errors[] = "Tên sản phẩm không được để trống.";
-    }
-    if ($slug == "") {
-        $errors[] = "Slug không được để trống.";
-    }
-    if ($categoryid == 0) {
-        $errors[] = "Vui lòng chọn danh mục.";
-    }
-    if ($brandid == 0) {
-        $errors[] = "Vui lòng chọn thương hiệu.";
-    }
-    if ($price <= 0) {
-        $errors[] = "Giá bán phải lớn hơn 0.";
-    }
-    if ($quantity < 0) {
-        $errors[] = "Số lượng không hợp lệ.";
-    }
-
-    // Validation hình ảnh
-    if ($fileName != "") {
-        if ($Error != UPLOAD_ERR_OK) {
-            $errors[] = "Upload hình ảnh không thành công.";
-        }
-
-        $allowExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-        if ($fileName != "" && !in_array($extension, $allowExtensions)) {
-            $errors[] = "Chỉ cho phép file JPG, JPEG, PNG hoặc WEBP.";
-        }
-
-        $maxSize = 200 * 1024;
-        if ($fileName != "" && $fileSize > $maxSize) {
-            $errors[] = "Kích thước hình ảnh <= 200 KB.";
-        }
-    }
-
-    // Nếu không có lỗi
-    if (empty($errors)) {
-        if ($fileName != "") {
-            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            $image = time() . "_" . $slug . "." . $extension;
-            $uploadDir = __DIR__ . "/../../../uploads/products/" . $image;
-            move_uploaded_file($tmpName, $uploadDir);
-        }
-
-        // + Tạo Product
-        $product = new \Models\Product(
-            $categoryid,
-            $brandid,
-            $productname,
-            $slug,
-            $price,
-            $pricediscount,
-            $quantity,
-            $image,
-            $description,
-            $status
-        );
-
-        // + Lưu CSDL
-        $productDAO = new \DAO\ProductDAO();
-        if ($productDAO->insert($product)) {
-            $productId = $product->id;
-
-            // Đọc dữ liệu Upload
-            // Sử dụng vòng lặp để Upload từng file
-            foreach ($_FILES["images"]["name"] as $key => $imgName) {
-                if ($_FILES["images"]["error"][$key] == UPLOAD_ERR_OK) {
-                    $imgExt = strtolower(pathinfo($imgName, PATHINFO_EXTENSION));
-                    $imgNew = time() . "_" . $key . "_" . $slug . "." . $imgExt;
-                    $imgPath = __DIR__ . "/../../../uploads/products/" . $imgNew;
-                    if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $imgPath)) {
-                        // Lưu vào bảng product_images
-                        $productDAO->insertImage($productId, $imgNew);
-                    }
-                }
-            }
-
-            header("Location: /MiniShop_HoThiBichNhung/admin/product");
-            exit();
-        } else {
-            $errors[] = "Thêm sản phẩm thất bại. Vui lòng thử lại!";
-        }
-    }
-
-    // Giữ lại giá trị hiển thị trên form nếu có lỗi
-    $proname = $productname;
-    $categoryId = $categoryid;
-    $brandId = $brandid;
-    $discountPrice = $pricediscount;
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -226,7 +89,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/product" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/product" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

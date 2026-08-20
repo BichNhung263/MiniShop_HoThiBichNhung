@@ -10,7 +10,6 @@ class Category
     public ?string $description;
     public ?string $image;
     public int $status;
-
     public string $createdAt;
     public string $updatedAt;
 

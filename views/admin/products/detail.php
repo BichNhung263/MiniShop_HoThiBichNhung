@@ -1,19 +1,7 @@
 <?php
-$pageTitle = "Chi tiết sản phẩm";
-
-$dao = new \DAO\ProductDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$product = $dao->findById($id);
-if (!$product) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/product");
-    exit();
-}
-
-// Gọi phương thức getImagesByProductId($productId)
-$productImages = $dao->getImagesByProductId($id);
-
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -23,7 +11,7 @@ ob_start();
             <!-- Hình ảnh sản phẩm -->
             <div class="text-center mb-4">
                 <?php if (!empty($product->image)) { ?>
-                    <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $product->image ?>"
+                    <img src="<?= BASE_URL ?>/uploads/products/<?= $product->image ?>"
                         alt="<?= $product->proname ?>"
                         class="img-fluid img-thumbnail"
                         style="max-height: 250px;">
@@ -94,17 +82,16 @@ ob_start();
                 <h5>Hình ảnh phụ </h5>
                 <div class="d-flex flex-wrap gap-2 mt-2">
                     <?php foreach ($productImages as $img) { ?>
-                        <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $img->image ?>"
+                        <img src="<?= BASE_URL ?>/uploads/products/<?= $img->image ?>"
                             alt="Gallery"
                             class="img-thumbnail"
                             style="width: 120px; height: 100px; object-fit: cover;">
                     <?php } ?>
                 </div>
             <?php } ?>
-
             <div class="d-flex gap-2 mt-3">
-                <a href="/MiniShop_HoThiBichNhung/admin/product/edit?id=<?= $product->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="/MiniShop_HoThiBichNhung/admin/product" class="btn btn-secondary">Quay lại</a>
+                <a href="<?= BASE_URL ?>/admin/product/edit/<?= $product->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="<?= BASE_URL ?>/admin/product" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>

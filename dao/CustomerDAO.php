@@ -1,17 +1,14 @@
 <?php
-
 namespace DAO;
-
 use Models\Customer;
 
 class CustomerDAO extends BaseDAO
 {
-    public function __construct()
+    public function __construct(?\mysqli $conn = null)
     {
-        parent::__construct();
+        parent::__construct($conn);
     }
-
-    // Lấy tất cả khách hàng (có hỗ trợ tìm kiếm)
+    // Lấy tất cả khách hàng 
     public function getAll($keyword = ""): array
     {
         $list = [];
@@ -21,7 +18,6 @@ class CustomerDAO extends BaseDAO
                 $sql .= " WHERE fullname LIKE ? OR email LIKE ? OR phone LIKE ?";
             }
             $sql .= " ORDER BY fullname";
-
             if (!empty($keyword)) {
                 $stmt = $this->prepare($sql);
                 $like = "%" . $keyword . "%";
@@ -31,7 +27,6 @@ class CustomerDAO extends BaseDAO
             } else {
                 $result = $this->executeQuery($sql);
             }
-
             while ($row = $result->fetch_assoc()) {
                 $customer = new Customer(
                     $row["fullname"],
@@ -51,7 +46,6 @@ class CustomerDAO extends BaseDAO
         }
         return $list;
     }
-
     // Đếm tổng số khách hàng
     public function countAll(): int
     {
@@ -66,7 +60,6 @@ class CustomerDAO extends BaseDAO
         }
         return 0;
     }
-
     // Tìm theo ID
     public function findById(int $id): ?Customer
     {
@@ -95,7 +88,6 @@ class CustomerDAO extends BaseDAO
         }
         return null;
     }
-
     // Thêm khách hàng
     public function insert(Customer $customer): bool
     {
@@ -111,12 +103,43 @@ class CustomerDAO extends BaseDAO
                 $customer->note,
                 $customer->status
             );
-            return $stmt->execute();
+            $result = $stmt->execute();
+            if ($result) {
+                $customer->id = $this->getLastInsertId();
+            }
+            return $result;
         } catch (\Exception $e) {
             throw $e;
         }
     }
-
+    // Tìm khách hàng theo số điện thoại
+    public function findByPhone(string $phone): ?Customer
+    {
+        try {
+            $sql = "SELECT id, fullname, phone, email, address, note, status, created_at, updated_at FROM customers WHERE phone=? LIMIT 1";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("s", $phone);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $customer = new Customer(
+                    $row["fullname"],
+                    $row["email"] ?? "",
+                    $row["phone"],
+                    $row["address"],
+                    $row["note"] ?? "",
+                    $row["status"]
+                );
+                $customer->id = $row["id"];
+                $customer->createdAt = $row["created_at"];
+                $customer->updatedAt = $row["updated_at"];
+                return $customer;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return null;
+    }
     // Cập nhật khách hàng
     public function update(Customer $customer): bool
     {
@@ -138,7 +161,6 @@ class CustomerDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa khách hàng
     public function delete(int $id): bool
     {
@@ -151,7 +173,6 @@ class CustomerDAO extends BaseDAO
             throw $e;
         }
     }
-
     public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT

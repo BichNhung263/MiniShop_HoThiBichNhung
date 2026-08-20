@@ -1,42 +1,9 @@
 <?php
 $pageTitle = "Dashboard";
 
-require_once __DIR__ . "/../../autoload.php";
-
-use DAO\CategoryDAO;
-use DAO\BrandDAO;
-use DAO\ProductDAO;
-use DAO\CustomerDAO;
-use DAO\OrderDAO;
-
-$totalCategories = 0;
-$totalBrands = 0;
-$totalProducts = 0;
-$totalCustomers = 0;
-$totalOrders = 0;
-$latestProducts = [];
-$latestOrders = [];
-
-try {
-    $categoryDAO = new \DAO\CategoryDAO();
-    $brandDAO = new \DAO\BrandDAO();
-    $productDAO = new \DAO\ProductDAO();
-    $customerDAO = new \DAO\CustomerDAO();
-    $orderDAO = new \DAO\OrderDAO();
-
-    $totalCategories = $categoryDAO->countAll();
-    $totalBrands = $brandDAO->countAll();
-    $totalProducts = $productDAO->countAll();
-    $totalCustomers = $customerDAO->countAll();
-    $totalOrders = $orderDAO->countAll();
-
-    $latestProducts = $productDAO->getLatest();
-    $latestOrders = $orderDAO->getLatest();
-} catch (Exception $e) {
-}
-
 ob_start();
 ?>
+
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3 mb-4">
     <div class="col">
@@ -52,7 +19,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="/MiniShop_HoThiBichNhung/admin/customer" class="text-decoration-none small text-primary fw-semibold">Xem chi tiết</a>
+                    <a href="<?= BASE_URL ?>/admin/customer" class="text-decoration-none small text-primary fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -70,7 +37,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="/MiniShop_HoThiBichNhung/admin/product" class="text-decoration-none small text-success fw-semibold">Xem chi tiết</a>
+                    <a href="<?= BASE_URL ?>/admin/product" class="text-decoration-none small text-success fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -88,7 +55,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="/MiniShop_HoThiBichNhung/admin/order" class="text-decoration-none small text-warning fw-semibold">Xem chi tiết</a>
+                    <a href="<?= BASE_URL ?>/admin/order" class="text-decoration-none small text-warning fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -106,7 +73,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="/MiniShop_HoThiBichNhung/admin/category" class="text-decoration-none small text-info fw-semibold">Xem chi tiết</a>
+                    <a href="<?= BASE_URL ?>/admin/category" class="text-decoration-none small text-info fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -124,7 +91,7 @@ ob_start();
                     </div>
                 </div>
                 <div class="border-top pt-2 text-center">
-                    <a href="/MiniShop_HoThiBichNhung/admin/brand" class="text-decoration-none small text-danger fw-semibold">Xem chi tiết</a>
+                    <a href="<?= BASE_URL ?>/admin/brand" class="text-decoration-none small text-danger fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>

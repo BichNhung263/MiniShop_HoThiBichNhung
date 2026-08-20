@@ -1,7 +1,5 @@
 <?php
-
 namespace Controllers\Client;
-
 use DAO\ProductDAO;
 use DAO\CategoryDAO;
 
@@ -23,7 +21,6 @@ class HomeController
         $discountProducts = $this->productDAO->getDiscountProducts();
         // Sản phẩm mới (4 sp)
         $newProducts = $this->productDAO->getNewProducts(4);
-
         ob_start();
         require __DIR__ . "/../../views/client/home/index.php";
         $content = ob_get_clean();

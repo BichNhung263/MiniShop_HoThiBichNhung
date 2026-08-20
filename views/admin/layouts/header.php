@@ -20,6 +20,7 @@
 </head>
 
 <?php
+$baseUrl = defined('BASE_URL') ? BASE_URL : '/MiniShop_HoThiBichNhung';
 $user = $_SESSION["user"] ?? null;
 ?>
 
@@ -33,11 +34,13 @@ $user = $_SESSION["user"] ?? null;
         </button>
 
         <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-person-circle fs-4"></i>
-            <span>
-                <?= htmlspecialchars($user->fullname) ?>
-            </span>
-            <a href="index.php?area=admin&controller=auth&action=logout" class="text-decoration-none text-light">
+            <a href="<?= $baseUrl ?>" class="text-white text-decoration-none d-flex align-items-center gap-2" title="Quay lại trang chủ Client">
+                <i class="bi bi-person-circle fs-4"></i>
+                <span>
+                    <?= ($user->fullname ?? 'Quản trị viên') ?>
+                </span>
+            </a>
+            <a href="<?= $baseUrl ?>/admin/logout" class="text-decoration-none text-light ms-2">
                 | Đăng xuất
             </a>
         </div>

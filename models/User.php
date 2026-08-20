@@ -1,7 +1,5 @@
 <?php
-
 namespace Models;
-
 class User
 {
     public int $id;
@@ -13,10 +11,8 @@ class User
     public ?string $address;
     public int $role;
     public int $status;
-
     public string $createdAt;
     public string $updatedAt;
-
     public function __construct(
         string $fullname = "",
         string $username = "",
@@ -37,4 +33,3 @@ class User
         $this->status   = $status;
     }
 }
-class_alias('Models\User', 'User');

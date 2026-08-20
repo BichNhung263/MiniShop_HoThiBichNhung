@@ -1,18 +1,15 @@
 <?php
 
 namespace Controllers\Client;
-
 use DAO\ProductDAO;
 
 class ProductController
 {
     private ProductDAO $productDAO;
-
     public function __construct()
     {
         $this->productDAO = new ProductDAO();
     }
-
     // Sản phẩm theo danh mục
     public function category()
     {
@@ -20,14 +17,13 @@ class ProductController
         $slug = $_GET['slug'] ?? '';
         // Gọi ProductDAO để lấy sản phẩm theo slug
         $products = $this->productDAO->getByCategory($slug);
-
         // Chuyển danh sách sản phẩm sang View
         ob_start();
         require __DIR__ . '/../../views/client/products/index.php';
         $content = ob_get_clean();
         require __DIR__ . "/../../views/client/layouts/master.php";
     }
-
+    
     // Sản phẩm theo thương hiệu
     public function brand()
     {
@@ -35,14 +31,12 @@ class ProductController
         $slug = $_GET['slug'] ?? '';
         // Gọi ProductDAO để lấy sản phẩm theo slug
         $products = $this->productDAO->getByBrand($slug);
-
         // Chuyển danh sách sản phẩm sang View
         ob_start();
         require __DIR__ . '/../../views/client/products/index.php';
         $content = ob_get_clean();
         require __DIR__ . "/../../views/client/layouts/master.php";
     }
-
     // Chi tiết sản phẩm
     public function detail()
     {
@@ -50,22 +44,18 @@ class ProductController
         $slug = $_GET['slug'] ?? '';
         // Gọi ProductDAO để lấy chi tiết sản phẩm theo slug
         $product = $this->productDAO->getBySlug($slug);
-
         // Sản phẩm liên quan (cùng danh mục)
         $relatedProducts = [];
         if ($product && !empty($product->categoryId)) {
             $relatedProducts = $this->productDAO->getRelatedProducts($product->categoryId, $product->id, 4);
         }
-
         $title = $product ? $product->proname : "Sản phẩm không tồn tại";
-
         // Chuyển sang View
         ob_start();
         require __DIR__ . '/../../views/client/products/detail.php';
         $content = ob_get_clean();
         require __DIR__ . "/../../views/client/layouts/master.php";
     }
-
     // Tìm kiếm sản phẩm
     public function search()
     {
@@ -76,9 +66,7 @@ class ProductController
         if (!empty($keyword)) {
             $products = $this->productDAO->search($keyword);
         }
-
         $title = !empty($keyword) ? "Kết quả tìm kiếm cho: " . $keyword : "Tìm kiếm sản phẩm";
-
         // Chuyển kết quả sang View
         ob_start();
         require __DIR__ . '/../../views/client/products/search.php';

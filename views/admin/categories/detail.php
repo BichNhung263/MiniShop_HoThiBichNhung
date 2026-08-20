@@ -1,16 +1,7 @@
 <?php
-$pageTitle = "Chi tiết danh mục";
-
-$categoryDAO = new \DAO\CategoryDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$category = $categoryDAO->findById($id);
-
-if (!$category) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/category");
-    exit();
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -20,7 +11,7 @@ ob_start();
             <!-- Hình ảnh danh mục -->
             <div class="text-center mb-4">
                 <?php if (!empty($category->image)): ?>
-                    <img src="/MiniShop_HoThiBichNhung/uploads/categories/<?= $category->image ?>"
+                    <img src="<?= BASE_URL ?>/uploads/categories/<?= $category->image ?>"
                         alt="<?= $category->catename ?>"
                         class="img-fluid img-thumbnail"
                         style="max-height: 200px;">
@@ -31,7 +22,6 @@ ob_start();
                     </div>
                 <?php endif; ?>
             </div>
-
             <table class="table table-bordered">
                 <tr>
                     <th width="200">ID</th>
@@ -66,8 +56,8 @@ ob_start();
             </table>
 
             <div class="d-flex gap-2 mt-3">
-                <a href="/MiniShop_HoThiBichNhung/admin/category/edit/<?= $category->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="/MiniShop_HoThiBichNhung/admin/category" class="btn btn-secondary">Quay lại</a>
+                <a href="<?= BASE_URL ?>/admin/category/edit/<?= $category->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="<?= BASE_URL ?>/admin/category" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>

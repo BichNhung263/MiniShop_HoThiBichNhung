@@ -8,7 +8,6 @@ ob_start();
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách đơn hàng</h4>
         </div>
-
         <form method="GET" class="row mb-3 ">
             <input type="hidden" name="page" value="1">
             <div class="col-md-6">
@@ -19,7 +18,6 @@ ob_start();
                     <button class="btn btn-primary" type="submit">Tìm</button>
                 </div>
             </div>
-
             <div class="col-md-3">
                 <select name="status" class="form-select" onchange="this.form.submit()">
                     <option value="" <?= $status === null ? 'selected' : '' ?>>-- Tất cả trạng thái --</option>
@@ -30,9 +28,7 @@ ob_start();
                     <option value="4" <?= $status === 4 ? 'selected' : '' ?>>Đã hủy</option>
                 </select>
             </div>
-
         </form>
-
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">
                 <tr>
@@ -84,14 +80,13 @@ ob_start();
                             </td>
                             <td><?= $order->createdAt ?></td>
                             <td class="text-center">
-                                <a href="/MiniShop_HoThiBichNhung/admin/order/detail/<?= $order->id ?>" class="btn btn-info btn-sm text-white">Chi tiết</a>
+                                <a href="<?= BASE_URL ?>/admin/order/detail/<?= $order->id ?>" class="btn btn-info btn-sm text-white">Chi tiết</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
         </table>
-
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
                 <label class="me-2">Hiển thị</label>

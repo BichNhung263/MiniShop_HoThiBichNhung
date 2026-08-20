@@ -1,15 +1,7 @@
 <?php
-$pageTitle = "Chi tiết khách hàng";
-
-$dao = new \DAO\CustomerDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$customer = $dao->findById($id);
-if (!$customer) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/customer");
-    exit();
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -57,8 +49,8 @@ ob_start();
                 </tr>
             </table>
             <div class="d-flex gap-2 mt-3">
-                <a href="/MiniShop_HoThiBichNhung/admin/customer/edit/<?= $customer->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="/MiniShop_HoThiBichNhung/admin/customer" class="btn btn-secondary">Quay lại</a>
+                <a href="<?= BASE_URL ?>/admin/customer/edit/<?= $customer->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="<?= BASE_URL ?>/admin/customer" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>

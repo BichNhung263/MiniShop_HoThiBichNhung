@@ -1,38 +1,7 @@
 <?php
-$pageTitle = "Cập nhật khách hàng";
-
-$errors = [];
-$dao = new \DAO\CustomerDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$customer = $dao->findById($id);
-if (!$customer) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/customer");
-    exit();
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    $customer->fullname = trim($_POST["fullname"] ?? "");
-    $customer->email = trim($_POST["email"] ?? "");
-    $customer->phone = trim($_POST["phone"] ?? "");
-    $customer->address = trim($_POST["address"] ?? "");
-    $customer->note = trim($_POST["note"] ?? "");
-    $customer->status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
-
-    if ($customer->fullname == "") $errors[] = "Họ và tên không được để trống.";
-    if ($customer->phone == "") $errors[] = "Điện thoại không được để trống.";
-
-    if (empty($errors)) {
-        if ($dao->update($customer)) {
-            header("Location: /MiniShop_HoThiBichNhung/admin/customer");
-            exit();
-        } else {
-            $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
-        }
-    }
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -85,7 +54,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="MiniShop_HoThiBichNhung/admin/customer" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/customer" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

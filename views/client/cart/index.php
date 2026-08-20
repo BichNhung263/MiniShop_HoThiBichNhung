@@ -25,9 +25,9 @@
                     <?php foreach ($cart as $id => $item): ?>
                         <tr>
                             <td>
-                                <img src="<?= PRODUCT_IMAGE_URL . $item['image'] ?>" alt="<?= htmlspecialchars($item['productname']) ?>" style="width: 70px; height: 70px; object-fit: contain;">
+                                <img src="<?= PRODUCT_IMAGE_URL . $item['image'] ?>" alt="<?= ($item['productname']) ?>" style="width: 70px; height: 70px; object-fit: contain;">
                             </td>
-                            <td class="text-start fw-bold"><?= htmlspecialchars($item['productname'] ?? $item['proname'] ?? '') ?></td>
+                            <td class="text-start fw-bold"><?= ($item['productname'] ?? $item['proname'] ?? '') ?></td>
                             <td class="text-danger fw-semibold"><?= number_format($item['price']) ?> đ</td>
                             <td>
                                 <div class="d-flex align-items-center justify-content-center gap-1">

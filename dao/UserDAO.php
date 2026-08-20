@@ -1,7 +1,5 @@
 <?php
-
 namespace DAO;
-
 use Models\User;
 
 class UserDAO extends BaseDAO
@@ -10,8 +8,7 @@ class UserDAO extends BaseDAO
     {
         parent::__construct();
     }
-
-    // Lấy tất cả người dùng (có hỗ trợ tìm kiếm)
+    // Lấy tất cả người dùng 
     public function getAll($keyword = ""): array
     {
         $list = [];
@@ -31,7 +28,6 @@ class UserDAO extends BaseDAO
             } else {
                 $result = $this->executeQuery($sql);
             }
-
             while ($row = $result->fetch_assoc()) {
                 $user = new User(
                     $row["fullname"],
@@ -53,7 +49,6 @@ class UserDAO extends BaseDAO
         }
         return $list;
     }
-
     // Đếm tổng số người dùng
     public function countAll(): int
     {
@@ -68,7 +63,6 @@ class UserDAO extends BaseDAO
         }
         return 0;
     }
-
     // Tìm theo ID
     public function findById(int $id): ?User
     {
@@ -99,7 +93,36 @@ class UserDAO extends BaseDAO
         }
         return null;
     }
-
+    // Tìm theo username
+    public function findByUsername(string $username): ?User
+    {
+        try {
+            $sql = "SELECT id, fullname, username, password, email, phone, address, role, status, created_at, updated_at FROM users WHERE username=? LIMIT 1";
+            $stmt = $this->prepare($sql);
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $user = new User(
+                    $row["fullname"],
+                    $row["username"],
+                    $row["password"],
+                    $row["email"],
+                    $row["phone"],
+                    $row["address"],
+                    (int)$row["role"],
+                    (int)$row["status"]
+                );
+                $user->id = $row["id"];
+                $user->createdAt = $row["created_at"];
+                $user->updatedAt = $row["updated_at"];
+                return $user;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
+        return null;
+    }
     // Thêm người dùng
     public function insert(User $user): bool
     {
@@ -122,7 +145,6 @@ class UserDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Cập nhật người dùng
     public function update(User $user): bool
     {
@@ -146,7 +168,6 @@ class UserDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa người dùng
     public function delete(int $id): bool
     {
@@ -159,7 +180,6 @@ class UserDAO extends BaseDAO
             throw $e;
         }
     }
-
     public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
@@ -201,29 +221,5 @@ class UserDAO extends BaseDAO
             $users[] = $user;
         }
         return $users;
-    }
-
-
-    public function findByUsername(string $username): ?User
-    {
-        $sql = "SELECT * FROM users WHERE username =?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        if (!$row) {
-            return null;
-        }
-        return new User(
-            $row['fullname'],
-            $row['username'],
-            $row['password'],
-            $row['email'],
-            $row['phone'],
-            $row['address'],
-            $row['role'],
-            $row['status']
-        );
     }
 }

@@ -1,15 +1,12 @@
 <?php
-
 namespace DAO;
-
 use Models\Order;
 use Models\OrderDetail;
-
 class OrderDAO extends BaseDAO
 {
-    public function __construct()
+    public function __construct(?\mysqli $conn = null)
     {
-        parent::__construct();
+        parent::__construct($conn);
     }
     // Lấy tất cả đơn hàng
     public function getAll($keyword = "", $status = null): array
@@ -300,7 +297,6 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Cập nhật trạng thái đơn hàng (riêng)
     public function updateStatus(int $orderId, int $status): bool
     {
@@ -313,7 +309,6 @@ class OrderDAO extends BaseDAO
             throw $e;
         }
     }
-
     public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT
@@ -331,13 +326,12 @@ class OrderDAO extends BaseDAO
                     FROM orders o
                     LEFT JOIN customers c ON o.customer_id = c.id
                     LEFT JOIN users u ON o.user_id = u.id
-                    WHERE o.order_code LIKE ?
+                    WHERE (o.order_code LIKE ? OR c.phone LIKE ? OR c.fullname LIKE ?)
                     ORDER BY o.id DESC
                     LIMIT ? OFFSET ?";
-
         $stmt = $this->conn->prepare($sql);
-        $keyword = "%$keyword%";
-        $stmt->bind_param("sii", $keyword, $limit, $offset);
+        $like = "%$keyword%";
+        $stmt->bind_param("sssii", $like, $like, $like, $limit, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
         $orders = [];

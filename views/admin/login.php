@@ -25,7 +25,7 @@ if (!isset($errors)) {
                 <div class="card shadow">
                     <div class="card-body p-4">
                         <h3 class="text-center mb-4">Đăng nhập</h3>
-                        <form action="index.php?area=admin&controller=auth&action=login" method="POST">
+                        <form action="<?= BASE_URL ?>/admin/login" method="POST">
                             <input type="hidden" name="csrf_token"
                                 value='<?= htmlspecialchars($_SESSION["csrf_token"] ?? "") ?>'>
                             <div class="mb-3">

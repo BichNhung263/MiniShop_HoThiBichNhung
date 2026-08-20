@@ -15,9 +15,9 @@ if ($area === null) {
     if (count($segs) > 0 && $segs[0] === 'admin') {
         $area = 'admin';
         $seg1 = $segs[1] ?? '';
-        if ($seg1 === 'login') {
+        if ($seg1 === 'login' || $seg1 === 'logout') {
             $controller = 'auth';
-            $action = 'login';
+            $action = $seg1;
         } else {
             $controller = $seg1 !== '' ? $seg1 : 'product';
             $action = $segs[2] ?? 'index';

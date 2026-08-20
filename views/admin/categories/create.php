@@ -1,86 +1,7 @@
 <?php
-$pageTitle = "Thêm danh mục mới";
-
-$categoryDAO = new \DAO\CategoryDAO();
-$errors = [];
-$cateName = $slug = $description = "";
-$status = 1;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    // Đọc dữ liệu từ Form
-    $cateName = trim($_POST["cateName"] ?? "");
-    $slug = trim($_POST["slug"] ?? "");
-    $description = trim($_POST["description"] ?? "");
-    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
-    $fileName = $_FILES["image"] ?? "";
-    $image = "";
-
-    // Đọc thông tin hình ảnh
-    $fileName = $_FILES["image"]["name"] ?? "";
-    $tmpName = $_FILES["image"]["tmp_name"] ?? "";
-    $fileSize = $_FILES["image"]["size"] ?? 0;
-    $Error = $_FILES["image"]["error"] ?? 0;
-
-    $errors = [];
-
-    // Validation
-    if ($cateName == "") {
-        $errors[] = "Tên danh mục không được để trống.";
-    }
-    if ($slug == "") {
-        $errors[] = "Slug không được để trống.";
-    }
-
-    // Validation hình ảnh
-    if ($fileName != "") {
-        if ($Error != UPLOAD_ERR_OK) {
-            $errors[] = "Upload hình ảnh không thành công.";
-        }
-
-        $allowExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-        if ($fileName != "" && !in_array($extension, $allowExtensions)) {
-            $errors[] = "Chỉ cho phép file JPG, JPEG, PNG hoặc WEBP.";
-        }
-
-        $maxSize = 200 * 1024;
-        if ($fileName != "" && $fileSize > $maxSize) {
-            $errors[] = "Kích thước hình ảnh <= 200 KB.";
-        }
-    }
-
-    // Nếu không có lỗi
-    if (empty($errors)) {
-        // + Upload hình ảnh
-        if ($fileName != "") {
-            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            $image = time() . "_" . $slug . "." . $extension;
-            $uploadDir = __DIR__ . "/../../../uploads/categories/" . $image;
-            move_uploaded_file($tmpName, $uploadDir);
-        }
-
-        // + Tạo Category object
-        $category = new \Models\Category(
-            $cateName,
-            $slug,
-            $description,
-            $image,
-            $status
-        );
-
-        // + Lưu CSDL
-        if ($categoryDAO->insert($category)) {
-            header("Location: /MiniShop_HoThiBichNhung/admin/category");
-            exit();
-        } else {
-            $errors[] = "Thêm danh mục thất bại. Vui lòng thử lại!";
-        }
-    }
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -97,7 +18,6 @@ ob_start();
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
-
             <form action="" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                 <div class="mb-3">
@@ -131,7 +51,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary px-4">Lưu</button>
                     <button type="reset" class="btn btn-secondary px-4">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/category" class="btn btn-outline-dark px-4">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/category" class="btn btn-outline-dark px-4">Quay lại</a>
                 </div>
             </form>
         </div>

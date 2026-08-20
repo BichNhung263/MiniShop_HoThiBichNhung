@@ -5,7 +5,6 @@ namespace Config;
 class Cache
 {
     private static string $cacheDir = __DIR__ . '/../storage/cache/';
-
     private static function init(): void
     {
         if (!is_dir(self::$cacheDir)) {
@@ -21,19 +20,15 @@ class Cache
         if (!file_exists($filePath)) {
             return null;
         }
-
         $content = file_get_contents($filePath);
         $data = json_decode($content, true);
-
         if (!$data || !isset($data['expires_at'])) {
             return null;
         }
-
         if (time() > $data['expires_at']) {
             @unlink($filePath);
             return null;
         }
-
         return unserialize($data['payload']);
     }
 
@@ -41,12 +36,10 @@ class Cache
     {
         self::init();
         $filePath = self::$cacheDir . md5($key) . '.json';
-
         $data = [
             'expires_at' => time() + $ttl,
             'payload'    => serialize($value)
         ];
-
         return (bool)file_put_contents($filePath, json_encode($data));
     }
 
@@ -56,12 +49,11 @@ class Cache
         if ($cached !== null) {
             return $cached;
         }
-
         $value = $callback();
         self::set($key, $value, $ttl);
         return $value;
     }
-
+    
     public static function clear(): void
     {
         self::init();

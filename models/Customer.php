@@ -11,10 +11,8 @@ class Customer
     public ?string $address;
     public string $note;
     public int $status;
-
     public string $createdAt;
     public string $updatedAt;
-
     public function __construct(
         string $fullname = "",
         string $email = "",

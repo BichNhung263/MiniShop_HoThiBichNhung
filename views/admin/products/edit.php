@@ -1,122 +1,7 @@
 <?php
-$pageTitle = "Cập nhật sản phẩm";
-
-$categoryDAO = new \DAO\CategoryDAO();
-$brandDAO = new \DAO\BrandDAO();
-
-$categories = $categoryDAO->getAll();
-$brands = $brandDAO->getAll();
-
-$errors = [];
-$dao = new \DAO\ProductDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$product = $dao->findById($id);
-if (!$product) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/product");
-    exit();
-}
-
-$productOld = $product;
-
-// Gọi phương thức getImagesByProductId($productId)
-$productImages = $dao->getImagesByProductId($id);
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    $categoryid = (int)($_POST["categoryId"] ?? 0);
-    $brandid = (int)($_POST["brandId"] ?? 0);
-    $productname = trim($_POST["proname"] ?? "");
-    $slug = trim($_POST["slug"] ?? "");
-    $price = (float)($_POST["price"] ?? 0);
-    $pricediscount = (float)($_POST["discountPrice"] ?? 0);
-    $quantity = (int)($_POST["quantity"] ?? 0);
-    $description = trim($_POST["description"] ?? "");
-    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 0;
-    $fileName = $_FILES["image"] ?? "";
-    $image = "";
-    // Đọc thông tin hình ảnh
-    $fileName = $_FILES["image"]["name"] ?? "";
-    $tmpName  = $_FILES["image"]["tmp_name"] ?? "";
-    $fileSize = $_FILES["image"]["size"] ?? 0;
-    $Error    = $_FILES["image"]["error"] ?? 0;
-
-    $errors = [];
-    if ($productname == "") $errors[] = "Tên sản phẩm không được để trống.";
-    if ($slug == "") $errors[] = "Slug không được để trống.";
-    if ($categoryid == 0) $errors[] = "Vui lòng chọn danh mục.";
-    if ($brandid == 0) $errors[] = "Vui lòng chọn thương hiệu.";
-    if ($price <= 0) $errors[] = "Giá sản phẩm phải lớn hơn 0.";
-    if ($quantity < 0) $errors[] = "Số lượng không hợp lệ.";
-
-    // Validation hình ảnh
-    if ($fileName != "") {
-        if ($Error != UPLOAD_ERR_OK) {
-            $errors[] = "Upload hình ảnh không thành công.";
-        }
-
-        $allowExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-        if (!in_array($extension, $allowExtensions)) {
-            $errors[] = "Chỉ cho phép file JPG, JPEG, PNG hoặc WEBP.";
-        }
-
-        $maxSize = 200 * 1024;
-        if ($fileSize > $maxSize) {
-            $errors[] = "Kích thước hình ảnh <= 200 KB.";
-        }
-    }
-
-    if (empty($errors)) {
-        $image = $productOld->image;
-
-        // Có chọn hình ảnh mới
-        if ($fileName != "") {
-            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            $image = time() . "_" . $slug . "." . $extension;
-            $uploadPath = __DIR__ . "/../../../uploads/products/" . $image;
-
-            // Xóa hình ảnh cũ (nếu có)
-            if (!empty($productOld->image)) {
-                $oldImage = __DIR__ . "/../../../uploads/products/" . $productOld->image;
-                if (file_exists($oldImage)) {
-                    unlink($oldImage); // xóa file
-                }
-            }
-
-            // Upload hình ảnh mới
-            move_uploaded_file($tmpName, $uploadPath);
-        }
-
-        $product->image = $image;
-
-        if ($dao->update($product)) {
-            // Đọc dữ liệu Upload gallery
-            // Sử dụng vòng lặp để Upload từng file
-            foreach ($_FILES["images"]["name"] as $key => $imgName) {
-                if ($_FILES["images"]["error"][$key] == UPLOAD_ERR_OK) {
-                    $imgExt = strtolower(pathinfo($imgName, PATHINFO_EXTENSION));
-                    $imgNew = time() . "_" . $key . "_" . $slug . "." . $imgExt;
-                    $imgPath = __DIR__ . "/../../../uploads/products/" . $imgNew;
-                    if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $imgPath)) {
-                        // Lưu vào bảng product_images
-                        $dao->insertImage($id, $imgNew);
-                    }
-                }
-            }
-
-            header("Location: /MiniShop_HoThiBichNhung/admin/product");
-            exit();
-        } else {
-            $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
-        }
-    }
-
-    // Làm mới gallery sau POST
-    $productImages = $dao->getImagesByProductId($id);
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -133,11 +18,11 @@ ob_start();
                 </div>
             <?php } ?>
             <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                <input type="hidden" name="csrf_token" value="<?= ($_SESSION['csrf_token'] ?? '') ?>">
                 <input type="hidden" name="productId" value="<?= $product->id ?>">
                 <div class="text-center mb-3" id="preview">
                     <?php if (!empty($product->image)) { ?>
-                        <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $product->image ?>" class="img-thumbnail" width="150">
+                        <img src="<?= BASE_URL ?>/uploads/products/<?= $product->image ?>" class="img-thumbnail" width="150">
                     <?php } ?>
                 </div>
                 <div class="mb-3">
@@ -211,7 +96,7 @@ ob_start();
                         <div class="d-flex flex-wrap gap-2">
                             <?php foreach ($productImages as $img) { ?>
                                 <div class="text-center">
-                                    <img src="/MiniShop_HoThiBichNhung/uploads/products/<?= $img->image ?>"
+                                    <img src="<?= BASE_URL ?>/uploads/products/<?= $img->image ?>"
                                         class="img-thumbnail"
                                         style="width: 100px; height: 85px; object-fit: cover;">
                                     <br>
@@ -237,7 +122,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/product" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/product" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

@@ -1,15 +1,7 @@
 <?php
-$pageTitle = "Chi tiết thương hiệu";
-
-$dao = new \DAO\BrandDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$brand = $dao->findById($id);
-if (!$brand) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/brand");
-    exit();
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -19,7 +11,7 @@ ob_start();
             <!-- Hình ảnh thương hiệu -->
             <div class="text-center mb-4">
                 <?php if (!empty($brand->image)): ?>
-                    <img src="/MiniShop_HoThiBichNhung/uploads/brands/<?= $brand->image ?>"
+                    <img src="<?= BASE_URL ?>/uploads/brands/<?= $brand->image ?>"
                         alt="<?= $brand->brandname ?>"
                         class="img-fluid img-thumbnail"
                         style="max-height: 200px;">
@@ -64,8 +56,8 @@ ob_start();
                 </tr>
             </table>
             <div class="d-flex gap-2 mt-3">
-                <a href="/MiniShop_HoThiBichNhung/admin/brand/edit/<?= $brand->id ?>" class="btn btn-warning">Sửa</a>
-                <a href="/MiniShop_HoThiBichNhung/admin/brand" class="btn btn-secondary">Quay lại</a>
+                <a href="<?= BASE_URL ?>/admin/brand/edit/<?= $brand->id ?>" class="btn btn-warning">Sửa</a>
+                <a href="<?= BASE_URL ?>/admin/brand" class="btn btn-secondary">Quay lại</a>
             </div>
         </div>
     </div>

@@ -6,11 +6,14 @@ use Config\Database;
 
 class BaseDAO extends Database
 {
-    public function __construct()
+    public function __construct(?\mysqli $conn = null)
     {
-        parent::__construct();
+        if ($conn !== null) {
+            $this->conn = $conn;
+        } else {
+            parent::__construct();
+        }
     }
-
     // THỰC THI CÂU LỆNH 
     protected function executeQuery(string $sql): \mysqli_result|false
     {
@@ -22,17 +25,17 @@ class BaseDAO extends Database
         return $this->conn->prepare($sql);
     }
     // Bắt đầu Transaction
-    protected function beginTransaction(): void
+    public function beginTransaction(): void
     {
         $this->conn->begin_transaction();
     }
     // Xác nhận Transaction
-    protected function commit(): void
+    public function commit(): void
     {
         $this->conn->commit();
     }
     // Hủy Transaction
-    protected function rollback(): void
+    public function rollback(): void
     {
         $this->conn->rollback();
     }

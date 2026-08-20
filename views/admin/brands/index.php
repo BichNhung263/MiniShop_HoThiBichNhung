@@ -6,7 +6,7 @@ ob_start();
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách thương hiệu</h4>
-            <a href="/MiniShop_HoThiBichNhung/admin/brand/create" class="btn btn-primary">Thêm thương hiệu</a>
+            <a href="<?= BASE_URL ?>/admin/brand/create" class="btn btn-primary">Thêm thương hiệu</a>
         </div>
         <form class="row mb-3">
             <div class="col-md-4">
@@ -46,7 +46,7 @@ ob_start();
                             <td><?= $key + 1 ?></td>
                             <td>
                                 <?php if (!empty($brand->image)): ?>
-                                    <img src="/MiniShop_HoThiBichNhung/uploads/brands/<?= $brand->image ?>"
+                                    <img src="<?= BASE_URL ?>/uploads/brands/<?= $brand->image ?>"
                                         alt="<?= $brand->brandname ?>"
                                         width="60" height="60" class="img-thumbnail object-fit-cover">
                                 <?php else: ?>
@@ -64,17 +64,15 @@ ob_start();
                             </td>
                             <td><?= !empty($brand->createdAt) ? date('d/m/Y', strtotime($brand->createdAt)) : '-' ?></td>
                             <td class="text-center">
-                                <a href="/MiniShop_HoThiBichNhung/admin/brand/detail/<?= $brand->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/brand/edit/<?= $brand->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/brand/delete/<?= $brand->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                                <a href="<?= BASE_URL ?>/admin/brand/detail/<?= $brand->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
+                                <a href="<?= BASE_URL ?>/admin/brand/edit/<?= $brand->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
+                                <a href="<?= BASE_URL ?>/admin/brand/delete/<?= $brand->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
         </table>
-
-
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
                 <label class="me-2">Hiển thị</label>

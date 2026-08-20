@@ -7,6 +7,7 @@ spl_autoload_register(function ($className) {
         'Middleware\\' => __DIR__ . '/middleware/',
         'Config\\' => __DIR__ . '/config/',
         'Composers\\' => __DIR__ . '/composers/',
+        'Services\\' => __DIR__ . '/services/',
     ];
 
     foreach ($prefixes as $prefix => $baseDir) {

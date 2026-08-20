@@ -1,10 +1,4 @@
-/* MiniShop Client - JavaScript */
-
-/**
- * Thêm sản phẩm vào giỏ hàng (placeholder - sẽ được mở rộng sau)
- */
 function addToCart(productId) {
-    // TODO: Gọi API hoặc redirect đến cart
     const btn = document.querySelector(`[onclick="addToCart(${productId})"]`);
     if (btn) {
         const original = btn.innerHTML;

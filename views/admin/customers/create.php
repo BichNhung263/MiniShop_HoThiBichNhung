@@ -1,35 +1,7 @@
 <?php
-$pageTitle = "Thêm khách hàng";
-
-$errors = [];
-$fullname = $email = $phone = $address = $note = "";
-$status = 1;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    $fullname = trim($_POST["fullname"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phone = trim($_POST["phone"] ?? "");
-    $address = trim($_POST["address"] ?? "");
-    $note = trim($_POST["note"] ?? "");
-    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
-
-    if ($fullname == "") $errors[] = "Họ và tên không được để trống.";
-    if ($phone == "") $errors[] = "Điện thoại không được để trống.";
-
-    if (empty($errors)) {
-        $dao = new \DAO\CustomerDAO();
-        $customer = new \Models\Customer($fullname, $email, $phone, $address, $note, $status);
-        if ($dao->insert($customer)) {
-            header("Location: /MiniShop_HoThiBichNhung/admin/customer");
-            exit();
-        } else {
-            $errors[] = "Thêm thất bại. Vui lòng thử lại!";
-        }
-    }
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -81,7 +53,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/customer" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/customer" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

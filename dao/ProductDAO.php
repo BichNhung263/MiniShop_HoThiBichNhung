@@ -1,17 +1,13 @@
 <?php
-
 namespace DAO;
-
 use Models\Product;
 use Models\ProductImage;
-
 class ProductDAO extends BaseDAO
 {
     public function __construct()
     {
         parent::__construct();
     }
-
     // Lấy tất cả sản phẩm 
     public function getAll($keyword = ""): array
     {
@@ -76,14 +72,11 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
     // Tìm kiếm sản phẩm theo từ khóa
     public function search(string $keyword): array
     {
         return $this->getAll($keyword);
     }
-
-
     // Đếm tổng số sản phẩm
     public function countAll(): int
     {
@@ -98,7 +91,6 @@ class ProductDAO extends BaseDAO
         }
         return 0;
     }
-
     // Lấy 5 sản phẩm mới nhất
     public function getLatest(): array
     {
@@ -150,13 +142,10 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
-    // Alias cho getDiscount
     public function getDiscountProducts(int $limit = 8): array
     {
         return $this->getDiscount($limit);
     }
-
     // Lấy danh sách sản phẩm mới nhất với limit tùy chọn
     public function getNewProducts(int $limit = 4): array
     {
@@ -211,8 +200,7 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
-    // Lấy sản phẩm theo danh mục ($slug)
+    // Lấy sản phẩm theo danh mục 
     public function getByCategory(string $slug): array
     {
         $list = [];
@@ -255,8 +243,7 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
-    // Lấy sản phẩm theo thương hiệu ($slug)
+    // Lấy sản phẩm theo thương hiệu 
     public function getByBrand(string $slug): array
     {
         $list = [];
@@ -299,7 +286,6 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
     // Lấy chi tiết sản phẩm theo slug
     public function getBySlug(string $slug): ?Product
     {
@@ -342,8 +328,7 @@ class ProductDAO extends BaseDAO
         }
         return null;
     }
-
-    // Lấy danh sách sản phẩm liên quan (cùng danh mục)
+    // Lấy danh sách sản phẩm liên quan 
     public function getRelatedProducts(int $categoryId, int $excludeId, int $limit = 4): array
     {
         $list = [];
@@ -387,12 +372,8 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
-
-
-    // Lấy sản phẩm giảm giá (discount_price > 0)
+    // Lấy sản phẩm giảm giá 
     public function getDiscount(int $limit = 8): array
-
     {
         $list = [];
         try {
@@ -447,8 +428,6 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
-
     public function findById(int $id): ?Product
     {
         try {
@@ -501,7 +480,6 @@ class ProductDAO extends BaseDAO
         }
         return null;
     }
-
     // Thêm sản phẩm
     public function insert(Product $product): bool
     {
@@ -540,7 +518,6 @@ class ProductDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Cập nhật sản phẩm
     public function update(Product $product): bool
     {
@@ -576,7 +553,6 @@ class ProductDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa sản phẩm
     public function delete(int $id): bool
     {
@@ -618,7 +594,6 @@ class ProductDAO extends BaseDAO
         }
         return $list;
     }
-
     // Thêm ảnh phụ cho sản phẩm
     public function insertImage($productId, $image): bool
     {
@@ -631,7 +606,6 @@ class ProductDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa ảnh phụ theo ID
     public function deleteImage($id): bool
     {
@@ -658,8 +632,6 @@ class ProductDAO extends BaseDAO
             throw $e;
         }
     }
-
-
     public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT

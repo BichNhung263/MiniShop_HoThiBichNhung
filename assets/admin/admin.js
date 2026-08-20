@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const imageInput = document.getElementById("image");
     if (!imageInput) return;
-
     imageInput.addEventListener("change", function () {
         const preview = document.getElementById("preview");
         if (!preview) return;

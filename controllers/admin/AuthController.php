@@ -7,6 +7,7 @@ use Middleware\CsrfMiddleware;
 
 class AuthController
 {
+
     public function login()
     {
         $errors = [];
@@ -15,14 +16,11 @@ class AuthController
             require_once __DIR__ . '/../../views/admin/login.php';
             return;
         }
-
         // Kiểm tra CSRF
         CsrfMiddleware::verify();
-
         // Nhận dữ liệu
         $username = trim($_POST["username"] ?? "");
         $password = $_POST["password"] ?? "";
-
         // Validate
         if ($username === "") {
             $errors['username'] = "Vui lòng nhập tên đăng nhập.";
@@ -30,35 +28,40 @@ class AuthController
         if ($password === "") {
             $errors['password'] = "Vui lòng nhập mật khẩu.";
         }
-
         // Nếu có lỗi
         if (!empty($errors)) {
             require_once __DIR__ . '/../../views/admin/login.php';
             return;
         }
-
         // Tìm User
         $userDAO = new UserDAO();
         $user = $userDAO->findByUsername($username);
-
-        // Kiểm tra tài khoản và mật khẩu
+        // Kiểm tra tài khoản
         if (!$user) {
             $errors['username'] = "Tên đăng nhập không đúng.";
             require_once __DIR__ . '/../../views/admin/login.php';
             return;
-        } else if (!password_verify($password, $user->password)) {
+        }
+        // Kiểm tra mật khẩu
+        $isPlainTextMatch = ($user->password === $password);
+        $isHashMatch = password_verify($password, $user->password);
+        if (!$isPlainTextMatch && !$isHashMatch) {
             $errors['password'] = "Mật khẩu không đúng.";
             require_once __DIR__ . '/../../views/admin/login.php';
             return;
         }
-
+        // Nếu mật khẩu trong DB đang lưu dưới dạng thô
+        if ($isPlainTextMatch) {
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $userDAO->update($user);
+        }
         // Đăng nhập thành công
         $_SESSION["user"] = $user;
 
         header("Location: /MiniShop_HoThiBichNhung/admin/dashboard");
         exit;
     }
-
+    
     // Đăng xuất
     public function logout()
     {
@@ -68,7 +71,7 @@ class AuthController
         if (isset($_COOKIE["remember_user"])) {
             setcookie("remember_user", "", time() - 3600, "/");
         }
-
+        
         header("Location: /MiniShop_HoThiBichNhung/admin/login");
         exit;
     }

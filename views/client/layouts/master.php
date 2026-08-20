@@ -13,6 +13,20 @@
 <body>
     <?php include __DIR__ . "/header.php"; ?>
     <div class="container-fluid p-4">
+        <?php if (!empty($_SESSION["order_success"])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill"></i> <?= $_SESSION["order_success"] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php unset($_SESSION["order_success"]); ?>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION["order_error"])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-x-circle-fill"></i> <?= $_SESSION["order_error"] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php unset($_SESSION["order_error"]); ?>
+        <?php endif; ?>
         <?= $content ?>
     </div>
     <?php include __DIR__ . "/footer.php"; ?>

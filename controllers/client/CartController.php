@@ -1,19 +1,28 @@
 <?php
 namespace Controllers\Client;
 use DAO\ProductDAO;
+use DAO\CustomerDAO;
+use DAO\OrderDAO;
+use Models\Customer;
+use Models\Order;
+use Models\OrderDetail;
 
 class CartController
 {
     private ProductDAO $productDAO;
+    private CustomerDAO $customerDAO;
+    private OrderDAO $orderDAO;
     public function __construct()
     {
         $this->productDAO = new ProductDAO();
+        $this->customerDAO = new CustomerDAO();
+        $this->orderDAO = new OrderDAO($this->customerDAO->getConnection());
     }
     public function add()
     {
         // 1. Khởi tạo Cart nếu chưa có
-        if (!isset($_SESSION["cart"])) {
-            $_SESSION["cart"] = [];
+        if (!isset($_SESSION[CART_SESSION_KEY])) {
+            $_SESSION[CART_SESSION_KEY] = [];
         }
         // 2. Nhận productid từ AJAX
         $productid = $_POST["productid"] ?? null;
@@ -40,12 +49,12 @@ class CartController
             ? $product->pricediscount
             : $product->price;
         // 7. Kiểm tra sản phẩm đã có trong Cart chưa
-        if (isset($_SESSION["cart"][$productid])) {
+        if (isset($_SESSION[CART_SESSION_KEY][$productid])) {
             // Đã có -> tăng số lượng
-            $_SESSION["cart"][$productid]["quantity"]++;
+            $_SESSION[CART_SESSION_KEY][$productid]["quantity"]++;
         } else {
             // Chưa có -> thêm sản phẩm
-            $_SESSION["cart"][$productid] = [
+            $_SESSION[CART_SESSION_KEY][$productid] = [
                 "productid"   => $product->id,
                 "productname" => $product->proname,
                 "image"       => $product->image,
@@ -55,7 +64,7 @@ class CartController
         }
         // 8. Tính tổng số lượng trong Cart
         $cartCount = 0;
-        foreach ($_SESSION["cart"] as $item) {
+        foreach ($_SESSION[CART_SESSION_KEY] as $item) {
             $cartCount += $item["quantity"];
         }
         // 9. Trả JSON
@@ -84,7 +93,6 @@ class CartController
         // hiển thị layout chung
         require __DIR__ . "/../../views/client/layouts/master.php";
     }
-
     public function update()
     {
         // 1. Nhận dữ liệu từ AJAX
@@ -116,12 +124,10 @@ class CartController
     {
         // 1. Nhận productid từ AJAX
         $productid = $_POST["productid"] ?? null;
-
         // 2. Kiểm tra sản phẩm có trong Cart không
         if ($productid && isset($_SESSION[CART_SESSION_KEY][$productid])) {
             unset($_SESSION[CART_SESSION_KEY][$productid]);
         }
-
         // 3. Tính lại tổng số lượng trong Cart
         $cartCount = 0;
         if (isset($_SESSION[CART_SESSION_KEY])) {
@@ -129,7 +135,6 @@ class CartController
                 $cartCount += $item["quantity"];
             }
         }
-
         // 4. Trả JSON
         echo json_encode([
             "success"   => true,
@@ -138,14 +143,126 @@ class CartController
         ]);
         exit;
     }
-
     // Lấy số lượng trên Header
     public function count()
     {
     }
-
-    // Xử lý đặt hàng
+    // Hiển thị form đặt hàng
     public function checkout()
     {
+        $cart = $_SESSION[CART_SESSION_KEY] ?? [];
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            $title = "Đặt hàng";
+            ob_start();
+            require __DIR__ . "/../../views/client/cart/checkout.php";
+            $content = ob_get_clean();
+            require __DIR__ . "/../../views/client/layouts/master.php";
+            return;
+        }
+        // 1. Nhận dữ liệu từ form
+        $fullname      = trim($_POST["fullname"] ?? "");
+        $email         = trim($_POST["email"] ?? ($_SESSION["client_user"]["email"] ?? ""));
+        $phone         = trim($_POST["phone"] ?? "");
+        $address       = trim($_POST["address"] ?? "");
+        $note          = trim($_POST["note"] ?? "");
+        $paymentMethod = trim($_POST["payment_method"] ?? "cod");
+        // 2. Kiểm tra dữ liệu và giỏ hàng
+        if (empty($fullname) || empty($phone) || empty($address) || empty($cart)) {
+            $_SESSION["order_error"] = "Vui lòng nhập đầy đủ thông tin bắt buộc và kiểm tra giỏ hàng!";
+            header("Location: " . BASE_URL . "/cart/checkout");
+            exit;
+        }
+        // 3. Tính tổng tiền
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item["price"] * $item["quantity"];
+        }
+        try {
+            // 4. Bắt đầu Transaction
+            $this->customerDAO->beginTransaction();
+            // 5. Tìm Customer theo số điện thoại
+            $customer = $this->customerDAO->findByPhone($phone);
+            if (!$customer) {
+                // Chưa tồn tại -> tạo Customer mới
+                $customer = new Customer($fullname, $email, $phone, $address, $note);
+                $this->customerDAO->insert($customer);
+            }
+            // Lấy ID người dùng nếu đã đăng nhập (để liên kết đơn hàng với tài khoản khách hàng)
+            $userId = isset($_SESSION["client_user"]) ? (int)$_SESSION["client_user"]["id"] : null;
+            // 6. Lưu Order
+            $orderCode = "ORD" . date("YmdHis");
+            $orderNote = $note . ($paymentMethod === "vnpay" ? " [VNPAY]" : " [COD]");
+            $order = new Order($customer->id, $userId, $orderCode, $total, $orderNote, 0);
+            $this->orderDAO->insert($order);
+            // 7. Lưu các OrderDetail
+            foreach ($cart as $item) {
+                $subtotal = $item["price"] * $item["quantity"];
+                $detail = new OrderDetail(
+                    $order->id,
+                    $item["productid"],
+                    $item["quantity"],
+                    $item["price"],
+                    $subtotal
+                );
+                $this->orderDAO->insertDetail($detail);
+            }
+            // 8. Thành công 
+            $this->customerDAO->commit();
+            //Gửi email xác nhận đơn hàng
+            if (!empty($email)) {
+                $subject = "Xác nhận đơn hàng: " . $orderCode . " - MiniShop";
+                $body = "Xin chào " . $fullname . ",\n\n"
+                      . "Cảm ơn bạn đã đặt hàng tại MiniShop!\n"
+                      . "Mã đơn hàng của bạn là: " . $orderCode . "\n"
+                      . "Tổng tiền thanh toán: " . number_format($total, 0, ',', '.') . " VNĐ\n\n"
+                      . "Chúng tôi sẽ xử lý và giao hàng cho bạn trong thời gian sớm nhất.\n"
+                      . "Trân trọng,\nMiniShop";
+                $headers = "From: bichnhung@minishop.com\r\n"
+                         . "Content-Type: text/plain; charset=UTF-8\r\n";
+                @mail($email, $subject, $body, $headers);
+            }
+            // Nếu chọn thanh toán VNPAY
+            if ($paymentMethod === "vnpay") {
+                $vnpayUrl = \Services\VNPayService::createPaymentUrl($orderCode, $total);
+                header("Location: " . $vnpayUrl);
+                exit;
+            }
+            // Nếu chọn COD -> Xóa Cart trong Session & hiển thị màn hình thành công
+            unset($_SESSION[CART_SESSION_KEY]);
+            $title = "Đặt hàng thành công";
+            $orderSuccess = true;
+            ob_start();
+            require __DIR__ . "/../../views/client/cart/checkout.php";
+            $content = ob_get_clean();
+            require __DIR__ . "/../../views/client/layouts/master.php";
+            return;
+        } catch (\Exception $e) {
+            // Lỗi -> rollback
+            $this->customerDAO->rollback();
+            $_SESSION["order_error"] = "Đặt hàng thất bại. Vui lòng thử lại!";
+            header("Location: " . BASE_URL . "/cart/checkout");
+            exit;
+        }
+    }
+    // Kết quả trả về từ VNPAY sau khi thanh toán
+    public function vnpay_return()
+    {
+        $isValid = \Services\VNPayService::validateReturn($_GET);
+        $orderCode = $_GET['vnp_TxnRef'] ?? '';
+        if ($isValid) {
+            // Xóa Cart trong Session
+            unset($_SESSION[CART_SESSION_KEY]);
+            $title = "Thanh toán VNPAY thành công";
+            $orderSuccess = true;
+            ob_start();
+            require __DIR__ . "/../../views/client/cart/checkout.php";
+            $content = ob_get_clean();
+            require __DIR__ . "/../../views/client/layouts/master.php";
+            return;
+        } else {
+            $_SESSION["order_error"] = "Thanh toán qua VNPAY thất bại hoặc bị hủy.";
+            header("Location: " . BASE_URL . "/cart/checkout");
+            exit;
+        }
     }
 }

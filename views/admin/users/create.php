@@ -1,40 +1,7 @@
 <?php
-$pageTitle = "Thêm người dùng";
-
-$errors = [];
-$fullname = $username = $password = $email = $phone = $address = "";
-$role = 0;
-$status = 1;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    $fullname = trim($_POST["fullname"] ?? "");
-    $username = trim($_POST["username"] ?? "");
-    $password = trim($_POST["password"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phone = trim($_POST["phone"] ?? "");
-    $address = trim($_POST["address"] ?? "");
-    $role = isset($_POST["role"]) ? (int)$_POST["role"] : 0;
-    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
-
-    if ($fullname == "") $errors[] = "Họ và tên không được để trống.";
-    if ($username == "") $errors[] = "Username không được để trống.";
-    if ($password == "") $errors[] = "Mật khẩu không được để trống.";
-    if ($email == "") $errors[] = "Email không được để trống.";
-
-    if (empty($errors)) {
-        $dao = new \DAO\UserDAO();
-        $user = new \Models\User($fullname, $username, md5($password), $email, $phone, $address, $role, $status);
-        if ($dao->insert($user)) {
-            header("Location: /MiniShop_HoThiBichNhung/admin/user");
-            exit();
-        } else {
-            $errors[] = "Thêm thất bại. Vui lòng thử lại!";
-        }
-    }
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -101,7 +68,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/user" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/user" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

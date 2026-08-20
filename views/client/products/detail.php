@@ -57,8 +57,11 @@
 
                 <!-- GIÁ -->
                 <div class="p-3 bg-light rounded mb-4">
-                    <?php $discountPrice = $product->discountPrice ?? 0; ?>
-                    <?php if ($discountPrice > 0): ?>
+                    <?php 
+                    $discountPrice = $product->discountPrice ?? 0; 
+                    $hasDiscount = $discountPrice > 0 && $discountPrice < $product->price;
+                    ?>
+                    <?php if ($hasDiscount): ?>
                         <div class="d-flex align-items-baseline gap-3">
                             <span class="fs-2 fw-bold text-danger"><?= number_format($discountPrice) ?> ₫</span>
                             <del class="fs-5 text-muted"><?= number_format($product->price) ?> ₫</del>
@@ -92,7 +95,7 @@
 
                 <!-- THAO TÁC MUA HÀNG -->
                 <div class="d-flex gap-3 mt-4">
-                    <button type="button" class="btn btn-primary btn-lg px-4" onclick="addToCart(<?= $product->id ?>)">
+                    <button type="button" class="btn btn-primary btn-lg px-4 btn-add-cart" data-productid="<?= $product->id ?>" onclick="addToCart(<?= $product->id ?>)">
                         <i class="bi bi-cart-plus me-2"></i> Thêm vào giỏ hàng
                     </button>
                     <a href="<?= BASE_URL ?>" class="btn btn-outline-secondary btn-lg px-4">

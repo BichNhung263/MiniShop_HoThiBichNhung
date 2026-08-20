@@ -1,7 +1,5 @@
 <?php
-
 namespace DAO;
-
 use Models\Category;
 
 class CategoryDAO extends BaseDAO
@@ -10,20 +8,16 @@ class CategoryDAO extends BaseDAO
     {
         parent::__construct();
     }
-
     // Lấy tất cả danh mục
     public function getAll($keyword = "")
     {
         $list = [];
         try {
             $sql = "SELECT id, catename, slug, image, description, status, created_at, updated_at FROM categories";
-
             if (!empty($keyword)) {
                 $sql .= " WHERE catename LIKE ? OR slug LIKE ?";
             }
-
             $sql .= " ORDER BY catename";
-
             if (!empty($keyword)) {
                 $stmt = $this->prepare($sql);
                 $like = "%" . $keyword . "%";
@@ -33,7 +27,6 @@ class CategoryDAO extends BaseDAO
             } else {
                 $result = $this->executeQuery($sql);
             }
-
             while ($row = $result->fetch_assoc()) {
                 $category = new Category(
                     $row["catename"],
@@ -52,7 +45,6 @@ class CategoryDAO extends BaseDAO
         }
         return $list;
     }
-
     // Lấy danh mục theo giới hạn số lượng
     public function getByLimit(int $limit = 5): array
     {
@@ -81,8 +73,6 @@ class CategoryDAO extends BaseDAO
         }
         return $list;
     }
-
-
     // Đếm tổng số danh mục
     public function countAll(): int
     {
@@ -97,7 +87,6 @@ class CategoryDAO extends BaseDAO
         }
         return 0;
     }
-
     // Tìm theo ID
     public function findById(int $id): ?Category
     {
@@ -125,7 +114,6 @@ class CategoryDAO extends BaseDAO
         }
         return null;
     }
-
     // Thêm danh mục
     public function insert(Category $category): bool
     {
@@ -145,7 +133,6 @@ class CategoryDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Cập nhật danh mục
     public function update(Category $category): bool
     {
@@ -166,7 +153,6 @@ class CategoryDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa danh mục
     public function delete(int $id): bool
     {
@@ -179,8 +165,6 @@ class CategoryDAO extends BaseDAO
             throw $e;
         }
     }
-
-
     public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT

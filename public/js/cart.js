@@ -11,18 +11,18 @@ document.querySelectorAll(".btn-add-cart").forEach(button => {
             // Dữ liệu gửi lên Server
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Hiển thị thông báo
-                alert(data.message);
-                // Cập nhật số lượng trên Header
-                document.querySelector("#cartCount").textContent = data.cartCount;
-            }
-        })
-        .catch(error => {
-            console.error("Lỗi:", error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hiển thị thông báo
+                    alert(data.message);
+                    // Cập nhật số lượng trên Header
+                    document.querySelector("#cartCount").textContent = data.cartCount;
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+            });
     });
 });
 
@@ -39,15 +39,15 @@ function updateCart(productid, quantity) {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    })
-    .catch(error => {
-        console.error("Lỗi:", error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error("Lỗi:", error);
+        });
 }
 
 function removeCart(productid) {
@@ -61,14 +61,14 @@ function removeCart(productid) {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            location.reload();
-        }
-    })
-    .catch(error => {
-        console.error("Lỗi:", error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error("Lỗi:", error);
+        });
 }

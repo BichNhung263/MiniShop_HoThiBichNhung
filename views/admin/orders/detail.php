@@ -1,30 +1,7 @@
 <?php
-$pageTitle = "Chi tiết đơn hàng";
-
-$dao = new \DAO\OrderDAO();
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$order = $dao->findById($id);
-if (!$order) {
-    header('Location: /MiniShop_HoThiBichNhung/admin/order');
-    exit();
-}
-$details = $dao->getOrderDetails($id);
-
-$errors = [];
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    \Middleware\CsrfMiddleware::verify();
-    $newStatus = isset($_POST['status']) ? (int)$_POST['status'] : $order->status;
-    $order->status = $newStatus;
-    if ($dao->updateStatus($order->id, $newStatus)) {
-        header('Location: /MiniShop_HoThiBichNhung/admin/order');
-        exit();
-    } else {
-        $errors[] = 'Cập nhật trạng thái thất bại.';
-    }
-}
-
 ob_start();
 ?>
+
 <main class="container my-4">
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -66,7 +43,6 @@ ob_start();
                     }
                     ?>
                 </p>
-
                 <form method="POST" class="row g-2 align-items-center">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                     <div class="col-auto">
@@ -85,7 +61,6 @@ ob_start();
                 </form>
             </div>
         </div>
-
         <div class="card">
             <div class="card-header">Danh sách sản phẩm trong đơn</div>
             <div class="card-body p-0">
@@ -113,7 +88,6 @@ ob_start();
                 </table>
             </div>
         </div>
-
     </section>
 </main>
 <?php

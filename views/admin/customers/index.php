@@ -6,13 +6,13 @@ ob_start();
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách khách hàng</h4>
-            <a href="/MiniShop_HoThiBichNhung/admin/customer/create" class="btn btn-primary">Thêm khách hàng</a>
+            <a href="<?= BASE_URL ?>/admin/customer/create" class="btn btn-primary">Thêm khách hàng</a>
         </div>
         <form class="row mb-3">
             <div class="col-md-4">
                 <form method="GET" class="d-flex">
                     <input
-                        type="text" name="keyword" value="<?= htmlspecialchars($keyword) ?>"
+                        type="text" name="keyword" value="<?= ($keyword) ?>"
                         class="form-control" placeholder="Nhập tên khách hàng...">
                     <!-- Giữ số sản phẩm/trang -->
                     <input type="hidden" name="limit" value="<?= $limit ?>">
@@ -20,7 +20,6 @@ ob_start();
                 </form>
             </div>
         </form>
-
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">
                 <tr>
@@ -58,16 +57,15 @@ ob_start();
                             </td>
                             <td><?= !empty($customer->createdAt) ? date('d/m/Y', strtotime($customer->createdAt)) : '-' ?></td>
                             <td class="text-center">
-                                <a href="/MiniShop_HoThiBichNhung/admin/customer/detail/<?= $customer->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/customer/edit/<?= $customer->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/customer/delete/<?= $customer->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                                <a href="<?= BASE_URL ?>/admin/customer/detail/<?= $customer->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
+                                <a href="<?= BASE_URL ?>/admin/customer/edit/<?= $customer->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
+                                <a href="<?= BASE_URL ?>/admin/customer/delete/<?= $customer->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
         </table>
-
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
                 <label class="me-2">Hiển thị</label>

@@ -6,7 +6,7 @@ ob_start();
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách người dùng</h4>
-            <a href="/MiniShop_HoThiBichNhung/admin/user/create" class="btn btn-primary">Thêm người dùng</a>
+            <a href="<?= BASE_URL ?>/admin/user/create" class="btn btn-primary">Thêm người dùng</a>
         </div>
 
         <?php if (!empty($_GET['error'])): ?>
@@ -69,9 +69,9 @@ ob_start();
                             </td>
                             <td><?= !empty($user->createdAt) ? date('d/m/Y', strtotime($user->createdAt)) : '-' ?></td>
                             <td class="text-center">
-                                <a href="/MiniShop_HoThiBichNhung/admin/user/detail/<?= $user->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/user/edit/<?= $user->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/user/delete/<?= $user->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                                <a href="<?= BASE_URL ?>/admin/user/detail/<?= $user->id ?>" class="btn btn-info btn-sm text-white me-1">Chi tiết</a>
+                                <a href="<?= BASE_URL ?>/admin/user/edit/<?= $user->id ?>" class="btn btn-warning btn-sm me-1">Sửa</a>
+                                <a href="<?= BASE_URL ?>/admin/user/delete/<?= $user->id ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

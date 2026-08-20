@@ -6,7 +6,7 @@ ob_start();
     <section class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold mb-0">Danh sách danh mục</h4>
-            <a href="/MiniShop_HoThiBichNhung/admin/category/create" class="btn btn-primary">
+            <a href="<?= BASE_URL ?>/admin/category/create" class="btn btn-primary">
                 Thêm danh mục
             </a>
         </div>
@@ -22,7 +22,6 @@ ob_start();
                 </form>
             </div>
         </form>
-
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-dark">
                 <tr>
@@ -48,7 +47,7 @@ ob_start();
                             <td><?= $key + 1 ?></td>
                             <td>
                                 <?php if (!empty($category->image)): ?>
-                                    <img src="/MiniShop_HoThiBichNhung/uploads/categories/<?= $category->image ?>"
+                                    <img src="<?= BASE_URL ?>/uploads/categories/<?= $category->image ?>"
                                         alt="<?= $category->catename ?>"
                                         width="60" height="60" class="img-thumbnail object-fit-cover">
                                 <?php else: ?>
@@ -68,13 +67,13 @@ ob_start();
                             </td>
                             <td><?= !empty($category->createdAt) ? date('d/m/Y', strtotime($category->createdAt)) : '-'; ?></td>
                             <td class="text-center">
-                                <a href="/MiniShop_HoThiBichNhung/admin/category/detail/<?= $category->id; ?>" class="btn btn-info btn-sm text-white me-1">
+                                <a href="<?= BASE_URL ?>/admin/category/detail/<?= $category->id; ?>" class="btn btn-info btn-sm text-white me-1">
                                     Chi tiết
                                 </a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/category/edit/<?= $category->id; ?>" class="btn btn-warning btn-sm me-1">
+                                <a href="<?= BASE_URL ?>/admin/category/edit/<?= $category->id; ?>" class="btn btn-warning btn-sm me-1">
                                     Sửa
                                 </a>
-                                <a href="/MiniShop_HoThiBichNhung/admin/category/delete/<?= $category->id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">
+                                <a href="<?= BASE_URL ?>/admin/category/delete/<?= $category->id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">
                                     Xóa
                                 </a>
                             </td>
@@ -83,7 +82,6 @@ ob_start();
                 <?php endif; ?>
             </tbody>
         </table>
-
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div class="d-flex align-items-center">
                 <label class="me-2">Hiển thị</label>
@@ -98,7 +96,6 @@ ob_start();
                         <option value="30" <?= $limit == 30 ? 'selected' : '' ?>>
                             30
                         </option>
-
                     </select>
                 </form>
             </div>

@@ -1,16 +1,12 @@
 <?php
-
 namespace DAO;
-
 use Models\Brand;
-
 class BrandDAO extends BaseDAO
 {
     public function __construct()
     {
         parent::__construct();
     }
-
     // Lấy tất cả thương hiệu (có hỗ trợ tìm kiếm)
     public function getAll($keyword = ""): array
     {
@@ -50,7 +46,6 @@ class BrandDAO extends BaseDAO
         }
         return $list;
     }
-
     // Lấy thương hiệu theo giới hạn số lượng
     public function getByLimit(int $limit = 5): array
     {
@@ -79,8 +74,6 @@ class BrandDAO extends BaseDAO
         }
         return $list;
     }
-
-
     // Đếm tổng số thương hiệu
     public function countAll(): int
     {
@@ -95,7 +88,6 @@ class BrandDAO extends BaseDAO
         }
         return 0;
     }
-
     // Tìm theo ID
     public function findById(int $id): ?Brand
     {
@@ -123,7 +115,6 @@ class BrandDAO extends BaseDAO
         }
         return null;
     }
-
     // Thêm thương hiệu
     public function insert(Brand $brand): bool
     {
@@ -143,7 +134,6 @@ class BrandDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Cập nhật thương hiệu
     public function update(Brand $brand): bool
     {
@@ -164,7 +154,6 @@ class BrandDAO extends BaseDAO
             throw $e;
         }
     }
-
     // Xóa thương hiệu
     public function delete(int $id): bool
     {
@@ -177,7 +166,6 @@ class BrandDAO extends BaseDAO
             throw $e;
         }
     }
-
     public function getPage(int $limit, int $offset, string $keyword = "")
     {
         $sql = "SELECT

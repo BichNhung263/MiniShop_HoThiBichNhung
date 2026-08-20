@@ -16,7 +16,7 @@ $keyword = $_GET['keyword'] ?? '';
             <!-- LOGO -->
             <a class="navbar-brand fw-bold d-flex align-items-center"
                 href="<?= $baseUrl ?>">
-                <i class="bi bi-shop me-2 fs-4"></i>
+                
                 MiniShop
             </a>
 
@@ -35,7 +35,7 @@ $keyword = $_GET['keyword'] ?? '';
                     <li class="nav-item">
                         <a class="nav-link"
                             href="<?= $baseUrl ?>">
-                            <i class="bi bi-house-door me-1"></i>
+
                             Trang chủ
                         </a>
                     </li>
@@ -44,7 +44,7 @@ $keyword = $_GET['keyword'] ?? '';
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-grid me-1"></i>
+
                             Danh mục
                         </a>
 
@@ -64,7 +64,7 @@ $keyword = $_GET['keyword'] ?? '';
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-tags me-1"></i>
+
                             Thương hiệu
                         </a>
 
@@ -93,13 +93,22 @@ $keyword = $_GET['keyword'] ?? '';
                     </div>
                 </form>
 
-                <!-- ĐĂNG NHẬP -->
-                <a
-                    href="<?= $baseUrl ?>/admin/auth/login"
-                    class="btn btn-outline-light me-2 mb-2 mb-lg-0"
-                    title="Đăng nhập">
-                    <i class="bi bi-person"></i>
-                </a>
+                <!-- ĐĂNG NHẬP / ĐĂNG XUẤT -->
+                <?php if (isset($_SESSION["client_user"])): ?>
+                    <a href="<?= $baseUrl ?>/admin/dashboard" class="text-light text-decoration-none me-2 mb-2 mb-lg-0" title="Trang quản trị Admin">
+                        <i class="bi bi-person-fill"></i>
+                        <?= ($_SESSION["client_user"]["fullname"]) ?>
+                    </a>
+                    <a href="<?= $baseUrl ?>/logout"
+                        class="btn btn-outline-danger me-2 mb-2 mb-lg-0" title="Đăng xuất">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= $baseUrl ?>/login"
+                        class="btn btn-outline-light me-2 mb-2 mb-lg-0" title="Đăng nhập">
+                        <i class="bi bi-person"></i>
+                    </a>
+                <?php endif; ?>
 
                 <!-- GIỎ HÀNG -->
                 <a href="<?= BASE_URL ?>/cart"

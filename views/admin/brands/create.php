@@ -1,85 +1,7 @@
 <?php
-$pageTitle = "Thêm thương hiệu";
-$errors = [];
-$brandDAO = new \DAO\BrandDAO();
-$brandname = $slug = $description = "";
-$status = 1;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    // Đọc dữ liệu từ Form
-    $brandname = trim($_POST["brandname"] ?? "");
-    $slug = trim($_POST["slug"] ?? "");
-    $description = trim($_POST["description"] ?? "");
-    $status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
-    $fileName = $_FILES["image"] ?? "";
-    $image = "";
-
-    // Đọc thông tin hình ảnh
-    $fileName = $_FILES["image"]["name"] ?? "";
-    $tmpName = $_FILES["image"]["tmp_name"] ?? "";
-    $fileSize = $_FILES["image"]["size"] ?? 0;
-    $Error = $_FILES["image"]["error"] ?? 0;
-
-    $errors = [];
-
-    // Validation
-    if ($brandname == "") {
-        $errors[] = "Tên thương hiệu không được để trống.";
-    }
-    if ($slug == "") {
-        $errors[] = "Slug không được để trống.";
-    }
-
-    // Validation hình ảnh
-    if ($fileName != "") {
-        if ($Error != UPLOAD_ERR_OK) {
-            $errors[] = "Upload hình ảnh không thành công.";
-        }
-
-        $allowExtensions = ["jpg", "jpeg", "png", "gif", "webp"];
-        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-        if ($fileName != "" && !in_array($extension, $allowExtensions)) {
-            $errors[] = "Chỉ cho phép file JPG, JPEG, PNG hoặc WEBP.";
-        }
-
-        $maxSize = 200 * 1024;
-        if ($fileName != "" && $fileSize > $maxSize) {
-            $errors[] = "Kích thước hình ảnh <= 200 KB.";
-        }
-    }
-
-    // Nếu không có lỗi
-    if (empty($errors)) {
-        // + Upload hình ảnh
-        if ($fileName != "") {
-            $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            $image = time() . "_" . $slug . "." . $extension;
-            $uploadDir = __DIR__ . "/../../../uploads/brands/" . $image;
-            move_uploaded_file($tmpName, $uploadDir);
-        }
-
-        // + Tạo Brand object
-        $brand = new \Models\Brand(
-            $brandname,
-            $slug,
-            $description,
-            $image,
-            $status
-        );
-
-        // + Lưu CSDL
-        if ($brandDAO->insert($brand)) {
-            header("Location: /MiniShop_HoThiBichNhung/admin/brand");
-            exit();
-        } else {
-            $errors[] = "Thêm thất bại. Vui lòng thử lại!";
-        }
-    }
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -128,7 +50,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Thêm mới</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/brand" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/brand" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>

@@ -11,14 +11,11 @@ class Order
     public float $totalAmount;
     public ?string $note;
     public int $status;
-
     public string $createdAt;
     public string $updatedAt;
-
     // Dữ liệu từ JOIN
     public ?string $customerName;
     public ?string $userName;
-
     public function __construct(
         int $customerId = 0,
         ?int $userId = null,

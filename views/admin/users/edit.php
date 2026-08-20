@@ -1,42 +1,7 @@
 <?php
-$pageTitle = "Cập nhật người dùng";
-
-$errors = [];
-$dao = new \DAO\UserDAO();
-$id = isset($_GET["id"]) ? (int)$_GET["id"] : 0;
-$user = $dao->findById($id);
-if (!$user) {
-    header("Location: /MiniShop_HoThiBichNhung/admin/user");
-    exit();
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    \Middleware\CsrfMiddleware::verify();
-    $user->fullname = trim($_POST["fullname"] ?? "");
-    $user->username = trim($_POST["username"] ?? "");
-    $user->email = trim($_POST["email"] ?? "");
-    $user->phone = trim($_POST["phone"] ?? "");
-    $user->address = trim($_POST["address"] ?? "");
-    $user->role = isset($_POST["role"]) ? (int)$_POST["role"] : 0;
-    $user->status = isset($_POST["status"]) ? (int)$_POST["status"] : 1;
-    $newPassword = trim($_POST["password"] ?? "");
-    if ($newPassword != "") $user->password = md5($newPassword);
-
-    if ($user->fullname == "") $errors[] = "Họ và tên không được để trống.";
-    if ($user->username == "") $errors[] = "Username không được để trống.";
-    if ($user->email == "") $errors[] = "Email không được để trống.";
-
-    if (empty($errors)) {
-        if ($dao->update($user)) {
-            header("Location: /MiniShop_HoThiBichNhung/admin/user");
-            exit();
-        } else {
-            $errors[] = "Cập nhật thất bại. Vui lòng thử lại!";
-        }
-    }
-}
 ob_start();
 ?>
+
 <main class="container my-4">
     <div class="card">
         <div class="card-header">
@@ -104,7 +69,7 @@ ob_start();
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <button type="reset" class="btn btn-warning">Làm mới</button>
-                    <a href="/MiniShop_HoThiBichNhung/admin/user" class="btn btn-secondary">Quay lại</a>
+                    <a href="<?= BASE_URL ?>/admin/user" class="btn btn-secondary">Quay lại</a>
                 </div>
             </form>
         </div>
