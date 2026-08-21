@@ -10,6 +10,22 @@ class ProductController
     {
         $this->productDAO = new ProductDAO();
     }
+    // Tất cả sản phẩm
+    public function index()
+    {
+        $products = $this->productDAO->getAll();
+        $title = "Tất cả sản phẩm";
+        ob_start();
+        require __DIR__ . '/../../views/client/products/index.php';
+        $content = ob_get_clean();
+        require __DIR__ . "/../../views/client/layouts/master.php";
+    }
+
+    public function all()
+    {
+        $this->index();
+    }
+
     // Sản phẩm theo danh mục
     public function category()
     {
@@ -61,7 +77,6 @@ class ProductController
         // Đọc từ khóa tìm kiếm từ Request
         $keyword = trim($_GET['keyword'] ?? '');
         $products = [];
-
         if (!empty($keyword)) {
             $products = $this->productDAO->search($keyword);
         }

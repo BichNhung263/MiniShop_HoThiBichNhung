@@ -1,5 +1,4 @@
 <div class="container my-4">
-    <!-- BANNER SLIDER -->
     <div id="homeBanner" class="carousel slide mb-5 rounded-4 overflow-hidden shadow" data-bs-ride="carousel" data-bs-interval="4000">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="0" class="active"></button>
@@ -7,7 +6,6 @@
             <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="2"></button>
         </div>
         <div class="carousel-inner">
-            <!-- SLIDE 1 -->
             <div class="carousel-item active banner-slide-1">
                 <div class="banner-content">
                     <div>
@@ -21,7 +19,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SLIDE 2 -->
             <div class="carousel-item banner-slide-2">
                 <div class="banner-content">
                     <div>
@@ -35,7 +32,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SLIDE 3 -->
             <div class="carousel-item banner-slide-3">
                 <div class="banner-content">
                     <div>

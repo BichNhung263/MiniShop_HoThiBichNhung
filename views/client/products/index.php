@@ -1,5 +1,5 @@
-<div class="container">
-    <h2>Danh sách sản phẩm</h2>
+<div class="container my-4">
+    <h2 class="fw-bold mb-4"><?= $title ?? "Danh sách sản phẩm" ?></h2>
     <div class="row">
         <?php if (empty($products)): ?>
             <div class="col-12">

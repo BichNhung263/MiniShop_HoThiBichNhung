@@ -11,7 +11,6 @@ class Cache
             mkdir(self::$cacheDir, 0777, true);
         }
     }
-
     public static function get(string $key)
     {
         self::init();
@@ -31,7 +30,6 @@ class Cache
         }
         return unserialize($data['payload']);
     }
-
     public static function set(string $key, $value, int $ttl = 300): bool
     {
         self::init();
@@ -42,7 +40,6 @@ class Cache
         ];
         return (bool)file_put_contents($filePath, json_encode($data));
     }
-
     public static function remember(string $key, int $ttl, callable $callback)
     {
         $cached = self::get($key);
@@ -53,7 +50,6 @@ class Cache
         self::set($key, $value, $ttl);
         return $value;
     }
-    
     public static function clear(): void
     {
         self::init();

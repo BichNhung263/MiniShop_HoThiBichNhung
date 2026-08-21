@@ -59,7 +59,7 @@
                     </li>
                     <li>
                         <i class="bi bi-envelope me-2"></i>
-                        Email: contact@minishop.com
+                        Email: minishop@gmail.com
                     </li>
                 </ul>
             </div>

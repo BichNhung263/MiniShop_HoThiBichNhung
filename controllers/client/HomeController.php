@@ -17,7 +17,7 @@ class HomeController
         $title = "Trang chủ";
         // Danh mục
         $categories = $this->categoryDAO->getAll();
-        // Sản phẩm giảm giá (mặc định không truyền – lấy 8 sản phẩm)
+        // Sản phẩm giảm giá (mặc định không truyền – lấy 8 sp)
         $discountProducts = $this->productDAO->getDiscountProducts();
         // Sản phẩm mới (4 sp)
         $newProducts = $this->productDAO->getNewProducts(4);

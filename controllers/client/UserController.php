@@ -9,10 +9,10 @@ class UserController
     {
         $this->userDAO = new UserDAO();
     }
-    // Hiển thị form đăng nhập (GET) hoặc xử lý đăng nhập (POST)
+    // Hiển thị form đăng nhập  hoặc xử lý đăng nhập 
     public function login()
     {
-        // Nếu đã đăng nhập -> về trang chủ
+        // Nếu đã đăng nhập 
         if (isset($_SESSION["client_user"])) {
             header("Location: " . BASE_URL . "/");
             exit;

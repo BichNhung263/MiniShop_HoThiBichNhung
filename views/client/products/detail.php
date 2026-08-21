@@ -8,7 +8,6 @@
             </a>
         </div>
     <?php else: ?>
-        <!-- BREADCRUMB -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?= BASE_URL ?>" class="text-decoration-none">Trang chủ</a></li>
@@ -22,7 +21,6 @@
                 <li class="breadcrumb-item active" aria-current="page"><?= ($product->proname) ?></li>
             </ol>
         </nav>
-
         <!-- CHI TIẾT SẢN PHẨM -->
         <div class="row g-4 mb-5">
             <!-- HÌNH ẢNH SẢN PHẨM -->
@@ -40,11 +38,9 @@
                     <?php endif; ?>
                 </div>
             </div>
-
             <!-- THÔNG TIN SẢN PHẨM -->
             <div class="col-md-7">
                 <h2 class="fw-bold mb-3"><?= ($product->proname) ?></h2>
-
                 <!-- BRAND & CATEGORY -->
                 <div class="mb-3 text-muted small d-flex gap-3">
                     <?php if (!empty($product->cateName)): ?>
@@ -54,7 +50,6 @@
                         <span><i class="bi bi-tag me-1"></i> <strong>Thương hiệu:</strong> <?= htmlspecialchars($product->brandName) ?></span>
                     <?php endif; ?>
                 </div>
-
                 <!-- GIÁ -->
                 <div class="p-3 bg-light rounded mb-4">
                     <?php 
@@ -71,7 +66,6 @@
                         <span class="fs-2 fw-bold text-dark"><?= number_format($product->price) ?> ₫</span>
                     <?php endif; ?>
                 </div>
-
                 <!-- MÔ TẢ NGẮN / TRẠNG THÁI -->
                 <div class="mb-4">
                     <p class="mb-2"><strong>Trạng thái:</strong>
@@ -82,7 +76,6 @@
                         <?php endif; ?>
                     </p>
                 </div>
-
                 <!-- MÔ TẢ CHI TIẾT -->
                 <?php if (!empty($product->description)): ?>
                     <div class="mb-4">
@@ -92,7 +85,6 @@
                         </div>
                     </div>
                 <?php endif; ?>
-
                 <!-- THAO TÁC MUA HÀNG -->
                 <div class="d-flex gap-3 mt-4">
                     <button type="button" class="btn btn-primary btn-lg px-4 btn-add-cart" data-productid="<?= $product->id ?>" onclick="addToCart(<?= $product->id ?>)">
@@ -104,7 +96,6 @@
                 </div>
             </div>
         </div>
-
         <!-- SẢN PHẨM LIÊN QUAN -->
         <?php if (!empty($relatedProducts)): ?>
             <div class="mt-5 border-top pt-4">

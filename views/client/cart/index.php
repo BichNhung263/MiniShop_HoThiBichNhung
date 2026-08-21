@@ -1,6 +1,5 @@
 <div class="container my-4">
     <h2 class="fw-bold mb-4">Giỏ hàng của bạn</h2>
-
     <?php if (empty($cart)): ?>
         <div class="alert alert-warning text-center py-4">
             <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
@@ -53,7 +52,6 @@
                 </tbody>
             </table>
         </div>
-
         <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded border">
             <div>
                 <a href="<?= BASE_URL ?>/" class="btn btn-outline-secondary">

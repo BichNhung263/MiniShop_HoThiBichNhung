@@ -4,9 +4,7 @@ namespace Services;
 
 class VNPayService
 {
-    /**
-     * Lấy IP thực của client
-     */
+   
     private static function getClientIp(): string
     {
         $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
@@ -21,27 +19,21 @@ class VNPayService
         }
         return $ip;
     }
-
-    /**
-     * Tạo URL chuyển sang cổng thanh toán VNPAY (Chuẩn VNPAY v2.1.0)
-     */
+    //  Tạo URL chuyển sang cổng thanh toán VNPAY
     public static function createPaymentUrl(string $orderCode, float $totalAmount, string $bankCode = "NCB"): string
     {
         $vnpUrl         = VNP_URL;
         $vnp_Returnurl  = VNP_RETURN_URL;
         $vnp_TmnCode    = trim(VNP_TMN_CODE);
         $vnp_HashSecret = trim(VNP_HASH_SECRET);
-
         $vnp_TxnRef    = $orderCode;
         $vnp_OrderInfo = "ThanhToanDonHang" . $orderCode;
         $vnp_OrderType = "other";
         $vnp_Amount    = (int)($totalAmount * 100);
         $vnp_Locale    = "vn";
         $vnp_IpAddr    = self::getClientIp();
-
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $vnp_CreateDate = date('YmdHis');
-
         $inputData = [
             "vnp_Version"    => "2.1.0",
             "vnp_TmnCode"    => $vnp_TmnCode,
@@ -56,11 +48,9 @@ class VNPayService
             "vnp_ReturnUrl"  => $vnp_Returnurl,
             "vnp_TxnRef"     => $vnp_TxnRef
         ];
-
         if (!empty($bankCode)) {
             $inputData['vnp_BankCode'] = $bankCode;
         }
-
         ksort($inputData);
         $query = "";
         $i = 0;
@@ -74,7 +64,6 @@ class VNPayService
             }
             $query .= urlencode($key) . "=" . urlencode($value) . '&';
         }
-
         $vnp_Url = $vnpUrl . "?" . $query;
         if (isset($vnp_HashSecret)) {
             $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
@@ -83,26 +72,20 @@ class VNPayService
 
         return $vnp_Url;
     }
-
-    /**
-     * Xác thực kết quả trả về từ VNPAY (Chuẩn VNPAY v2.1.0)
-     */
+    //Xác thực kết quả trả về từ VNPAY 
     public static function validateReturn(array $queryParams): bool
     {
         $vnp_SecureHash = $queryParams['vnp_SecureHash'] ?? '';
         $vnp_HashSecret = trim(VNP_HASH_SECRET);
-
         $inputData = [];
         foreach ($queryParams as $key => $value) {
             if (substr($key, 0, 4) == "vnp_") {
                 $inputData[$key] = $value;
             }
         }
-
         unset($inputData['vnp_SecureHash']);
         unset($inputData['vnp_SecureHashType']);
         ksort($inputData);
-
         $i = 0;
         $hashData = "";
         foreach ($inputData as $key => $value) {
@@ -113,9 +96,7 @@ class VNPayService
                 $i = 1;
             }
         }
-
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
-
         return hash_equals(strtolower($secureHash), strtolower($vnp_SecureHash))
             && ($queryParams['vnp_ResponseCode'] ?? '') === '00';
     }
