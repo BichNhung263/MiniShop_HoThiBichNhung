@@ -10,8 +10,9 @@ $keyword = $_GET['keyword'] ?? '';
 <header class="bg-dark shadow-sm">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center"
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2"
                 href="<?= $baseUrl ?>">
+                <img src="<?= $baseUrl ?>/assets/favicon.svg" alt="Logo" width="28" height="28">
                 MiniShop
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 

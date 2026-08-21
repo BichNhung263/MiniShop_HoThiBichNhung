@@ -48,6 +48,7 @@ class Product
     public function __get($name)
     {
         if ($name === 'productName') return $this->proname;
+        if ($name === 'pricediscount' || $name === 'discount_price') return $this->discountPrice;
         return null;
     }
 }

@@ -44,13 +44,15 @@ class CartController
             ]);
             exit;
         }
-        //Xác định giá bán
-        $price = $product->pricediscount > 0
-            ? $product->pricediscount
-            : $product->price;
+        //Xác định giá bán (Ưu tiên lấy giá giảm nếu có)
+        $discountPrice = (float)($product->discountPrice ?? 0);
+        $price = ($discountPrice > 0 && $discountPrice < $product->price)
+            ? $discountPrice
+            : (float)$product->price;
         //Kiểm tra sản phẩm đã có trong Cart chưa
         if (isset($_SESSION[CART_SESSION_KEY][$productid])) {
             // Đã có 
+            $_SESSION[CART_SESSION_KEY][$productid]["price"] = $price;
             $_SESSION[CART_SESSION_KEY][$productid]["quantity"]++;
         } else {
             // Chưa có
